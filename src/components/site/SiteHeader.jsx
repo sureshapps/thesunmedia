@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Search, Menu, ChevronDown, ChevronRight } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
@@ -61,11 +61,11 @@ function WorldCupLink({ mobile = false, onNavigate }) {
         target="_blank"
         rel="noopener noreferrer"
         onClick={onNavigate}
-        className="flex items-center justify-between pl-3 pr-3 py-2.5 rounded hover:bg-muted font-semibold text-sm"
+        className="flex items-center justify-between pl-3 pr-3 py-2.5 rounded hover:bg-muted font-extrabold text-sm"
       >
-        <span className="flex items-center gap-1.5">
-          <span className="font-extrabold text-primary">World Cup &#39;26</span>
-          <span style={{ display: 'inline-block', animation: 'wcBounce 0.7s infinite alternate ease-in-out' }}>⚽</span>
+        <span className="flex items-center gap-1.5 bg-[#8B0000] text-white px-3 py-1.5 rounded">
+          World Cup '26
+          <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
         </span>
       </a>
     )
@@ -75,10 +75,10 @@ function WorldCupLink({ mobile = false, onNavigate }) {
       href="https://worldcup2026.thesun.my/"
       target="_blank"
       rel="noopener noreferrer"
-      className="px-3 py-3 text-sm border-b-2 border-transparent hover:border-primary transition-colors whitespace-nowrap inline-flex items-center gap-1"
+      className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-[#8B0000] hover:bg-[#a00000] text-white rounded transition-colors"
     >
-      <span className="font-extrabold text-primary">World Cup &#39;26</span>
-      <span style={{ display: 'inline-block', animation: 'wcBounce 0.7s infinite alternate ease-in-out' }}>⚽</span>
+      World Cup '26
+      <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
     </a>
   )
 }
@@ -89,6 +89,9 @@ function Dropdown({ item }) {
   const [open, setOpen] = useState(false)
   const timer = useRef(null)
   const hasChildren = !!(item.children && item.children.length)
+  const { pathname } = useLocation()
+  const isActive = item.to ? pathname === item.to : item.slug ? pathname.startsWith(`/category/${item.slug}`) : false
+  const activeCls = isActive ? 'border-primary text-primary' : 'border-transparent'
 
   function show() { clearTimeout(timer.current); setOpen(true) }
   function hide() {
@@ -97,7 +100,7 @@ function Dropdown({ item }) {
   }
 
   const trigger = (
-    <span className="px-3 py-3 text-sm font-semibold uppercase tracking-wide hover:text-primary border-b-2 border-transparent hover:border-primary transition-colors inline-flex items-center gap-1 cursor-pointer">
+    <span className={`px-3 py-2 my-1 text-sm font-semibold uppercase tracking-wide hover:text-primary border hover:border-primary rounded transition-colors inline-flex items-center gap-1 cursor-pointer ${activeCls}`}>
       {item.to || item.slug ? (
         <Link to={itemHref(item)} className="focus:outline-none">
           {item.label}
@@ -116,15 +119,15 @@ function Dropdown({ item }) {
           href={item.to}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-3 py-3 text-sm font-extrabold uppercase tracking-wide border-b-2 border-transparent hover:border-primary transition-colors whitespace-nowrap inline-flex items-center gap-1.5 text-[#006633] hover:text-primary"
+          className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-[#8B0000] hover:bg-[#a00000] text-white rounded transition-colors"
         >
-          <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
           World Cup '26
+          <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
         </a>
       )
     }
     return (
-      <Link to={itemHref(item)} className="px-3 py-3 text-sm font-semibold uppercase tracking-wide hover:text-primary border-b-2 border-transparent hover:border-primary transition-colors whitespace-nowrap">
+      <Link to={itemHref(item)} className={`px-3 py-2 my-1 text-sm font-semibold uppercase tracking-wide hover:text-primary border hover:border-primary rounded transition-colors whitespace-nowrap ${activeCls}`}>
         {item.label}
       </Link>
     )
@@ -188,11 +191,11 @@ function MobileMenuItem({ item, onNavigate, depth = 0 }) {
           target="_blank"
           rel="noopener noreferrer"
           onClick={onNavigate}
-          className={`flex items-center justify-between ${padding} pr-3 py-2.5 rounded hover:bg-muted font-extrabold ${fontSize} text-[#006633]`}
+          className={`flex items-center justify-between ${padding} pr-3 py-2.5 rounded hover:bg-muted font-extrabold ${fontSize}`}
         >
-          <span className="flex items-center gap-1.5">
-            <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
+          <span className="inline-flex items-center gap-1.5 bg-[#8B0000] text-white px-3 py-1.5 rounded">
             World Cup '26
+            <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
           </span>
           <ChevronRight className="h-4 w-4 opacity-40" />
         </a>
