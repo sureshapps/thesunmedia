@@ -25,7 +25,7 @@ function TopBarTicker() {
       {/* Label */}
       <div className="flex items-center gap-1.5 shrink-0 pr-3 mr-1">
         <span className="text-[10px] font-black uppercase tracking-widest text-white leading-none">
-          LATEST<br />HEADLINES
+          LATEST<br />NEWS
         </span>
       </div>
       {/* Scrolling ticker */}
