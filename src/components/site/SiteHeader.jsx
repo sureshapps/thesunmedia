@@ -122,7 +122,7 @@ function Dropdown({ item }) {
           className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-[#8B0000] hover:bg-[#a00000] text-white rounded transition-colors"
         >
           World Cup '26
-          <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
+          <span className="inline-block animate-bounce" style={{ animationDuration: '1.8s' }}>⚽</span>
         </a>
       )
     }
