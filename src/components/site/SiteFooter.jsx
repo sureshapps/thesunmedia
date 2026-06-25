@@ -20,18 +20,18 @@ const APP_BADGES = [
   },
 ]
 
-const FOOTER_BG = '#CFCFCF'
+const FOOTER_BG = '#111111'
 
 export default function SiteFooter() {
   return (
-    <footer className="text-black mt-16" style={{ backgroundColor: FOOTER_BG }}>
+    <footer className="text-white mt-16" style={{ backgroundColor: FOOTER_BG }}>
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-2">
             <div className="bg-white inline-block p-2 rounded">
               <Logo size="lg" />
             </div>
-            <p className="mt-4 text-base text-black font-semibold">
+            <p className="mt-4 text-base text-white/80 font-semibold">
               Independent Malaysian journalism.
             </p>
 
@@ -62,8 +62,8 @@ export default function SiteFooter() {
           </div>
 
           <div>
-            <h4 className="font-bold uppercase text-sm tracking-wider mb-4">Sections</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="font-bold uppercase text-sm tracking-wider mb-4 text-white">Sections</h4>
+            <ul className="space-y-2 text-sm text-white/70">
               <li><Link to="/category/malaysia-news" className="hover:text-primary">Malaysia</Link></li>
               <li><Link to="/category/business" className="hover:text-primary">Business</Link></li>
               <li><Link to="/category/world" className="hover:text-primary">World</Link></li>
@@ -75,8 +75,8 @@ export default function SiteFooter() {
           </div>
 
           <div>
-            <h4 className="font-bold uppercase text-sm tracking-wider mb-4">Company</h4>
-            <ul className="space-y-2 text-sm">
+            <h4 className="font-bold uppercase text-sm tracking-wider mb-4 text-white">Company</h4>
+            <ul className="space-y-2 text-sm text-white/70">
               <li><Link to="/about" className="hover:text-primary">About Us</Link></li>
               <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
               <li><Link to="/advertise" className="hover:text-primary">Advertise</Link></li>
@@ -87,7 +87,7 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-black/20 text-xs text-black/80 text-center md:text-left">
+        <div className="mt-10 pt-6 border-t border-white/20 text-xs text-white/60 text-center md:text-left">
           <p>© 1993-2026 All Rights Reserved. The Sun Malaysia is proudly owned by Sun Media Corporation Sdn Bhd. (221220-K)</p>
         </div>
       </div>

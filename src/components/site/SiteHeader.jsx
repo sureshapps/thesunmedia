@@ -208,6 +208,19 @@ export default function SiteHeader() {
                   <MobileMenuItem key={item.label} item={item} onNavigate={closeMobile} />
                 ))}
               </nav>
+              {/* iPaper in mobile sidebar */}
+              <div className="px-5 py-4 border-t border-border">
+                <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Read e-Paper</p>
+                <a
+                  href={IPAPER_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Read iPaper"
+                  className="inline-flex items-center rounded overflow-hidden hover:opacity-75 transition-opacity bg-white p-1"
+                >
+                  <img src={IPAPER_LOGO} alt="iPaper" className="h-9 w-auto" />
+                </a>
+              </div>
               <div className="px-5 py-4 border-t border-border">
                 <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Follow Us</p>
                 <SocialIcons size="md" dark />
