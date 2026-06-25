@@ -25,7 +25,7 @@ function TopBarTicker() {
       {/* Label */}
       <div className="flex items-center gap-1.5 shrink-0 pr-3 mr-1">
         <span className="text-[10px] font-black uppercase tracking-widest text-white leading-none">
-          LATEST<br />NEWS
+          LATEST<br />HEADLINES
         </span>
       </div>
       {/* Scrolling ticker */}
@@ -51,8 +51,41 @@ function TopBarTicker() {
   )
 }
 
+
+// ---------- Animated World Cup nav item ----------
+function WorldCupLink({ mobile = false, onNavigate }) {
+  if (mobile) {
+    return (
+      <a
+        href="https://worldcup2026.thesun.my/"
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onNavigate}
+        className="flex items-center justify-between pl-3 pr-3 py-2.5 rounded hover:bg-muted font-semibold text-sm"
+      >
+        <span className="flex items-center gap-1.5">
+          <span className="font-extrabold text-primary">World Cup &#39;26</span>
+          <span style={{ display: 'inline-block', animation: 'wcBounce 0.7s infinite alternate ease-in-out' }}>⚽</span>
+        </span>
+      </a>
+    )
+  }
+  return (
+    <a
+      href="https://worldcup2026.thesun.my/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="px-3 py-3 text-sm border-b-2 border-transparent hover:border-primary transition-colors whitespace-nowrap inline-flex items-center gap-1"
+    >
+      <span className="font-extrabold text-primary">World Cup &#39;26</span>
+      <span style={{ display: 'inline-block', animation: 'wcBounce 0.7s infinite alternate ease-in-out' }}>⚽</span>
+    </a>
+  )
+}
+
 // ---------- Desktop Dropdown ----------
 function Dropdown({ item }) {
+  if (item.worldcup) return <WorldCupLink />
   const [open, setOpen] = useState(false)
   const timer = useRef(null)
   const hasChildren = !!(item.children && item.children.length)
@@ -77,6 +110,19 @@ function Dropdown({ item }) {
   )
 
   if (!hasChildren) {
+    if (item.worldcup) {
+      return (
+        <a
+          href={item.to}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-3 py-3 text-sm font-extrabold uppercase tracking-wide border-b-2 border-transparent hover:border-primary transition-colors whitespace-nowrap inline-flex items-center gap-1.5 text-[#006633] hover:text-primary"
+        >
+          <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
+          World Cup '26
+        </a>
+      )
+    }
     return (
       <Link to={itemHref(item)} className="px-3 py-3 text-sm font-semibold uppercase tracking-wide hover:text-primary border-b-2 border-transparent hover:border-primary transition-colors whitespace-nowrap">
         {item.label}
@@ -127,6 +173,7 @@ function Dropdown({ item }) {
 
 // ---------- Mobile collapsible menu item ----------
 function MobileMenuItem({ item, onNavigate, depth = 0 }) {
+  if (item.worldcup) return <WorldCupLink mobile onNavigate={onNavigate} />
   const [open, setOpen] = useState(false)
   const hasChildren = !!(item.children && item.children.length)
   const padding = { 0: 'pl-3', 1: 'pl-6', 2: 'pl-9' }[depth] || 'pl-3'
@@ -134,6 +181,23 @@ function MobileMenuItem({ item, onNavigate, depth = 0 }) {
   const fontSize = depth === 0 ? 'text-sm' : 'text-[13px]'
 
   if (!hasChildren) {
+    if (item.worldcup) {
+      return (
+        <a
+          href={item.to}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onNavigate}
+          className={`flex items-center justify-between ${padding} pr-3 py-2.5 rounded hover:bg-muted font-extrabold ${fontSize} text-[#006633]`}
+        >
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
+            World Cup '26
+          </span>
+          <ChevronRight className="h-4 w-4 opacity-40" />
+        </a>
+      )
+    }
     return (
       <Link
         to={itemHref(item)}
@@ -184,6 +248,7 @@ export default function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
+      <style>{`@keyframes wcBounce { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-5px) rotate(20deg); } }`}</style>
 
       {/* ── ROW 1: Dark ticker bar ── */}
       <div className="bg-[#1a1a1a] text-white">
