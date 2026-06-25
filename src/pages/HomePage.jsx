@@ -1,10 +1,11 @@
+import { useState } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkeleton, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
 import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
-import { postsKey, FEATURED_CATEGORY_SLUGS } from '@/lib/wp'
+import { postsKey, buildUrl, FEATURED_CATEGORY_SLUGS } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
 export default function HomePage() {
@@ -14,10 +15,30 @@ export default function HomePage() {
     url: window.location.origin + '/',
   })
 
+  const PER_PAGE = 5
+  const [topPage, setTopPage] = useState(1)
+
+  // Page 1: fetch 16 posts (hero + editor picks + latest + first 5 top stories)
   const { data: latest, isLoading } = useSWR(postsKey({ per_page: 16 }))
+  // Extra pages for top stories pagination (page 2+)
+  const topStoriesUrl = topPage > 1
+    ? buildUrl('/posts', { per_page: PER_PAGE, page: topPage, _embed: 1 })
+    : null
+  const { data: extraTopData, isLoading: extraLoading } = useSWR(topStoriesUrl, async (u) => {
+    const res = await fetch(u)
+    if (!res.ok) throw new Error('Failed')
+    return res.json()
+  })
+
   const top = latest?.[0]
   const featuredGrid = (latest || []).slice(1, 5)
   const moreLatest = (latest || []).slice(5, 13)
+
+  // Top stories: page 1 uses slice from latest, page 2+ uses fetched data
+  const topStories = topPage === 1
+    ? (latest || []).slice(1, 1 + PER_PAGE)
+    : (extraTopData || [])
+  const topLoading = topPage === 1 ? isLoading : extraLoading
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -32,10 +53,29 @@ export default function HomePage() {
               View All <ChevronRight className="h-3.5 w-3.5" />
             </Link>
           </div>
-          <div className="overflow-hidden">
-            {(latest || []).length === 0
-              ? [...Array(5)].map((_, i) => <TimelineCardSkeleton key={i} />)
-              : (latest || []).slice(1, 6).map(p => <TimelineCard key={p.id} post={p} />)}
+          <div className="overflow-hidden min-h-[380px]">
+            {topLoading
+              ? [...Array(PER_PAGE)].map((_, i) => <TimelineCardSkeleton key={i} />)
+              : topStories.map(p => <TimelineCard key={p.id} post={p} />)}
+          </div>
+          {/* Prev / Next buttons */}
+          <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-border">
+            <button
+              onClick={() => setTopPage(p => Math.max(1, p - 1))}
+              disabled={topPage === 1}
+              aria-label="Previous"
+              className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setTopPage(p => p + 1)}
+              disabled={topStories.length < PER_PAGE}
+              aria-label="Next"
+              className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </section>
