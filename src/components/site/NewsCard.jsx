@@ -86,6 +86,55 @@ export function ListItem({ post, index }) {
   )
 }
 
+
+export function TimelineCard({ post }) {
+  if (!post) return null
+  const cat = getPrimaryCategory(post)
+  return (
+    <Link to={`/article/${post.slug}`} className="group flex gap-0 items-start">
+      {/* Time column */}
+      <div className="w-16 shrink-0 text-right pr-3 pt-1">
+        <span className="text-xs text-muted-foreground whitespace-nowrap">{timeAgo(post.date)}</span>
+      </div>
+      {/* Timeline line + dot */}
+      <div className="flex flex-col items-center shrink-0">
+        <div className="w-3 h-3 rounded-full border-2 border-muted-foreground/40 bg-white mt-1 z-10" />
+        <div className="w-px flex-1 bg-muted-foreground/20 mt-1" style={{ minHeight: '60px' }} />
+      </div>
+      {/* Content */}
+      <div className="flex-1 pl-3 pb-5">
+        {cat && (
+          <span className="text-[10px] font-bold uppercase tracking-wider text-primary block mb-1">
+            {cat.name}
+          </span>
+        )}
+        <h4 className="font-semibold text-sm sm:text-[15px] leading-snug line-clamp-3 group-hover:text-primary transition-colors">
+          {decodeHtml(post.title?.rendered || '')}
+        </h4>
+      </div>
+    </Link>
+  )
+}
+
+export function TimelineCardSkeleton() {
+  return (
+    <div className="flex gap-0 items-start">
+      <div className="w-16 shrink-0 pr-3 pt-1">
+        <div className="h-3 w-10 skeleton-shimmer rounded ml-auto" />
+      </div>
+      <div className="flex flex-col items-center shrink-0">
+        <div className="w-3 h-3 rounded-full skeleton-shimmer mt-1" />
+        <div className="w-px flex-1 bg-muted mt-1" style={{ minHeight: '60px' }} />
+      </div>
+      <div className="flex-1 pl-3 pb-5 space-y-2">
+        <div className="h-2.5 w-16 skeleton-shimmer rounded" />
+        <div className="h-4 w-full skeleton-shimmer rounded" />
+        <div className="h-4 w-3/4 skeleton-shimmer rounded" />
+      </div>
+    </div>
+  )
+}
+
 export function FeatureCardSkeleton() {
   return (
     <div className="">
