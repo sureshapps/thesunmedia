@@ -2,7 +2,6 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import { useEffect } from 'react'
 import SiteHeader from '@/components/site/SiteHeader'
 import SiteFooter from '@/components/site/SiteFooter'
-import BreakingTicker from '@/components/site/BreakingTicker'
 import HomePage from '@/pages/HomePage'
 import ArticlePage from '@/pages/ArticlePage'
 import CategoryPage from '@/pages/CategoryPage'
@@ -29,8 +28,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <ScrollToTop />
       <SiteHeader />
-      <BreakingTicker />
-      <main className="flex-1">
+<main className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/article/:slug" element={<ArticlePage />} />

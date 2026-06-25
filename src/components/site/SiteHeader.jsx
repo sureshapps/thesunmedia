@@ -1,16 +1,55 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, Menu, Calendar, ChevronDown, ChevronRight } from 'lucide-react'
+import { Search, Menu, ChevronDown, ChevronRight } from 'lucide-react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import Logo from './Logo'
 import SearchBar from './SearchBar'
 import SocialIcons from './SocialIcons'
 import { MAIN_MENU, itemHref } from '@/lib/menu'
+import { postsKey, decodeHtml } from '@/lib/wp'
+import useSWR from 'swr'
+import { Zap } from 'lucide-react'
 
 const IPAPER_LOGO = 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/0tbdiob5_IPAPER.png'
 const IPAPER_URL = 'https://thesun-ipaper.cld.bz/'
-const TOP_BAR_BG = '#CFCFCF'
+const ADS_BANNER_URL = 'https://via.placeholder.com/728x90/cccccc/666666?text=Advertisement'
+
+// ---------- Inline Breaking Ticker for top bar ----------
+function TopBarTicker() {
+  const { data: posts } = useSWR(postsKey({ per_page: 8 }))
+  const items = posts?.length ? [...posts, ...posts] : []
+
+  return (
+    <div className="flex items-stretch flex-1 min-w-0 overflow-hidden">
+      {/* Label */}
+      <div className="flex items-center gap-1.5 shrink-0 pr-3 mr-1">
+        <span className="text-[10px] font-black uppercase tracking-widest text-white leading-none">
+          LATEST<br />HEADLINES
+        </span>
+      </div>
+      {/* Scrolling ticker */}
+      <div className="flex-1 overflow-hidden hover-ticker relative flex items-center">
+        {items.length === 0 ? (
+          <span className="text-xs text-white/60 px-2">Loading latest headlines…</span>
+        ) : (
+          <div className="ticker-track flex items-center whitespace-nowrap" style={{ width: 'max-content' }}>
+            {items.map((p, i) => (
+              <Link
+                key={`${p.id}-${i}`}
+                to={`/article/${p.slug}`}
+                className="text-xs px-5 hover:text-primary inline-flex items-center gap-2.5 text-white/90"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block shrink-0" />
+                {decodeHtml(p.title?.rendered || '')}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 // ---------- Desktop Dropdown ----------
 function Dropdown({ item }) {
@@ -45,8 +84,6 @@ function Dropdown({ item }) {
     )
   }
 
-  // Determine if we should render a mega menu (two-or-more columns) vs simple list.
-  // "News" and "More" want a multi-column layout because their children contain sub-groups.
   const hasGrouped = item.children.some(c => c.children && c.children.length)
   const cols = hasGrouped ? (item.children.length <= 2 ? 2 : item.children.length) : 1
 
@@ -54,12 +91,9 @@ function Dropdown({ item }) {
     <div className="relative" onMouseEnter={show} onMouseLeave={hide}>
       {trigger}
       {open && (
-        <div
-          className={`absolute left-0 top-full pt-1 z-50`}
-          style={{ minWidth: hasGrouped ? '520px' : '240px' }}
-        >
+        <div className="absolute left-0 top-full pt-1 z-50" style={{ minWidth: hasGrouped ? '520px' : '240px' }}>
           <div
-            className={`bg-white border border-border shadow-xl rounded-md p-4 grid gap-x-6 gap-y-3`}
+            className="bg-white border border-border shadow-xl rounded-md p-4 grid gap-x-6 gap-y-3"
             style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
           >
             {item.children.map((child) => (
@@ -104,7 +138,7 @@ function MobileMenuItem({ item, onNavigate, depth = 0 }) {
       <Link
         to={itemHref(item)}
         onClick={onNavigate}
-        className={`flex items-center justify-between ${padding} pr-3 py-2.5 rounded hover:bg-white/10 ${fontWeight} ${fontSize}`}
+        className={`flex items-center justify-between ${padding} pr-3 py-2.5 rounded hover:bg-muted ${fontWeight} ${fontSize}`}
       >
         {item.label}
         <ChevronRight className="h-4 w-4 opacity-40" />
@@ -114,24 +148,18 @@ function MobileMenuItem({ item, onNavigate, depth = 0 }) {
 
   return (
     <div>
-      <div className={`flex items-center ${padding} pr-1 py-2.5 rounded hover:bg-white/10 ${fontWeight} ${fontSize}`}>
+      <div className={`flex items-center ${padding} pr-1 py-2.5 rounded hover:bg-muted ${fontWeight} ${fontSize}`}>
         {item.to || item.slug ? (
-          <Link to={itemHref(item)} onClick={onNavigate} className="flex-1">
-            {item.label}
-          </Link>
+          <Link to={itemHref(item)} onClick={onNavigate} className="flex-1">{item.label}</Link>
         ) : (
           <span className="flex-1">{item.label}</span>
         )}
-        <button
-          onClick={() => setOpen(o => !o)}
-          aria-label="Expand"
-          className="p-2 -mr-1"
-        >
+        <button onClick={() => setOpen(o => !o)} aria-label="Expand" className="p-2 -mr-1">
           <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
         </button>
       </div>
       {open && (
-        <div className="border-l border-white/10 ml-3">
+        <div className="border-l border-border ml-3">
           {item.children.map((c) => (
             <MobileMenuItem key={c.label} item={c} onNavigate={onNavigate} depth={depth + 1} />
           ))}
@@ -143,11 +171,10 @@ function MobileMenuItem({ item, onNavigate, depth = 0 }) {
 
 export default function SiteHeader() {
   const [open, setOpen] = useState(false)
-  const [today, setToday] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    setToday(new Date().toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }))
     const onScroll = () => setScrolled(window.scrollY > 80)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
@@ -156,33 +183,24 @@ export default function SiteHeader() {
   const closeMobile = () => setOpen(false)
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-border">
-      {/* Top bar (#CFCFCF) */}
-      <div className="text-xs text-black" style={{ backgroundColor: TOP_BAR_BG }}>
-        <div className="container mx-auto px-4 flex justify-between items-center h-9 gap-4">
-          <div className="flex items-center gap-2 font-medium">
-            <Calendar className="h-3.5 w-3.5" />
-            <span>{today || 'Loading...'}</span>
-          </div>
-          <SocialIcons size="sm" />
-        </div>
-      </div>
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
 
-      {/* Main header */}
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between gap-4 py-3">
-          {/* Mobile menu */}
+      {/* ── ROW 1: Dark ticker bar ── */}
+      <div className="bg-[#1a1a1a] text-white">
+        <div className="container mx-auto px-4 flex items-center h-10 gap-3">
+
+          {/* Mobile hamburger (visible on small screens) */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
-                <Menu className="h-6 w-6" />
+              <Button variant="ghost" size="icon" className="lg:hidden text-white hover:bg-white/10 h-7 w-7 shrink-0" aria-label="Open menu">
+                <Menu className="h-4 w-4" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[320px] sm:w-[380px] bg-black text-white p-0 overflow-y-auto">
-              <div className="p-5 border-b border-white/10 bg-black">
+            <SheetContent side="left" className="w-[320px] sm:w-[380px] bg-white text-foreground p-0 overflow-y-auto">
+              <div className="p-5 border-b border-border bg-white">
                 <Logo size="md" />
               </div>
-              <div className="p-4 border-b border-white/10">
+              <div className="p-4 border-b border-border">
                 <SearchBar onSubmit={closeMobile} />
               </div>
               <nav className="flex flex-col px-2 py-3">
@@ -190,45 +208,102 @@ export default function SiteHeader() {
                   <MobileMenuItem key={item.label} item={item} onNavigate={closeMobile} />
                 ))}
               </nav>
-              <div className="px-5 py-4 border-t border-white/10">
-                <p className="text-xs text-white/60 mb-3 uppercase tracking-wider">Follow Us</p>
-                <SocialIcons size="md" />
+              <div className="px-5 py-4 border-t border-border">
+                <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Follow Us</p>
+                <SocialIcons size="md" dark />
               </div>
             </SheetContent>
           </Sheet>
 
-          <Logo size={scrolled ? 'sm' : 'md'} className="transition-all" />
+          {/* Ticker */}
+          <TopBarTicker />
 
-          <div className="hidden md:block flex-1 max-w-md mx-auto">
-            <SearchBar />
-          </div>
+          {/* Right-side controls */}
+          <div className="flex items-center gap-1 shrink-0 ml-2">
+            {/* Search icon */}
+            <button
+              onClick={() => setSearchOpen(o => !o)}
+              aria-label="Search"
+              className="p-1.5 rounded hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+            >
+              <Search className="h-4 w-4" />
+            </button>
 
-          <div className="flex items-center gap-2">
-            <Link to="/search" className="md:hidden">
-              <Button variant="ghost" size="icon" aria-label="Search">
-                <Search className="h-5 w-5" />
-              </Button>
-            </Link>
+            {/* Newsletter button */}
+            <a
+              href="/newsletter"
+              className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider border border-white/50 hover:border-white px-2.5 py-1 rounded text-white/90 hover:text-white transition-colors whitespace-nowrap"
+            >
+              Newsletter
+            </a>
+
+            {/* Divider */}
+            <span className="hidden sm:block w-px h-4 bg-white/20 mx-1" />
+
+            {/* Social icons */}
+            <div className="hidden md:block">
+              <SocialIcons size="sm" />
+            </div>
+
+            {/* Divider */}
+            <span className="hidden md:block w-px h-4 bg-white/20 mx-1" />
+
             {/* iPaper button */}
             <a
               href={IPAPER_URL}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Read iPaper"
-              className="hidden sm:inline-flex items-center rounded-md overflow-hidden border border-border bg-white hover:shadow-md transition-shadow"
+              className="hidden sm:inline-flex items-center rounded overflow-hidden hover:opacity-80 transition-opacity"
             >
-              <img src={IPAPER_LOGO} alt="iPaper" className="h-10 w-auto" />
+              <img src={IPAPER_LOGO} alt="iPaper" className="h-7 w-auto" />
             </a>
           </div>
         </div>
 
-        {/* Desktop nav with dropdowns */}
-        <nav className="hidden lg:flex items-center gap-0 border-t border-border">
-          {MAIN_MENU.map((item) => (
-            <Dropdown key={item.label} item={item} />
-          ))}
-        </nav>
+        {/* Expandable search bar under ticker */}
+        {searchOpen && (
+          <div className="border-t border-white/10 bg-[#111]">
+            <div className="container mx-auto px-4 py-2">
+              <SearchBar onSubmit={() => setSearchOpen(false)} />
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* ── ROW 2: Logo + Ads Banner ── */}
+      <div className={`border-border bg-white overflow-hidden transition-all duration-300 ease-in-out ${scrolled ? 'max-h-0 border-b-0 opacity-0 pointer-events-none' : 'max-h-40 border-b opacity-100'}`}>
+        <div className="container mx-auto px-4 py-3 flex items-center gap-6">
+          {/* Logo */}
+          <div className="shrink-0">
+            <Logo size={scrolled ? 'sm' : 'md'} className="transition-all" />
+          </div>
+
+          {/* Ads Banner — takes remaining space */}
+          <div className="flex-1 flex items-center justify-center min-h-[90px]">
+            {/* Replace the img below with your actual ad tag / component */}
+            <div
+              className="w-full max-w-[728px] h-[90px] bg-[#d0d0d0] flex items-center justify-center rounded text-sm font-bold text-[#555] tracking-wide uppercase select-none"
+              aria-label="Advertisement"
+            >
+              ads banner
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* ── ROW 3: Desktop nav ── */}
+      <div className="bg-white border-b border-border">
+        <div className="container mx-auto px-4">
+          <nav className="hidden lg:flex items-center gap-0">
+            {MAIN_MENU.map((item) => (
+              <Dropdown key={item.label} item={item} />
+            ))}
+          </nav>
+        </div>
+      </div>
+
     </header>
   )
 }

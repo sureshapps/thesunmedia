@@ -60,35 +60,30 @@ export const MAIN_MENU = [
       { label: 'Home & Living', slug: 'home-living' },
     ],
   },
+  { label: 'Spotlight', slug: 'spotlight' },
   {
-    label: 'More',
+    label: 'Business',
+    slug: 'business',
     children: [
       { label: 'Spotlight', slug: 'spotlight' },
-      {
-        label: 'Business',
-        slug: 'business',
-        children: [
-          { label: 'Spotlight', slug: 'spotlight' },
-          { label: 'Business', slug: 'business' },
-          { label: 'Local', slug: 'local' },
-          { label: 'Global', slug: 'global-business' },
-          { label: 'ASEAN', slug: 'asean-business' },
-          { label: 'SMEs / MSMEs', slug: 'smes-msmes' },
-          { label: 'Corporate News', slug: 'corporate-news' },
-        ],
-      },
-      { label: 'Classifieds', slug: 'classifieds' },
-      {
-        label: 'Motoring',
-        slug: 'motoring',
-        children: [
-          { label: 'Bike', slug: 'bike' },
-          { label: 'Car', slug: 'car' },
-        ],
-      },
-      { label: 'Education', slug: 'education' },
+      { label: 'Business', slug: 'business' },
+      { label: 'Local', slug: 'local' },
+      { label: 'Global', slug: 'global-business' },
+      { label: 'ASEAN', slug: 'asean-business' },
+      { label: 'SMEs / MSMEs', slug: 'smes-msmes' },
+      { label: 'Corporate News', slug: 'corporate-news' },
     ],
   },
+  { label: 'Classifieds', slug: 'classifieds' },
+  {
+    label: 'Motoring',
+    slug: 'motoring',
+    children: [
+      { label: 'Bike', slug: 'bike' },
+      { label: 'Car', slug: 'car' },
+    ],
+  },
+  { label: 'Education', slug: 'education' },
 ]
 
 // Resolve an item's href: prefer explicit `to`, then `slug` -> /category/:slug

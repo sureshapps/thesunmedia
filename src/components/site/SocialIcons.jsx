@@ -1,10 +1,6 @@
 import { Facebook, Instagram, Youtube } from 'lucide-react'
 
-// Brand-colored social icons. Some platforms (TikTok, Telegram, WhatsApp)
-// don't have first-class lucide icons in this version so we inline SVGs.
-
-const BASE = 'w-7 h-7 rounded-full flex items-center justify-center text-white shrink-0 hover:scale-110 transition-transform'
-const BASE_SM = 'w-6 h-6 rounded-full flex items-center justify-center text-white shrink-0 hover:scale-110 transition-transform'
+// Monochrome social icons — white icons, no brand color backgrounds.
 
 function TikTokSvg(props) {
   return (
@@ -13,6 +9,15 @@ function TikTokSvg(props) {
     </svg>
   )
 }
+
+function XSvg(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  )
+}
+
 function TelegramSvg(props) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -20,6 +25,7 @@ function TelegramSvg(props) {
     </svg>
   )
 }
+
 function WhatsAppSvg(props) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -29,29 +35,30 @@ function WhatsAppSvg(props) {
 }
 
 export const SOCIAL = [
-  { name: 'Facebook', href: 'https://www.facebook.com/thesundaily', bg: '#1877F2', icon: Facebook },
-  { name: 'Instagram', href: 'https://www.instagram.com/thesundaily', bg: '#E1306C', icon: Instagram },
-  { name: 'TikTok', href: 'https://www.tiktok.com/@thesundaily', bg: '#000000', icon: TikTokSvg },
-  { name: 'YouTube', href: 'https://www.youtube.com/@thesunmedia', bg: '#FF0000', icon: Youtube },
-  { name: 'Telegram', href: 'https://t.me/thesuntelegram', bg: '#26A5E4', icon: TelegramSvg },
-  { name: 'WhatsApp', href: 'https://wa.me/thesunmalaysia', bg: '#25D366', icon: WhatsAppSvg },
+  { name: 'Facebook',  href: 'https://www.facebook.com/thesundaily',     icon: Facebook   },
+  { name: 'Instagram', href: 'https://www.instagram.com/thesundaily',    icon: Instagram  },
+  { name: 'X',         href: 'https://x.com/thesundaily',                icon: XSvg       },
+  { name: 'YouTube',   href: 'https://www.youtube.com/@thesunmedia',     icon: Youtube    },
+  { name: 'WhatsApp',  href: 'https://wa.me/thesunmalaysia',             icon: WhatsAppSvg },
 ]
 
-export default function SocialIcons({ size = 'md', className = '' }) {
-  const cls = size === 'sm' ? BASE_SM : BASE
+export default function SocialIcons({ size = 'md', className = '', dark = false }) {
+  const iconSize  = size === 'sm' ? 'w-3 h-3'   : 'w-3.5 h-3.5'
+  const wrapSize  = size === 'sm' ? 'w-5 h-5'   : 'w-6 h-6'
+  const colorCls  = dark ? 'text-foreground/60 hover:text-foreground' : 'text-white/70 hover:text-white'
+
   return (
-    <div className={`flex items-center gap-1.5 ${className}`}>
-      {SOCIAL.map(({ name, href, bg, icon: Icon }) => (
+    <div className={`flex items-center gap-1 ${className}`}>
+      {SOCIAL.map(({ name, href, icon: Icon }) => (
         <a
           key={name}
           href={href}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={name}
-          className={cls}
-          style={{ backgroundColor: bg }}
+          className={`${wrapSize} flex items-center justify-center rounded ${colorCls} transition-colors shrink-0`}
         >
-          <Icon className={size === 'sm' ? 'w-3 h-3' : 'w-3.5 h-3.5'} />
+          <Icon className={iconSize} />
         </a>
       ))}
     </div>
