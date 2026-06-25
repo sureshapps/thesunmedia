@@ -251,7 +251,7 @@ export default function SiteHeader() {
       <style>{`@keyframes wcBounce { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-5px) rotate(20deg); } }`}</style>
 
       {/* ── ROW 1: Dark ticker bar ── */}
-      <div className="bg-[#1a1a1a] text-white">
+      <div className="bg-[#2d2d2d] text-white">
         <div className="container mx-auto px-4 flex items-center h-10 gap-3">
 
           {/* Mobile hamburger (visible on small screens) */}
@@ -341,7 +341,7 @@ export default function SiteHeader() {
 
         {/* Expandable search bar under ticker */}
         {searchOpen && (
-          <div className="border-t border-white/10 bg-[#111]">
+          <div className="border-t border-white/10 bg-[#262626]">
             <div className="container mx-auto px-4 py-2">
               <SearchBar onSubmit={() => setSearchOpen(false)} />
             </div>

@@ -20,7 +20,7 @@ const APP_BADGES = [
   },
 ]
 
-const FOOTER_BG = '#111111'
+const FOOTER_BG = '#2d2d2d'
 
 export default function SiteFooter() {
   return (
