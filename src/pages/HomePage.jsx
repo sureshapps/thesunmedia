@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
-import { HeroCard, FeatureCard, HorizontalCard, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
+import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkeleton, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
 import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
 import { postsKey, FEATURED_CATEGORY_SLUGS } from '@/lib/wp'
@@ -25,11 +25,18 @@ export default function HomePage() {
         <div className="lg:col-span-2">
           {top ? <HeroCard post={top} /> : <div className="aspect-[16/9] rounded-lg skeleton-shimmer" />}
         </div>
-        <div className="space-y-4">
-          <h3 className="font-serif-headline text-xl font-bold border-b-2 border-primary pb-2">Top Stories</h3>
-          {(latest || []).length === 0
-            ? [...Array(4)].map((_, i) => <HorizontalCardSkeleton key={i} />)
-            : (latest || []).slice(1, 5).map(p => <HorizontalCard key={p.id} post={p} />)}
+        <div>
+          <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-4">
+            <h3 className="font-serif-headline text-xl font-bold">Top Stories</h3>
+            <Link to="/latest" className="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
+              View All <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="overflow-hidden">
+            {(latest || []).length === 0
+              ? [...Array(5)].map((_, i) => <TimelineCardSkeleton key={i} />)
+              : (latest || []).slice(1, 6).map(p => <TimelineCard key={p.id} post={p} />)}
+          </div>
         </div>
       </section>
 
