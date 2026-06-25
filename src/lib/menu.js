@@ -84,6 +84,7 @@ export const MAIN_MENU = [
     ],
   },
   { label: 'Education', slug: 'education' },
+  { label: "World Cup '26", to: 'https://worldcup2026.thesun.my/', worldcup: true },
 ]
 
 // Resolve an item's href: prefer explicit `to`, then `slug` -> /category/:slug
