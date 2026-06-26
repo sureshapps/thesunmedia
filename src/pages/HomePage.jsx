@@ -111,6 +111,14 @@ export default function HomePage() {
           {/* Going Viral section */}
           <GoingViralBlock />
 
+          {/* Inline Ads Banner */}
+          <div
+            className="w-full h-[100px] bg-[#d0d0d0] flex items-center justify-center rounded text-sm font-bold text-[#777] uppercase tracking-wide select-none"
+            aria-label="Advertisement"
+          >
+            Ads Banner
+          </div>
+
 
           {FEATURED_CATEGORY_SLUGS.map(slug => (
             <CategoryBlock key={slug} slug={slug} />
