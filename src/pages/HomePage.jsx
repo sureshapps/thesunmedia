@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkeleton, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
 import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
+import GoingViralBlock from '@/components/site/GoingViralBlock'
 import { postsKey, buildUrl, FEATURED_CATEGORY_SLUGS } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
@@ -32,7 +33,6 @@ export default function HomePage() {
 
   const top = latest?.[0]
   const featuredGrid = (latest || []).slice(1, 5)
-  const moreLatest = (latest || []).slice(5, 13)
 
   // Top stories: page 1 uses slice from latest, page 2+ uses fetched data
   const topStories = topPage === 1
@@ -93,21 +93,9 @@ export default function HomePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
-          <section>
-            <h2 className="font-serif-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-5 flex items-center gap-2">
-              <span className="w-1 h-7 bg-primary inline-block" /> Latest News
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {moreLatest.length === 0
-                ? [...Array(6)].map((_, i) => <FeatureCardSkeleton key={i} />)
-                : moreLatest.map(p => <FeatureCard key={p.id} post={p} />)}
-            </div>
-            <div className="text-center mt-6">
-              <Link to="/latest" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
-                Load more news <ChevronRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </section>
+          {/* Going Viral section */}
+          <GoingViralBlock />
+
 
           {FEATURED_CATEGORY_SLUGS.map(slug => (
             <CategoryBlock key={slug} slug={slug} />
