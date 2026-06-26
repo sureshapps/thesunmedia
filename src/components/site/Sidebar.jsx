@@ -8,15 +8,15 @@ import { postsKey, categoriesKey, decodeHtml } from '@/lib/wp'
 export default function Sidebar({ excludeId } = {}) {
   const { data: latest = [] } = useSWR(postsKey({ per_page: 6 }))
   const { data: trending = [] } = useSWR(postsKey({ per_page: 6, orderby: 'date' }))
-  const { data: mostViewed = [] } = useSWR(postsKey({ per_page: 5, orderby: 'comment_count', order: 'desc' }))
   const { data: cats = [] } = useSWR(categoriesKey({ per_page: 15, orderby: 'count', order: 'desc' }))
 
   const latestFiltered = (latest || []).filter(p => p.id !== excludeId).slice(0, 5)
   const trendingFiltered = (trending || []).filter(p => p.id !== excludeId).slice(0, 5)
-  const mostViewedFiltered = (mostViewed || []).filter(p => p.id !== excludeId).slice(0, 5)
 
   return (
     <aside className="space-y-8">
+
+      {/* Latest News */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
@@ -33,6 +33,7 @@ export default function Sidebar({ excludeId } = {}) {
         </div>
       </section>
 
+      {/* Most Viewed — uses same latest posts as Top Stories */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
@@ -43,17 +44,18 @@ export default function Sidebar({ excludeId } = {}) {
           </Link>
         </div>
         <div className="divide-y divide-border">
-          {mostViewedFiltered.length === 0
+          {latestFiltered.length === 0
             ? [...Array(5)].map((_, i) => (
                 <div key={i} className="py-3 space-y-1.5">
                   <div className="h-3 w-full skeleton-shimmer rounded" />
                   <div className="h-3 w-2/3 skeleton-shimmer rounded" />
                 </div>
               ))
-            : mostViewedFiltered.map((p, i) => <ListItem key={p.id} post={p} index={i} />)}
+            : latestFiltered.map((p, i) => <ListItem key={p.id} post={p} index={i} />)}
         </div>
       </section>
 
+      {/* Trending Stories */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
@@ -68,6 +70,7 @@ export default function Sidebar({ excludeId } = {}) {
         </div>
       </section>
 
+      {/* Categories */}
       <section>
         <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider border-b-2 border-primary pb-2 mb-3">
           <Tag className="h-4 w-4 text-primary" /> Categories
@@ -90,6 +93,7 @@ export default function Sidebar({ excludeId } = {}) {
       >
         Ads Banner
       </div>
+
     </aside>
   )
 }
