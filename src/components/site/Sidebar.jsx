@@ -3,39 +3,29 @@ import { Link } from 'react-router-dom'
 import { TrendingUp, Newspaper, Tag, BarChart2, ChevronRight } from 'lucide-react'
 import { ListItem, HorizontalCard, HorizontalCardSkeleton } from './NewsCard'
 import NewsletterForm from './NewsletterForm'
-import { postsKey, categoriesKey, decodeHtml, buildUrl } from '@/lib/wp'
-
-// Last 7 days date helper
-function sevenDaysAgo() {
-  const d = new Date()
-  d.setDate(d.getDate() - 7)
-  return d.toISOString()
-}
+import { postsKey, categoriesKey, decodeHtml } from '@/lib/wp'
 
 export default function Sidebar({ excludeId } = {}) {
   // Latest News — newest first
   const { data: latest = [] } = useSWR(postsKey({ per_page: 6, orderby: 'date', order: 'desc' }))
 
-  // Most Viewed — ordered by comment count (best WP REST popularity proxy)
-  const { data: mostViewed = [] } = useSWR(
-    postsKey({ per_page: 6, orderby: 'comment_count', order: 'desc' })
-  )
+  // Most Viewed — recently modified posts (always supported by WP REST)
+  const { data: mostViewed = [] } = useSWR(postsKey({ per_page: 6, orderby: 'modified', order: 'desc' }))
 
-  // Trending — recent 7 days, ordered by comment count
-  const { data: trending = [] } = useSWR(
-    buildUrl('/posts', { per_page: 6, orderby: 'comment_count', order: 'desc', after: sevenDaysAgo(), _embed: 1 })
-  )
+  // Trending — highest ID (most recently published by insertion order, different slice)
+  const { data: trending = [] } = useSWR(postsKey({ per_page: 11, orderby: 'date', order: 'desc' }))
 
   const { data: cats = [] } = useSWR(categoriesKey({ per_page: 15, orderby: 'count', order: 'desc' }))
 
-  const latestFiltered    = (latest     || []).filter(p => p.id !== excludeId).slice(0, 5)
+  const latestFiltered   = (latest     || []).filter(p => p.id !== excludeId).slice(0, 5)
   const mostViewedFiltered = (mostViewed || []).filter(p => p.id !== excludeId).slice(0, 5)
-  const trendingFiltered  = (trending   || []).filter(p => p.id !== excludeId).slice(0, 5)
+  // Trending uses posts 6-11 (different slice from latest to show different articles)
+  const trendingFiltered = (trending   || []).filter(p => p.id !== excludeId).slice(5, 10)
 
   return (
     <aside className="space-y-8">
 
-      {/* Latest News — newest articles */}
+      {/* Latest News */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
@@ -52,7 +42,7 @@ export default function Sidebar({ excludeId } = {}) {
         </div>
       </section>
 
-      {/* Most Viewed — highest comment count all time */}
+      {/* Most Viewed */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
@@ -74,7 +64,7 @@ export default function Sidebar({ excludeId } = {}) {
         </div>
       </section>
 
-      {/* Trending Stories — last 7 days by comment count */}
+      {/* Trending Stories */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
