@@ -3,20 +3,39 @@ import { Link } from 'react-router-dom'
 import { TrendingUp, Newspaper, Tag, BarChart2, ChevronRight } from 'lucide-react'
 import { ListItem, HorizontalCard, HorizontalCardSkeleton } from './NewsCard'
 import NewsletterForm from './NewsletterForm'
-import { postsKey, categoriesKey, decodeHtml } from '@/lib/wp'
+import { postsKey, categoriesKey, decodeHtml, buildUrl } from '@/lib/wp'
+
+// Last 7 days date helper
+function sevenDaysAgo() {
+  const d = new Date()
+  d.setDate(d.getDate() - 7)
+  return d.toISOString()
+}
 
 export default function Sidebar({ excludeId } = {}) {
-  const { data: latest = [] } = useSWR(postsKey({ per_page: 6 }))
-  const { data: trending = [] } = useSWR(postsKey({ per_page: 6, orderby: 'date' }))
+  // Latest News — newest first
+  const { data: latest = [] } = useSWR(postsKey({ per_page: 6, orderby: 'date', order: 'desc' }))
+
+  // Most Viewed — ordered by comment count (best WP REST popularity proxy)
+  const { data: mostViewed = [] } = useSWR(
+    postsKey({ per_page: 6, orderby: 'comment_count', order: 'desc' })
+  )
+
+  // Trending — recent 7 days, ordered by comment count
+  const { data: trending = [] } = useSWR(
+    buildUrl('/posts', { per_page: 6, orderby: 'comment_count', order: 'desc', after: sevenDaysAgo(), _embed: 1 })
+  )
+
   const { data: cats = [] } = useSWR(categoriesKey({ per_page: 15, orderby: 'count', order: 'desc' }))
 
-  const latestFiltered = (latest || []).filter(p => p.id !== excludeId).slice(0, 5)
-  const trendingFiltered = (trending || []).filter(p => p.id !== excludeId).slice(0, 5)
+  const latestFiltered    = (latest     || []).filter(p => p.id !== excludeId).slice(0, 5)
+  const mostViewedFiltered = (mostViewed || []).filter(p => p.id !== excludeId).slice(0, 5)
+  const trendingFiltered  = (trending   || []).filter(p => p.id !== excludeId).slice(0, 5)
 
   return (
     <aside className="space-y-8">
 
-      {/* Latest News */}
+      {/* Latest News — newest articles */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
@@ -33,7 +52,7 @@ export default function Sidebar({ excludeId } = {}) {
         </div>
       </section>
 
-      {/* Most Viewed — uses same latest posts as Top Stories */}
+      {/* Most Viewed — highest comment count all time */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
@@ -44,18 +63,18 @@ export default function Sidebar({ excludeId } = {}) {
           </Link>
         </div>
         <div className="divide-y divide-border">
-          {latestFiltered.length === 0
+          {mostViewedFiltered.length === 0
             ? [...Array(5)].map((_, i) => (
                 <div key={i} className="py-3 space-y-1.5">
                   <div className="h-3 w-full skeleton-shimmer rounded" />
                   <div className="h-3 w-2/3 skeleton-shimmer rounded" />
                 </div>
               ))
-            : latestFiltered.map((p, i) => <ListItem key={p.id} post={p} index={i} />)}
+            : mostViewedFiltered.map((p, i) => <ListItem key={p.id} post={p} index={i} />)}
         </div>
       </section>
 
-      {/* Trending Stories */}
+      {/* Trending Stories — last 7 days by comment count */}
       <section>
         <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-3">
           <h3 className="flex items-center gap-2 text-base font-bold uppercase tracking-wider">
@@ -66,7 +85,14 @@ export default function Sidebar({ excludeId } = {}) {
           </Link>
         </div>
         <div className="divide-y divide-border">
-          {trendingFiltered.map((p, i) => <ListItem key={p.id} post={p} index={i} />)}
+          {trendingFiltered.length === 0
+            ? [...Array(5)].map((_, i) => (
+                <div key={i} className="py-3 space-y-1.5">
+                  <div className="h-3 w-full skeleton-shimmer rounded" />
+                  <div className="h-3 w-2/3 skeleton-shimmer rounded" />
+                </div>
+              ))
+            : trendingFiltered.map((p, i) => <ListItem key={p.id} post={p} index={i} />)}
         </div>
       </section>
 
