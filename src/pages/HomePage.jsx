@@ -6,8 +6,23 @@ import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkelet
 import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
-import { postsKey, buildUrl, FEATURED_CATEGORY_SLUGS } from '@/lib/wp'
+import { postsKey, buildUrl } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
+
+const FEATURED_CATEGORY_SLUGS = [
+  'malaysia-news',
+  'business',
+  'sports',
+  'lifestyle',
+  'entertainment',
+  'spotlight',
+  'motoring',
+  'crime',
+  'people-issues',
+  'education',
+  'technology-social-media',
+  'corporate-news',
+]
 
 export default function HomePage() {
   useSeo({
