@@ -283,6 +283,16 @@ export default function SiteHeader() {
               <MobileMenuItem key={item.label} item={item} onNavigate={closeMobile} />
             ))}
           </nav>
+          {/* Subscribe button in mobile sidebar */}
+          <div className="px-5 py-4 border-t border-border">
+            <a
+              href="/newsletter"
+              onClick={closeMobile}
+              className="flex items-center justify-center w-full bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-wider text-sm py-2.5 rounded transition-colors"
+            >
+              Subscribe
+            </a>
+          </div>
           {/* iPaper in mobile sidebar */}
           <div className="px-5 py-4 border-t border-border">
             <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Read e-Paper</p>
@@ -320,12 +330,12 @@ export default function SiteHeader() {
               <Search className="h-4 w-4" />
             </button>
 
-            {/* Newsletter button */}
+            {/* Subscribe button */}
             <a
               href="/newsletter"
-              className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider border border-white/50 hover:border-white px-2.5 py-1 rounded text-white/90 hover:text-white transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-primary hover:bg-primary/90 px-2.5 py-1 rounded text-white transition-colors whitespace-nowrap"
             >
-              Newsletter
+              Subscribe
             </a>
 
             {/* Divider */}

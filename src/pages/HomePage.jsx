@@ -6,6 +6,7 @@ import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkelet
 import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
+import MostViewedBlock from '@/components/site/MostViewedBlock'
 import { postsKey, buildUrl } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
@@ -108,20 +109,32 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mb-10">
+      <section className="mb-10 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-start">
         {/* Going Viral section (replaces Editor's Picks) */}
-        <GoingViralBlock />
+        <div className="lg:col-span-2">
+          <GoingViralBlock />
+        </div>
+        {/* Most Viewed News — sits beside Going Viral on desktop, stacks below on mobile */}
+        <div>
+          <MostViewedBlock />
+        </div>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
-          {/* Inline Ads Banner */}
-          <div
-            className="w-full h-[100px] bg-[#d0d0d0] flex items-center justify-center rounded text-sm font-bold text-[#777] uppercase tracking-wide select-none"
+          {/* Inline Ads Banner — theSun app promo */}
+          <a
+            href="#"
+            className="block w-full rounded overflow-hidden"
             aria-label="Advertisement"
           >
-            Ads Banner
-          </div>
+            <img
+              src="/ads/thesun-app-banner.png"
+              alt="Advertisement - Download the updated theSun app"
+              loading="lazy"
+              className="w-full h-auto rounded"
+            />
+          </a>
 
 
           {FEATURED_CATEGORY_SLUGS.map(slug => (
