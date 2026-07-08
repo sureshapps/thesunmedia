@@ -48,7 +48,6 @@ export default function HomePage() {
 
   const top = latest?.[0]
   const heroBelowGrid = (latest || []).slice(1, 5)
-  const featuredGrid = (latest || []).slice(5, 9)
 
   // Top stories: page 1 uses slice from latest, page 2+ uses fetched data
   const topStories = topPage === 1
@@ -110,21 +109,12 @@ export default function HomePage() {
       </section>
 
       <section className="mb-10">
-        <h2 className="font-serif-headline text-2xl font-bold border-b-2 border-primary pb-2 mb-5 flex items-center gap-2">
-          <span className="w-1 h-7 bg-primary inline-block" /> Editor's Picks
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {featuredGrid.length === 0
-            ? [...Array(4)].map((_, i) => <FeatureCardSkeleton key={i} />)
-            : featuredGrid.map(p => <FeatureCard key={p.id} post={p} />)}
-        </div>
+        {/* Going Viral section (replaces Editor's Picks) */}
+        <GoingViralBlock />
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
-          {/* Going Viral section */}
-          <GoingViralBlock />
-
           {/* Inline Ads Banner */}
           <div
             className="w-full h-[100px] bg-[#d0d0d0] flex items-center justify-center rounded text-sm font-bold text-[#777] uppercase tracking-wide select-none"

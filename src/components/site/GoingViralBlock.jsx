@@ -1,18 +1,22 @@
+import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { ChevronRight, Flame } from 'lucide-react'
-import { getFeaturedImage, getImageAlt, getPrimaryCategory, decodeHtml, timeAgo, FALLBACK_IMAGE } from '@/lib/wp'
-import { postsKey, categoryBySlugKey } from '@/lib/wp'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  getFeaturedImage, getThumbnail, getImageAlt, getPrimaryCategory, getTags,
+  decodeHtml, FALLBACK_IMAGE, postsKey, categoryBySlugKey,
+} from '@/lib/wp'
 
-const VIRAL_BG = '#8B0000'
+const AUTO_INTERVAL_MS = 3000
 
-function ViralCard({ post }) {
+/* ---------- Large sliding carousel card (3 visible on desktop, 1 on mobile) ---------- */
+function CarouselCard({ post }) {
   if (!post) return null
   const img = getFeaturedImage(post) || FALLBACK_IMAGE
   const cat = getPrimaryCategory(post)
   return (
     <Link to={`/article/${post.slug}`} className="group block">
-      <div className="aspect-[4/3] overflow-hidden rounded-md bg-white/10">
+      <div className="aspect-[4/3] overflow-hidden rounded-md bg-muted">
         <img
           src={img}
           alt={getImageAlt(post)}
@@ -22,28 +26,76 @@ function ViralCard({ post }) {
       </div>
       <div className="mt-3">
         {cat && (
-          <span className="text-[10px] font-bold uppercase tracking-wider text-white/60 block mb-1">
+          <span className="inline-block bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm mb-1.5">
             {cat.name}
           </span>
         )}
-        <h3 className="font-serif-headline font-bold text-white text-base leading-snug line-clamp-3 group-hover:text-white/80 transition-colors">
+        <h3 className="font-serif-headline font-bold text-sm sm:text-base leading-snug line-clamp-2 group-hover:text-primary transition-colors">
           {decodeHtml(post.title?.rendered || '')}
         </h3>
-        <div className="mt-2 text-xs text-white/50">{timeAgo(post.date)}</div>
       </div>
     </Link>
   )
 }
 
-function ViralCardSkeleton() {
+function CarouselCardSkeleton() {
   return (
     <div>
-      <div className="aspect-[4/3] rounded-md bg-white/10 animate-pulse" />
+      <div className="aspect-[4/3] rounded-md skeleton-shimmer" />
       <div className="mt-3 space-y-2">
-        <div className="h-2.5 w-16 bg-white/20 rounded animate-pulse" />
-        <div className="h-4 w-full bg-white/20 rounded animate-pulse" />
-        <div className="h-4 w-3/4 bg-white/20 rounded animate-pulse" />
+        <div className="h-4 w-16 skeleton-shimmer rounded" />
+        <div className="h-4 w-full skeleton-shimmer rounded" />
+        <div className="h-4 w-2/3 skeleton-shimmer rounded" />
       </div>
+    </div>
+  )
+}
+
+/* ---------- Small list item — text left, image right ---------- */
+function ViralListItem({ post }) {
+  if (!post) return null
+  const img = getThumbnail(post) || FALLBACK_IMAGE
+  const cat = getPrimaryCategory(post)
+  const tags = getTags(post) || []
+  const isExclusive = tags.some(t => /exclusive/i.test(t.name))
+  return (
+    <Link to={`/article/${post.slug}`} className="group flex items-start gap-3">
+      <div className="flex-1 min-w-0">
+        {isExclusive && (
+          <span className="inline-block bg-primary text-white text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm mb-1.5">
+            Exclusive
+          </span>
+        )}
+        <h4 className="font-semibold text-sm leading-snug line-clamp-3 group-hover:text-primary transition-colors">
+          {decodeHtml(post.title?.rendered || '')}
+        </h4>
+        {cat && (
+          <span className="mt-1.5 block text-[11px] font-bold uppercase tracking-wider text-primary">
+            {cat.name}
+          </span>
+        )}
+      </div>
+      <div className="w-20 h-16 sm:w-24 sm:h-20 shrink-0 overflow-hidden rounded bg-muted">
+        <img
+          src={img}
+          alt={getImageAlt(post)}
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+        />
+      </div>
+    </Link>
+  )
+}
+
+function ViralListItemSkeleton() {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="flex-1 space-y-2">
+        <div className="h-4 w-full skeleton-shimmer rounded" />
+        <div className="h-4 w-2/3 skeleton-shimmer rounded" />
+        <div className="h-3 w-14 skeleton-shimmer rounded" />
+      </div>
+      <div className="w-20 h-16 sm:w-24 sm:h-20 shrink-0 rounded skeleton-shimmer" />
     </div>
   )
 }
@@ -52,32 +104,97 @@ export default function GoingViralBlock() {
   const { data: cats } = useSWR(categoryBySlugKey('going-viral'))
   const cat = cats?.[0]
   const { data: posts } = useSWR(
-    cat ? postsKey({ categories: cat.id, per_page: 9 }) : null
+    cat ? postsKey({ categories: cat.id, per_page: 12, _embed: 1 }) : null
   )
   const loading = !posts
 
+  // First 8 posts feed the auto-sliding carousel, the next 4 feed the list below.
+  const carouselPosts = (posts || []).slice(0, 8)
+  const listItems = (posts && posts.length > 4) ? posts.slice(4, 8) : (posts || []).slice(0, 4)
+  const total = carouselPosts.length
+
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  // Auto-advance every 3s, pauses on hover, resets if the post list changes.
+  useEffect(() => { setIndex(0) }, [total])
+
+  useEffect(() => {
+    if (paused || total <= 3) return
+    const t = setInterval(() => setIndex(i => (i + 1) % total), AUTO_INTERVAL_MS)
+    return () => clearInterval(t)
+  }, [paused, total])
+
+  function prev() { if (total) setIndex(i => (i - 1 + total) % total) }
+  function next() { if (total) setIndex(i => (i + 1) % total) }
+
+  // Only ever show as many slots as there are distinct posts (max 3), so a
+  // short list (e.g. only 1 or 2 posts) never repeats the same card twice.
+  const slotCount = Math.min(3, total)
+  const slots = Array.from({ length: slotCount }, (_, offset) =>
+    total ? carouselPosts[(index + offset) % total] : null
+  )
+  const gridColsClass =
+    slotCount === 1 ? 'md:grid-cols-1' : slotCount === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'
+  // No point showing nav arrows if every distinct post is already on screen at once.
+  const showNav = !loading && total > slotCount
+
   return (
-    <section className="rounded-lg overflow-hidden" style={{ backgroundColor: VIRAL_BG }}>
+    <section>
       {/* Header */}
-      <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-white/20">
-        <h2 className="font-serif-headline text-2xl font-bold text-white flex items-center gap-2">
-          <Flame className="h-6 w-6 text-white/80 fill-white/40" />
+      <div className="flex items-center justify-between border-b border-border pb-3 mb-5">
+        <span className="inline-block bg-primary text-white font-extrabold italic uppercase tracking-wide text-base sm:text-lg px-4 py-1.5 rounded-sm">
           Going Viral
-        </h2>
+        </span>
         <Link
-          to="/category/going-viral"
-          className="text-xs font-semibold text-white/70 hover:text-white inline-flex items-center gap-1 transition-colors"
+          to={cat ? `/category/${cat.slug}` : '/category/going-viral'}
+          className="text-xs sm:text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
         >
-          View all <ChevronRight className="h-3.5 w-3.5" />
+          View All <ChevronRight className="h-4 w-4" />
         </Link>
       </div>
 
-      {/* 3-column grid */}
-      <div className="px-6 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Carousel — 3 cards on desktop (md+), 1 card on mobile */}
+      <div
+        className="relative"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <div className={`grid grid-cols-1 ${gridColsClass} gap-5`}>
+          {loading
+            ? [...Array(3)].map((_, i) => <CarouselCardSkeleton key={i} />)
+            : slots.map((p, i) => (
+                <div key={p ? p.id : `empty-${i}`} className={i === 0 ? 'block' : 'hidden md:block'}>
+                  <CarouselCard post={p} />
+                </div>
+              ))}
+        </div>
+
+        {showNav && (
+          <>
+            <button
+              onClick={prev}
+              aria-label="Previous"
+              className="absolute left-1 top-[36%] -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded bg-neutral-200/80 hover:bg-neutral-300 text-foreground shadow transition-colors z-10"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              onClick={next}
+              aria-label="Next"
+              className="absolute right-1 top-[36%] -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded bg-neutral-200/80 hover:bg-neutral-300 text-foreground shadow transition-colors z-10"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Small list grid below — text left, image right, 2 columns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 mt-8">
         {loading
-          ? [...Array(6)].map((_, i) => <ViralCardSkeleton key={i} />)
-          : (posts || []).slice(0, 9).map(p => <ViralCard key={p.id} post={p} />)
-        }
+          ? [...Array(4)].map((_, i) => <ViralListItemSkeleton key={i} />)
+          : listItems.map(p => <ViralListItem key={p.id} post={p} />)}
       </div>
     </section>
   )
