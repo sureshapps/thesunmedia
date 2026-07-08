@@ -1,29 +1,50 @@
 import { Link } from 'react-router-dom'
-import { Clock } from 'lucide-react'
-import { getFeaturedImage, getLargeImage, getThumbnail, getImageAlt, getPrimaryCategory, decodeHtml, stripHtml, timeAgo, formatDate, FALLBACK_IMAGE } from '@/lib/wp'
+import { getFeaturedImage, getLargeImage, getThumbnail, getImageAlt, getPrimaryCategory, decodeHtml, stripHtml, timeAgo, FALLBACK_IMAGE } from '@/lib/wp'
 
 export function HeroCard({ post }) {
   if (!post) return null
   const img = getLargeImage(post) || FALLBACK_IMAGE
   const cat = getPrimaryCategory(post)
   return (
-    <Link to={`/article/${post.slug}`} className="group block relative overflow-hidden rounded-lg bg-black aspect-[16/10] sm:aspect-[16/9]">
-      <img src={img} alt={getImageAlt(post)} loading="eager" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8 text-white">
+    <div className="flex flex-col md:flex-row gap-5 md:gap-7">
+      {/* Image with TOP STORIES tag */}
+      <Link
+        to={`/article/${post.slug}`}
+        className="group relative block overflow-hidden rounded-lg bg-black w-full md:w-[58%] shrink-0 aspect-[16/10]"
+      >
+        <img
+          src={img}
+          alt={getImageAlt(post)}
+          loading="eager"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+        <span className="absolute top-4 left-4 z-10">
+<span className="relative inline-block bg-primary text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-sm shadow-[0_0_8px_2px_rgba(220,38,38,0.45),0_0_16px_4px_rgba(220,38,38,0.2)]">            Top Stories
+          </span>
+        </span>
+      </Link>
+
+      {/* Text panel */}
+      <div className="flex-1 min-w-0">
         {cat && (
-          <span className="inline-block bg-primary px-2.5 py-1 text-xs font-bold uppercase tracking-wider mb-3">{cat.name}</span>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2">
+            <span className="text-primary">{cat.name}</span>
+            <span className="text-muted-foreground font-medium normal-case tracking-normal">{timeAgo(post.date)}</span>
+          </div>
         )}
-        <h2 className="font-serif-headline text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight line-clamp-3 group-hover:underline">
-          {decodeHtml(post.title?.rendered || '')}
-        </h2>
-        <p className="hidden sm:block mt-3 text-sm sm:text-base text-white/85 line-clamp-2 max-w-3xl">{stripHtml(post.excerpt?.rendered, 200)}</p>
-        <div className="mt-3 flex items-center gap-2 text-xs text-white/75">
-          <Clock className="h-3 w-3" />
-          <span>{formatDate(post.date)}</span>
-        </div>
+        <Link to={`/article/${post.slug}`} className="group block">
+          <h2 className="font-serif-headline text-2xl sm:text-3xl font-bold leading-tight group-hover:text-primary transition-colors line-clamp-4">
+            {decodeHtml(post.title?.rendered || '')}
+          </h2>
+        </Link>
+        <p className="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-6">
+          {stripHtml(post.excerpt?.rendered, 260)}
+        </p>
+        <Link to={`/article/${post.slug}`} className="inline-block mt-3 text-sm font-semibold text-primary hover:underline">
+          read more...
+        </Link>
       </div>
-    </Link>
+    </div>
   )
 }
 
@@ -36,15 +57,13 @@ export function FeatureCard({ post, large = false }) {
       <div className="aspect-[16/10] overflow-hidden rounded-lg bg-muted">
         <img src={img} alt={getImageAlt(post)} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
-      {cat && <span className="inline-block mt-3 text-xs font-bold uppercase tracking-wider text-primary">{cat.name}</span>}
+      <div className="flex items-center gap-2 mt-3 text-xs font-bold uppercase tracking-wider">
+        {cat && <span className="text-primary">{cat.name}</span>}
+        <span className="text-muted-foreground font-medium normal-case tracking-normal">{timeAgo(post.date)}</span>
+      </div>
       <h3 className={`font-serif-headline font-bold leading-tight mt-1.5 group-hover:text-primary transition-colors line-clamp-3 ${large ? 'text-xl sm:text-2xl' : 'text-lg'}`}>
         {decodeHtml(post.title?.rendered || '')}
       </h3>
-      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{stripHtml(post.excerpt?.rendered, 130)}</p>
-      <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
-        <Clock className="h-3 w-3" />
-        <span>{timeAgo(post.date)}</span>
-      </div>
     </Link>
   )
 }
@@ -98,7 +117,7 @@ export function TimelineCard({ post }) {
       </div>
       {/* Timeline line + dot */}
       <div className="flex flex-col items-center shrink-0">
-        <div className="w-3 h-3 rounded-full border-2 border-muted-foreground/40 bg-white mt-1 z-10" />
+        <div className="w-3 h-3 rounded-full bg-primary ring-4 ring-white mt-1 z-10" />
         <div className="w-px flex-1 bg-muted-foreground/20 mt-1" style={{ minHeight: '60px' }} />
       </div>
       {/* Content */}

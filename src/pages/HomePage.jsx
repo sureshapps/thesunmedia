@@ -47,11 +47,12 @@ export default function HomePage() {
   })
 
   const top = latest?.[0]
-  const featuredGrid = (latest || []).slice(1, 5)
+  const heroBelowGrid = (latest || []).slice(1, 5)
+  const featuredGrid = (latest || []).slice(5, 9)
 
   // Top stories: page 1 uses slice from latest, page 2+ uses fetched data
   const topStories = topPage === 1
-    ? (latest || []).slice(1, 1 + PER_PAGE)
+    ? (latest || []).slice(9, 9 + PER_PAGE)
     : (extraTopData || [])
   const topLoading = topPage === 1 ? isLoading : extraLoading
 
@@ -60,37 +61,50 @@ export default function HomePage() {
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
         <div className="lg:col-span-2">
           {top ? <HeroCard post={top} /> : <div className="aspect-[16/9] rounded-lg skeleton-shimmer" />}
+
+          {/* Small news cards under the hero */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 mt-6">
+            {heroBelowGrid.length === 0
+              ? [...Array(4)].map((_, i) => <FeatureCardSkeleton key={i} />)
+              : heroBelowGrid.map(p => <FeatureCard key={p.id} post={p} />)}
+          </div>
         </div>
         <div>
-          <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-4">
-            <h3 className="font-serif-headline text-xl font-bold">Top Stories</h3>
-            <Link to="/latest" className="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
-              View All <ChevronRight className="h-3.5 w-3.5" />
-            </Link>
+          <div className="border-b-2 border-primary pb-2 mb-4">
+            <h3 className="font-serif-headline text-xl font-bold">Latest News</h3>
           </div>
           <div className="overflow-hidden min-h-[380px]">
             {topLoading
               ? [...Array(PER_PAGE)].map((_, i) => <TimelineCardSkeleton key={i} />)
               : topStories.map(p => <TimelineCard key={p.id} post={p} />)}
           </div>
-          {/* Prev / Next buttons */}
-          <div className="flex justify-end gap-2 mt-3 pt-3 border-t border-border">
-            <button
-              onClick={() => setTopPage(p => Math.max(1, p - 1))}
-              disabled={topPage === 1}
-              aria-label="Previous"
-              className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
+          {/* Ad banner + Prev / Next buttons */}
+          <div className="flex items-start justify-between gap-3 mt-3 pt-3 border-t border-border">
+            <a
+              href="#"
+              className="block w-full rounded overflow-hidden shrink"
+              aria-label="Advertisement"
             >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setTopPage(p => p + 1)}
-              disabled={topStories.length < PER_PAGE}
-              aria-label="Next"
-              className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
+              <img src="/ads/tmbanner.png" alt="Advertisement" className="w-full h-auto rounded" />
+            </a>
+            <div className="flex gap-2 shrink-0">
+              <button
+                onClick={() => setTopPage(p => Math.max(1, p - 1))}
+                disabled={topPage === 1}
+                aria-label="Previous"
+                className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setTopPage(p => p + 1)}
+                disabled={topStories.length < PER_PAGE}
+                aria-label="Next"
+                className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
       </section>

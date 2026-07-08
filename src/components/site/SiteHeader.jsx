@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import Logo from './Logo'
 import SearchBar from './SearchBar'
 import SocialIcons from './SocialIcons'
+import WeatherClock from './WeatherClock'
 import { MAIN_MENU, itemHref } from '@/lib/menu'
 import { postsKey, decodeHtml } from '@/lib/wp'
 import useSWR from 'swr'
@@ -14,6 +15,11 @@ import { Zap } from 'lucide-react'
 const IPAPER_LOGO = 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/0tbdiob5_IPAPER.png'
 const IPAPER_URL = 'https://thesun-ipaper.cld.bz/'
 const ADS_BANNER_URL = 'https://via.placeholder.com/728x90/cccccc/666666?text=Advertisement'
+
+// Pull the primary category name from an embedded post (WP REST _embed).
+function getCategoryName(post) {
+  return post?._embedded?.['wp:term']?.[0]?.[0]?.name || null
+}
 
 // ---------- Inline Breaking Ticker for top bar ----------
 function TopBarTicker() {
@@ -25,7 +31,7 @@ function TopBarTicker() {
       {/* Label */}
       <div className="flex items-center gap-1.5 shrink-0 pr-3 mr-1">
         <span className="text-[10px] font-black uppercase tracking-widest text-white leading-none">
-          LATEST<br />NEWS
+          NEWS<br />FEED
         </span>
       </div>
       {/* Scrolling ticker */}
@@ -34,16 +40,23 @@ function TopBarTicker() {
           <span className="text-xs text-white/60 px-2">Loading latest headlines…</span>
         ) : (
           <div className="ticker-track flex items-center whitespace-nowrap" style={{ width: 'max-content' }}>
-            {items.map((p, i) => (
-              <Link
-                key={`${p.id}-${i}`}
-                to={`/article/${p.slug}`}
-                className="text-xs px-5 hover:text-primary inline-flex items-center gap-2.5 text-white/90"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-primary inline-block shrink-0" />
-                {decodeHtml(p.title?.rendered || '')}
-              </Link>
-            ))}
+            {items.map((p, i) => {
+              const cat = getCategoryName(p)
+              return (
+                <Link
+                  key={`${p.id}-${i}`}
+                  to={`/article/${p.slug}`}
+                  className="text-xs px-5 hover:text-primary inline-flex items-center gap-2.5 text-white/90"
+                >
+                  {cat && (
+                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-primary bg-white rounded px-1.5 py-0.5 shadow-sm">
+                      {decodeHtml(cat)}
+                    </span>
+                  )}
+                  {decodeHtml(p.title?.rendered || '')}
+                </Link>
+              )
+            })}
           </div>
         )}
       </div>
@@ -63,7 +76,7 @@ function WorldCupLink({ mobile = false, onNavigate }) {
         onClick={onNavigate}
         className="flex items-center justify-between pl-3 pr-3 py-2.5 rounded hover:bg-muted font-extrabold text-sm"
       >
-        <span className="flex items-center gap-1.5 bg-[#8B0000] text-white px-3 py-1.5 rounded">
+        <span className="flex items-center gap-1.5 bg-primary/85 backdrop-blur-md border border-white/15 shadow-sm shadow-primary/20 text-white px-3 py-1.5 rounded">
           World Cup '26
           <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
         </span>
@@ -75,7 +88,7 @@ function WorldCupLink({ mobile = false, onNavigate }) {
       href="https://worldcup2026.thesun.my/"
       target="_blank"
       rel="noopener noreferrer"
-      className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-[#8B0000] hover:bg-[#a00000] text-white rounded transition-colors"
+      className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors"
     >
       World Cup '26
       <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
@@ -91,7 +104,9 @@ function Dropdown({ item }) {
   const hasChildren = !!(item.children && item.children.length)
   const { pathname } = useLocation()
   const isActive = item.to ? pathname === item.to : item.slug ? pathname.startsWith(`/category/${item.slug}`) : false
-  const activeCls = isActive ? 'border-primary text-primary' : 'border-transparent'
+  const activeCls = isActive
+    ? 'bg-primary/10 backdrop-blur-md border-primary/25 text-primary shadow-sm shadow-primary/10'
+    : 'border-transparent'
 
   function show() { clearTimeout(timer.current); setOpen(true) }
   function hide() {
@@ -119,7 +134,7 @@ function Dropdown({ item }) {
           href={item.to}
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-[#8B0000] hover:bg-[#a00000] text-white rounded transition-colors"
+          className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors"
         >
           World Cup '26
           <span className="inline-block animate-bounce" style={{ animationDuration: '1.8s' }}>⚽</span>
@@ -193,7 +208,7 @@ function MobileMenuItem({ item, onNavigate, depth = 0 }) {
           onClick={onNavigate}
           className={`flex items-center justify-between ${padding} pr-3 py-2.5 rounded hover:bg-muted font-extrabold ${fontSize}`}
         >
-          <span className="inline-flex items-center gap-1.5 bg-[#8B0000] text-white px-3 py-1.5 rounded">
+          <span className="inline-flex items-center gap-1.5 bg-primary/85 backdrop-blur-md border border-white/15 shadow-sm shadow-primary/20 text-white px-3 py-1.5 rounded">
             World Cup '26
             <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
           </span>
@@ -239,6 +254,7 @@ function MobileMenuItem({ item, onNavigate, depth = 0 }) {
 export default function SiteHeader() {
   const [open, setOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -250,57 +266,51 @@ export default function SiteHeader() {
   const closeMobile = () => setOpen(false)
 
   return (
+    <Sheet open={open} onOpenChange={setOpen}>
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <style>{`@keyframes wcBounce { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-5px) rotate(20deg); } }`}</style>
+
+      {/* Mobile menu sheet content (trigger lives in the mobile logo row below) */}
+        <SheetContent side="left" className="w-[320px] sm:w-[380px] bg-white text-foreground p-0 overflow-y-auto">
+          <div className="p-5 border-b border-border bg-white">
+            <Logo size="md" />
+          </div>
+          <div className="p-4 border-b border-border">
+            <SearchBar onSubmit={closeMobile} />
+          </div>
+          <nav className="flex flex-col px-2 py-3">
+            {MAIN_MENU.map((item) => (
+              <MobileMenuItem key={item.label} item={item} onNavigate={closeMobile} />
+            ))}
+          </nav>
+          {/* iPaper in mobile sidebar */}
+          <div className="px-5 py-4 border-t border-border">
+            <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Read e-Paper</p>
+            <a
+              href={IPAPER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Read iPaper"
+              className="inline-flex items-center rounded overflow-hidden hover:opacity-75 transition-opacity bg-white p-1"
+            >
+              <img src={IPAPER_LOGO} alt="iPaper" className="h-9 w-auto" />
+            </a>
+          </div>
+          <div className="px-5 py-4 border-t border-border">
+            <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Follow Us</p>
+            <SocialIcons size="md" dark />
+          </div>
+        </SheetContent>
 
       {/* ── ROW 1: Dark ticker bar ── */}
       <div className="bg-[#2d2d2d] text-white">
         <div className="container mx-auto px-4 flex items-center h-10 gap-3">
 
-          {/* Mobile hamburger (visible on small screens) */}
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden text-white hover:bg-white/10 h-7 w-7 shrink-0" aria-label="Open menu">
-                <Menu className="h-4 w-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-[320px] sm:w-[380px] bg-white text-foreground p-0 overflow-y-auto">
-              <div className="p-5 border-b border-border bg-white">
-                <Logo size="md" />
-              </div>
-              <div className="p-4 border-b border-border">
-                <SearchBar onSubmit={closeMobile} />
-              </div>
-              <nav className="flex flex-col px-2 py-3">
-                {MAIN_MENU.map((item) => (
-                  <MobileMenuItem key={item.label} item={item} onNavigate={closeMobile} />
-                ))}
-              </nav>
-              {/* iPaper in mobile sidebar */}
-              <div className="px-5 py-4 border-t border-border">
-                <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Read e-Paper</p>
-                <a
-                  href={IPAPER_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Read iPaper"
-                  className="inline-flex items-center rounded overflow-hidden hover:opacity-75 transition-opacity bg-white p-1"
-                >
-                  <img src={IPAPER_LOGO} alt="iPaper" className="h-9 w-auto" />
-                </a>
-              </div>
-              <div className="px-5 py-4 border-t border-border">
-                <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Follow Us</p>
-                <SocialIcons size="md" dark />
-              </div>
-            </SheetContent>
-          </Sheet>
-
           {/* Ticker */}
           <TopBarTicker />
 
-          {/* Right-side controls */}
-          <div className="flex items-center gap-1 shrink-0 ml-2">
+          {/* Right-side controls — desktop only, mobile has its own row below */}
+          <div className="hidden lg:flex items-center gap-1 shrink-0 ml-2">
             {/* Search icon */}
             <button
               onClick={() => setSearchOpen(o => !o)}
@@ -313,21 +323,19 @@ export default function SiteHeader() {
             {/* Newsletter button */}
             <a
               href="/newsletter"
-              className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider border border-white/50 hover:border-white px-2.5 py-1 rounded text-white/90 hover:text-white transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider border border-white/50 hover:border-white px-2.5 py-1 rounded text-white/90 hover:text-white transition-colors whitespace-nowrap"
             >
               Newsletter
             </a>
 
             {/* Divider */}
-            <span className="hidden sm:block w-px h-4 bg-white/20 mx-1" />
+            <span className="w-px h-4 bg-white/20 mx-1" />
 
             {/* Social icons */}
-            <div className="hidden md:block">
-              <SocialIcons size="sm" />
-            </div>
+            <SocialIcons size="sm" />
 
             {/* Divider */}
-            <span className="hidden md:block w-px h-4 bg-white/20 mx-1" />
+            <span className="w-px h-4 bg-white/20 mx-1" />
 
             {/* iPaper button */}
             <a
@@ -335,16 +343,16 @@ export default function SiteHeader() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Read iPaper"
-              className="hidden sm:inline-flex items-center rounded overflow-hidden hover:opacity-80 transition-opacity"
+              className="inline-flex items-center rounded overflow-hidden hover:opacity-80 transition-opacity"
             >
               <img src={IPAPER_LOGO} alt="iPaper" className="h-7 w-auto" />
             </a>
           </div>
         </div>
 
-        {/* Expandable search bar under ticker */}
+        {/* Expandable search bar under ticker — desktop only */}
         {searchOpen && (
-          <div className="border-t border-white/10 bg-[#262626]">
+          <div className="hidden lg:block border-t border-white/10 bg-[#262626]">
             <div className="container mx-auto px-4 py-2">
               <SearchBar onSubmit={() => setSearchOpen(false)} />
             </div>
@@ -352,8 +360,37 @@ export default function SiteHeader() {
         )}
       </div>
 
-      {/* ── ROW 2: Logo + Ads Banner ── */}
-      <div className={`border-border bg-white overflow-hidden transition-all duration-300 ease-in-out ${scrolled ? 'max-h-0 border-b-0 opacity-0 pointer-events-none' : 'max-h-40 border-b opacity-100'}`}>
+      {/* ── ROW 1.5 (mobile only): Logo + Search + Menu, always visible, never collapses on scroll ── */}
+      <div className="lg:hidden bg-white border-b border-border">
+        <div className="container mx-auto px-4 py-2 flex items-center justify-between gap-3">
+          <Logo size="sm" />
+          <div className="flex items-center gap-1.5 shrink-0">
+            <WeatherClock variant="compact" />
+            <button
+              onClick={() => setMobileSearchOpen(o => !o)}
+              aria-label="Search"
+              className="p-2 rounded-md border-2 border-border bg-muted/40 text-foreground hover:bg-muted hover:border-primary/50 transition-colors"
+            >
+              <Search className="h-5 w-5" strokeWidth={2.75} />
+            </button>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md border-2 border-border bg-muted/40 text-foreground hover:bg-muted hover:border-primary/50" aria-label="Open menu">
+                <Menu className="h-5 w-5" strokeWidth={2.75} />
+              </Button>
+            </SheetTrigger>
+          </div>
+        </div>
+        {mobileSearchOpen && (
+          <div className="border-t border-border bg-white">
+            <div className="container mx-auto px-4 py-2">
+              <SearchBar onSubmit={() => setMobileSearchOpen(false)} />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── ROW 2: Logo + Ads Banner — desktop only, collapses on scroll ── */}
+      <div className={`hidden lg:block border-border bg-white overflow-hidden transition-all duration-300 ease-in-out ${scrolled ? 'max-h-0 border-b-0 opacity-0 pointer-events-none' : 'max-h-40 border-b opacity-100'}`}>
         <div className="container mx-auto px-4 py-3 flex items-center gap-6">
           {/* Logo */}
           <div className="shrink-0">
@@ -362,20 +399,23 @@ export default function SiteHeader() {
 
           {/* Ads Banner — takes remaining space */}
           <div className="flex-1 flex items-center justify-center min-h-[90px]">
-            {/* Replace the img below with your actual ad tag / component */}
-            <div
-              className="w-full max-w-[728px] h-[90px] bg-[#d0d0d0] flex items-center justify-center rounded text-sm font-bold text-[#555] tracking-wide uppercase select-none"
+            <a
+              href="#"
+              className="block w-full max-w-[728px] h-[90px] overflow-hidden rounded"
               aria-label="Advertisement"
             >
-              ads banner
-            </div>
+              <img src="/ads/top-bar-banner.png" alt="Advertisement" className="w-full h-full object-cover" />
+            </a>
           </div>
+
+          {/* Weather + date/time */}
+          <WeatherClock variant="full" className="hidden xl:flex" />
 
         </div>
       </div>
 
       {/* ── ROW 3: Desktop nav ── */}
-      <div className="bg-white border-b border-border">
+      <div className="hidden lg:block bg-white border-b border-border">
         <div className="container mx-auto px-4">
           <nav className="hidden lg:flex items-center gap-0">
             {MAIN_MENU.map((item) => (
@@ -386,5 +426,6 @@ export default function SiteHeader() {
       </div>
 
     </header>
+    </Sheet>
   )
 }
