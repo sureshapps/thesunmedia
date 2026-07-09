@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { Newspaper, Loader2 } from 'lucide-react'
 import { FeatureCard, FeatureCardSkeleton } from '@/components/site/NewsCard'
 import Sidebar from '@/components/site/Sidebar'
-import { buildUrl } from '@/lib/wp'
+import { buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
 export default function LatestPage() {
@@ -20,7 +20,8 @@ export default function LatestPage() {
       const url = buildUrl('/posts', { per_page: 12, page: p, _embed: 1 })
       const res = await fetch(url)
       if (!res.ok) { setHasMore(false); return }
-      const data = await res.json()
+      const raw = await res.json()
+      const data = asArray(raw)
       const totalPages = parseInt(res.headers.get('x-wp-totalpages') || '0', 10)
       setPosts(prev => p === 1 ? data : [...prev, ...data])
       if (p >= Math.min(totalPages, 50) || data.length === 0) setHasMore(false)

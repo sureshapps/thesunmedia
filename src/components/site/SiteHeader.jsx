@@ -5,6 +5,9 @@ import {
   Home as HomeIcon, Newspaper, Flame, Briefcase, MessageSquare,
   Coffee, Trophy, Car, GraduationCap, PlayCircle, MoreHorizontal,
   Tag, Mail, ArrowRight,
+  MapPin, Globe, Globe2, MapPinned, Smartphone, HeartPulse, Shirt,
+  Plane, UtensilsCrossed, Drama, CircleDot, Feather, Disc3, Gauge,
+  Target, Flag, Landmark, ClipboardList, TrendingUp, Clock, Star, Compass,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Logo from './Logo'
@@ -38,6 +41,36 @@ const MOBILE_MENU_ICONS = {
 }
 function getMobileIcon(label) {
   return MOBILE_MENU_ICONS[label] || Tag
+}
+
+// Tiny icons shown next to each nested submenu item (News > Malaysia, Sports > Football, etc).
+const SUBMENU_ICONS = {
+  'Malaysia': MapPin,
+  'Asia': Globe,
+  'World': Globe2,
+  'Local': MapPinned,
+  'Technology & Social Media': Smartphone,
+  'Family & Health': HeartPulse,
+  'Fashion & Beauty': Shirt,
+  'Home & Living': HomeIcon,
+  'Travel & Leisure': Plane,
+  'Food & Beverage': UtensilsCrossed,
+  'Culture & Entertainment': Drama,
+  'Football': CircleDot,
+  'Badminton': Feather,
+  'Tennis': Disc3,
+  'F1': Gauge,
+  'Cricket': Target,
+  'Golf': Flag,
+  'Property': Landmark,
+  'Classifieds': ClipboardList,
+  'Most Views': TrendingUp,
+  'Latest News': Clock,
+  'Top Stories': Star,
+  'Traveling': Compass,
+}
+function getSubIcon(label) {
+  return SUBMENU_ICONS[label] || null
 }
 
 // Pull the primary category name from an embedded post (WP REST _embed).
@@ -222,6 +255,53 @@ function MobileWorldCupBanner({ item, onNavigate }) {
   )
 }
 
+// ---------- Mobile full-page menu: daily motivational quote ----------
+// Fetches a random quote from DummyJSON's free, no-auth, CORS-enabled quotes API
+// (https://dummyjson.com/quotes/random) once per calendar day, caching the result
+// in localStorage so the same quote persists for the rest of the day.
+function DailyQuote() {
+  const [quote, setQuote] = useState(null)
+
+  useEffect(() => {
+    const todayKey = new Date().toISOString().slice(0, 10) // YYYY-MM-DD
+    try {
+      const cached = JSON.parse(localStorage.getItem('thesun-daily-quote') || 'null')
+      if (cached && cached.date === todayKey && cached.text) {
+        setQuote(cached)
+        return
+      }
+    } catch (e) { /* noop */ }
+
+    let cancelled = false
+    fetch('https://dummyjson.com/quotes/random')
+      .then(res => (res.ok ? res.json() : Promise.reject(new Error('Failed'))))
+      .then(data => {
+        if (cancelled) return
+        const q = { date: todayKey, text: data.quote, author: data.author }
+        setQuote(q)
+        try { localStorage.setItem('thesun-daily-quote', JSON.stringify(q)) } catch (e) { /* noop */ }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setQuote({ date: todayKey, text: 'Start where you are. Use what you have. Do what you can.', author: 'Arthur Ashe' })
+        }
+      })
+    return () => { cancelled = true }
+  }, [])
+
+  if (!quote) {
+    return <div className="flex-1 mx-3 h-11 rounded-lg border border-border skeleton-shimmer" />
+  }
+
+  return (
+    <div className="flex-1 mx-3 min-w-0 rounded-lg border border-border bg-muted/20 px-3 py-2 flex items-center">
+      <p className="text-[11px] leading-snug text-muted-foreground italic line-clamp-2">
+        "{quote.text}" — <span className="not-italic font-medium text-foreground/80">{quote.author}</span>
+      </p>
+    </div>
+  )
+}
+
 // ---------- Mobile full-page menu: top-level row (icon badge + label + chevron) ----------
 function MobileMenuItem({ item, onNavigate }) {
   if (item.worldcup) return <MobileWorldCupBanner item={item} onNavigate={onNavigate} />
@@ -231,9 +311,9 @@ function MobileMenuItem({ item, onNavigate }) {
   const Icon = getMobileIcon(item.label)
 
   const row = (
-    <div className="flex items-center gap-3 px-3.5 py-3">
-      <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary text-white shrink-0">
-        <Icon className="h-[18px] w-[18px]" strokeWidth={2.25} />
+    <div className="flex items-center gap-3 px-3.5 py-2">
+      <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-white shrink-0">
+        <Icon className="h-4 w-4" strokeWidth={2.25} />
       </span>
       {item.to || item.slug ? (
         <Link to={itemHref(item)} onClick={onNavigate} className="flex-1 font-semibold text-[15px]">
@@ -247,16 +327,16 @@ function MobileMenuItem({ item, onNavigate }) {
           onClick={() => setOpen(o => !o)}
           aria-label={`${open ? 'Collapse' : 'Expand'} ${item.label}`}
           aria-expanded={open}
-          className="p-1.5 -mr-1 text-muted-foreground shrink-0"
+          className="p-1.5 -mr-1 text-primary shrink-0"
         >
-          <ChevronDown className={`h-[18px] w-[18px] transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} strokeWidth={2.75} />
         </button>
       )}
     </div>
   )
 
   return (
-    <div className="rounded-xl border border-border overflow-hidden">
+    <div className="rounded-xl border border-white/60 bg-white/40 backdrop-blur-md shadow-sm shadow-black/5 overflow-hidden">
       {!item.to && !item.slug && hasChildren ? (
         <button onClick={() => setOpen(o => !o)} className="w-full text-left" aria-expanded={open}>
           {row}
@@ -269,7 +349,7 @@ function MobileMenuItem({ item, onNavigate }) {
           className={`grid transition-all duration-200 ease-in-out ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
         >
           <div className="overflow-hidden">
-            <div className="border-t border-border bg-muted/30 py-1.5">
+            <div className="border-t border-border bg-white/30 backdrop-blur-sm py-1.5">
               {item.children.map((c) => (
                 <MobileSubItem key={c.label} item={c} onNavigate={onNavigate} depth={1} />
               ))}
@@ -281,19 +361,21 @@ function MobileMenuItem({ item, onNavigate }) {
   )
 }
 
-// ---------- Mobile full-page menu: nested child row (no icon badge) ----------
+// ---------- Mobile full-page menu: nested child row (with tiny icon) ----------
 function MobileSubItem({ item, onNavigate, depth = 1 }) {
   const [open, setOpen] = useState(false)
   const hasChildren = !!(item.children && item.children.length)
   const padding = depth === 1 ? 'pl-[3.25rem]' : 'pl-[4.5rem]'
+  const SubIcon = getSubIcon(item.label)
 
   if (!hasChildren) {
     return (
       <Link
         to={itemHref(item)}
         onClick={onNavigate}
-        className={`flex items-center justify-between ${padding} pr-3.5 py-2 text-[13.5px] text-foreground/85 hover:text-primary`}
+        className={`flex items-center gap-2 ${padding} pr-3.5 py-2 text-[13.5px] text-foreground/85 hover:text-primary`}
       >
+        {SubIcon && <SubIcon className="h-3 w-3 text-primary/70 shrink-0" strokeWidth={2.25} />}
         {item.label}
       </Link>
     )
@@ -303,9 +385,15 @@ function MobileSubItem({ item, onNavigate, depth = 1 }) {
     <div>
       <div className={`flex items-center ${padding} pr-2 py-2 text-[13.5px] font-medium`}>
         {item.to || item.slug ? (
-          <Link to={itemHref(item)} onClick={onNavigate} className="flex-1">{item.label}</Link>
+          <Link to={itemHref(item)} onClick={onNavigate} className="flex-1 flex items-center gap-2">
+            {SubIcon && <SubIcon className="h-3 w-3 text-primary/70 shrink-0" strokeWidth={2.25} />}
+            {item.label}
+          </Link>
         ) : (
-          <span className="flex-1">{item.label}</span>
+          <span className="flex-1 flex items-center gap-2">
+            {SubIcon && <SubIcon className="h-3 w-3 text-primary/70 shrink-0" strokeWidth={2.25} />}
+            {item.label}
+          </span>
         )}
         <button onClick={() => setOpen(o => !o)} aria-label="Expand" className="p-1.5">
           <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
@@ -359,32 +447,30 @@ function MobileFullPageMenu({ open, onClose }) {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] bg-white overflow-y-auto transition-opacity duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}
+      className={`fixed inset-0 z-[100] bg-white/75 backdrop-blur-xl backdrop-saturate-150 overflow-y-auto transition-opacity duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}
       role="dialog"
       aria-modal="true"
       aria-label="Mobile navigation menu"
     >
-      {/* Top row: logo + close */}
-      <div className="flex items-center justify-between px-4 py-4">
+      {/* Top row: logo + daily quote */}
+      <div className="flex items-center px-4 py-4">
         <Logo size="md" />
-        <button
-          onClick={onClose}
-          aria-label="Close menu"
-          className="flex items-center justify-center w-9 h-9 rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-white transition-colors shrink-0"
-        >
-          <X className="h-5 w-5" strokeWidth={2.5} />
-        </button>
-      </div>
-
-      {/* Search */}
-      <div className="px-4 pb-4">
-        <SearchBar onSubmit={onClose} />
+        <DailyQuote />
       </div>
 
       {/* Explore */}
-      <div className="px-4">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2.5">Explore</p>
-        <nav className="flex flex-col gap-2">
+      <div className="px-4 pt-2">
+        <div className="flex items-center justify-between mb-2.5">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Explore</p>
+          <button
+            onClick={onClose}
+            aria-label="Close menu"
+            className="flex items-center justify-center w-6 h-6 rounded-md border border-border text-muted-foreground hover:border-primary hover:text-primary transition-colors shrink-0"
+          >
+            <X className="h-3 w-3" strokeWidth={2.5} />
+          </button>
+        </div>
+        <nav className="flex flex-col gap-1">
           {MAIN_MENU.map((item) => (
             <MobileMenuItem key={item.label} item={item} onNavigate={onClose} />
           ))}
@@ -393,7 +479,6 @@ function MobileFullPageMenu({ open, onClose }) {
 
       {/* Stay informed / Subscribe */}
       <div className="px-4 mt-6">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2.5">Stay Informed</p>
         <a
           href="/newsletter"
           onClick={onClose}
@@ -414,7 +499,6 @@ function MobileFullPageMenu({ open, onClose }) {
 
       {/* Read e-Paper */}
       <div className="px-4 mt-6">
-        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2.5">Read e-Paper</p>
         <a
           href={IPAPER_URL}
           target="_blank"

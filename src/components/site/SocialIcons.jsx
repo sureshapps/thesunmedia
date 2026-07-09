@@ -45,7 +45,7 @@ export const SOCIAL = [
 export default function SocialIcons({ size = 'md', className = '', dark = false }) {
   const iconSize  = size === 'sm' ? 'w-3 h-3'   : 'w-3.5 h-3.5'
   const wrapSize  = size === 'sm' ? 'w-5 h-5'   : 'w-6 h-6'
-  const colorCls  = dark ? 'text-foreground/60 hover:text-foreground' : 'text-white/70 hover:text-white'
+  const colorCls  = dark ? 'text-primary/70 hover:text-primary' : 'text-white/70 hover:text-white'
 
   return (
     <div className={`flex items-center gap-1 ${className}`}>
