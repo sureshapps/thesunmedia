@@ -7,7 +7,7 @@ import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
 import MostViewedBlock from '@/components/site/MostViewedBlock'
-import { postsKey, buildUrl } from '@/lib/wp'
+import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
 const FEATURED_CATEGORY_SLUGS = [
@@ -48,12 +48,13 @@ export default function HomePage() {
   })
 
   const top = latest?.[0]
-  const heroBelowGrid = (latest || []).slice(1, 5)
+  const latestArr = asArray(latest)
+  const heroBelowGrid = latestArr.slice(1, 5)
 
   // Top stories: page 1 uses slice from latest, page 2+ uses fetched data
   const topStories = topPage === 1
-    ? (latest || []).slice(9, 9 + PER_PAGE)
-    : (extraTopData || [])
+    ? latestArr.slice(9, 9 + PER_PAGE)
+    : asArray(extraTopData)
   const topLoading = topPage === 1 ? isLoading : extraLoading
 
   return (

@@ -30,6 +30,16 @@ export const postBySlugKey = (slug) => buildUrl('/posts', { slug, _embed: 1 })
 export const categoryBySlugKey = (slug) => buildUrl('/categories', { slug })
 export const categoriesKey = (params = {}) => buildUrl('/categories', params)
 
+// Guards against WP REST occasionally returning a non-array truthy payload
+// (rate-limit / error JSON bodies, WAF challenge pages, etc.) instead of the
+// expected list. Every component should read SWR `data` through this rather
+// than trusting it directly — `data || []` does NOT catch this case, since a
+// truthy non-array object still passes that check and blows up the first
+// .map()/.filter()/.slice() call, taking the whole page blank with it.
+export function asArray(data) {
+  return Array.isArray(data) ? data : []
+}
+
 // ---------- Helpers to extract data from embedded API responses ----------
 export function getFeaturedImage(post, size = 'medium_large') {
   if (!post) return null

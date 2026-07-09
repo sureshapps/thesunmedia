@@ -1,20 +1,44 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Search, Menu, ChevronDown, ChevronRight } from 'lucide-react'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import {
+  Search, Menu, X, ChevronDown,
+  Home as HomeIcon, Newspaper, Flame, Briefcase, MessageSquare,
+  Coffee, Trophy, Car, GraduationCap, PlayCircle, MoreHorizontal,
+  Tag, Mail, ArrowRight,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Logo from './Logo'
 import SearchBar from './SearchBar'
 import SocialIcons from './SocialIcons'
 import WeatherClock from './WeatherClock'
 import { MAIN_MENU, itemHref } from '@/lib/menu'
-import { postsKey, decodeHtml } from '@/lib/wp'
+import { postsKey, decodeHtml, asArray } from '@/lib/wp'
 import useSWR from 'swr'
-import { Zap } from 'lucide-react'
 
 const IPAPER_LOGO = 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/0tbdiob5_IPAPER.png'
 const IPAPER_URL = 'https://thesun-ipaper.cld.bz/'
 const ADS_BANNER_URL = 'https://via.placeholder.com/728x90/cccccc/666666?text=Advertisement'
+// e-Paper phone mockup shown in the mobile menu "Read e-Paper" card
+const IPAPER_PHONE_MOCKUP = '/images/ipaper-iphone-mockup.png'
+
+// Icon shown in the red badge next to each top-level mobile menu label.
+// Matched by label text with a sane fallback, since MAIN_MENU items don't carry their own icon.
+const MOBILE_MENU_ICONS = {
+  'Home': HomeIcon,
+  'News': Newspaper,
+  'Going Viral': Flame,
+  'Business': Briefcase,
+  'Opinion': MessageSquare,
+  'Lifestyle': Coffee,
+  'Sports': Trophy,
+  'Motoring': Car,
+  'Education': GraduationCap,
+  'Videos': PlayCircle,
+  'More': MoreHorizontal,
+}
+function getMobileIcon(label) {
+  return MOBILE_MENU_ICONS[label] || Tag
+}
 
 // Pull the primary category name from an embedded post (WP REST _embed).
 function getCategoryName(post) {
@@ -23,8 +47,9 @@ function getCategoryName(post) {
 
 // ---------- Inline Breaking Ticker for top bar ----------
 function TopBarTicker() {
-  const { data: posts } = useSWR(postsKey({ per_page: 8 }))
-  const items = posts?.length ? [...posts, ...posts] : []
+  const { data: postsRaw } = useSWR(postsKey({ per_page: 8 }))
+  const posts = asArray(postsRaw)
+  const items = posts.length ? [...posts, ...posts] : []
 
   return (
     <div className="flex items-stretch flex-1 min-w-0 overflow-hidden">
@@ -65,24 +90,8 @@ function TopBarTicker() {
 }
 
 
-// ---------- Animated World Cup nav item ----------
-function WorldCupLink({ mobile = false, onNavigate }) {
-  if (mobile) {
-    return (
-      <a
-        href="https://worldcup2026.thesun.my/"
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={onNavigate}
-        className="flex items-center justify-between pl-3 pr-3 py-2.5 rounded hover:bg-muted font-extrabold text-sm"
-      >
-        <span className="flex items-center gap-1.5 bg-primary/85 backdrop-blur-md border border-white/15 shadow-sm shadow-primary/20 text-white px-3 py-1.5 rounded">
-          World Cup '26
-          <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
-        </span>
-      </a>
-    )
-  }
+// ---------- Animated World Cup nav item (desktop) ----------
+function WorldCupLink() {
   return (
     <a
       href="https://worldcup2026.thesun.my/"
@@ -189,64 +198,249 @@ function Dropdown({ item }) {
   )
 }
 
-// ---------- Mobile collapsible menu item ----------
-function MobileMenuItem({ item, onNavigate, depth = 0 }) {
-  if (item.worldcup) return <WorldCupLink mobile onNavigate={onNavigate} />
+// ---------- Mobile full-page menu: World Cup promo banner ----------
+function MobileWorldCupBanner({ item, onNavigate }) {
+  return (
+    <a
+      href={item.to}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={onNavigate}
+      className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-primary/5 via-primary/5 to-transparent p-3.5"
+    >
+      <span className="flex items-center justify-center w-11 h-11 rounded-full bg-white shadow-sm shrink-0 text-xl">
+        ⚽
+      </span>
+      <span className="flex-1 min-w-0">
+        <span className="block font-bold text-sm">{item.label}</span>
+        <span className="block text-xs text-muted-foreground">Latest updates, fixtures, and more</span>
+      </span>
+      <span className="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white shrink-0">
+        <ArrowRight className="h-4 w-4" />
+      </span>
+    </a>
+  )
+}
+
+// ---------- Mobile full-page menu: top-level row (icon badge + label + chevron) ----------
+function MobileMenuItem({ item, onNavigate }) {
+  if (item.worldcup) return <MobileWorldCupBanner item={item} onNavigate={onNavigate} />
+
   const [open, setOpen] = useState(false)
   const hasChildren = !!(item.children && item.children.length)
-  const padding = { 0: 'pl-3', 1: 'pl-6', 2: 'pl-9' }[depth] || 'pl-3'
-  const fontWeight = depth === 0 ? 'font-semibold' : 'font-normal'
-  const fontSize = depth === 0 ? 'text-sm' : 'text-[13px]'
+  const Icon = getMobileIcon(item.label)
+
+  const row = (
+    <div className="flex items-center gap-3 px-3.5 py-3">
+      <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary text-white shrink-0">
+        <Icon className="h-[18px] w-[18px]" strokeWidth={2.25} />
+      </span>
+      {item.to || item.slug ? (
+        <Link to={itemHref(item)} onClick={onNavigate} className="flex-1 font-semibold text-[15px]">
+          {item.label}
+        </Link>
+      ) : (
+        <span className="flex-1 font-semibold text-[15px]">{item.label}</span>
+      )}
+      {hasChildren && (
+        <button
+          onClick={() => setOpen(o => !o)}
+          aria-label={`${open ? 'Collapse' : 'Expand'} ${item.label}`}
+          aria-expanded={open}
+          className="p-1.5 -mr-1 text-muted-foreground shrink-0"
+        >
+          <ChevronDown className={`h-[18px] w-[18px] transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        </button>
+      )}
+    </div>
+  )
+
+  return (
+    <div className="rounded-xl border border-border overflow-hidden">
+      {!item.to && !item.slug && hasChildren ? (
+        <button onClick={() => setOpen(o => !o)} className="w-full text-left" aria-expanded={open}>
+          {row}
+        </button>
+      ) : (
+        row
+      )}
+      {hasChildren && (
+        <div
+          className={`grid transition-all duration-200 ease-in-out ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}
+        >
+          <div className="overflow-hidden">
+            <div className="border-t border-border bg-muted/30 py-1.5">
+              {item.children.map((c) => (
+                <MobileSubItem key={c.label} item={c} onNavigate={onNavigate} depth={1} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ---------- Mobile full-page menu: nested child row (no icon badge) ----------
+function MobileSubItem({ item, onNavigate, depth = 1 }) {
+  const [open, setOpen] = useState(false)
+  const hasChildren = !!(item.children && item.children.length)
+  const padding = depth === 1 ? 'pl-[3.25rem]' : 'pl-[4.5rem]'
 
   if (!hasChildren) {
-    if (item.worldcup) {
-      return (
-        <a
-          href={item.to}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={onNavigate}
-          className={`flex items-center justify-between ${padding} pr-3 py-2.5 rounded hover:bg-muted font-extrabold ${fontSize}`}
-        >
-          <span className="inline-flex items-center gap-1.5 bg-primary/85 backdrop-blur-md border border-white/15 shadow-sm shadow-primary/20 text-white px-3 py-1.5 rounded">
-            World Cup '26
-            <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
-          </span>
-          <ChevronRight className="h-4 w-4 opacity-40" />
-        </a>
-      )
-    }
     return (
       <Link
         to={itemHref(item)}
         onClick={onNavigate}
-        className={`flex items-center justify-between ${padding} pr-3 py-2.5 rounded hover:bg-muted ${fontWeight} ${fontSize}`}
+        className={`flex items-center justify-between ${padding} pr-3.5 py-2 text-[13.5px] text-foreground/85 hover:text-primary`}
       >
         {item.label}
-        <ChevronRight className="h-4 w-4 opacity-40" />
       </Link>
     )
   }
 
   return (
     <div>
-      <div className={`flex items-center ${padding} pr-1 py-2.5 rounded hover:bg-muted ${fontWeight} ${fontSize}`}>
+      <div className={`flex items-center ${padding} pr-2 py-2 text-[13.5px] font-medium`}>
         {item.to || item.slug ? (
           <Link to={itemHref(item)} onClick={onNavigate} className="flex-1">{item.label}</Link>
         ) : (
           <span className="flex-1">{item.label}</span>
         )}
-        <button onClick={() => setOpen(o => !o)} aria-label="Expand" className="p-2 -mr-1">
-          <ChevronDown className={`h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <button onClick={() => setOpen(o => !o)} aria-label="Expand" className="p-1.5">
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
         </button>
       </div>
       {open && (
-        <div className="border-l border-border ml-3">
+        <div>
           {item.children.map((c) => (
-            <MobileMenuItem key={c.label} item={c} onNavigate={onNavigate} depth={depth + 1} />
+            <MobileSubItem key={c.label} item={c} onNavigate={onNavigate} depth={depth + 1} />
           ))}
         </div>
       )}
+    </div>
+  )
+}
+
+// ---------- Mobile full-page menu (custom fade in/out overlay) ----------
+function MobileFullPageMenu({ open, onClose }) {
+  const [mounted, setMounted] = useState(false)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    let raf, timeout
+    if (open) {
+      setMounted(true)
+      raf = requestAnimationFrame(() => setVisible(true))
+    } else {
+      setVisible(false)
+      timeout = setTimeout(() => setMounted(false), 300)
+    }
+    return () => { cancelAnimationFrame(raf); clearTimeout(timeout) }
+  }, [open])
+
+  // Lock body scroll while the full-page menu is open
+  useEffect(() => {
+    if (!mounted) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [mounted])
+
+  // Close on Escape
+  useEffect(() => {
+    if (!mounted) return
+    const onKey = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [mounted, onClose])
+
+  if (!mounted) return null
+
+  return (
+    <div
+      className={`fixed inset-0 z-[100] bg-white overflow-y-auto transition-opacity duration-300 ease-in-out ${visible ? 'opacity-100' : 'opacity-0'}`}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile navigation menu"
+    >
+      {/* Top row: logo + close */}
+      <div className="flex items-center justify-between px-4 py-4">
+        <Logo size="md" />
+        <button
+          onClick={onClose}
+          aria-label="Close menu"
+          className="flex items-center justify-center w-9 h-9 rounded-lg border-2 border-primary text-primary hover:bg-primary hover:text-white transition-colors shrink-0"
+        >
+          <X className="h-5 w-5" strokeWidth={2.5} />
+        </button>
+      </div>
+
+      {/* Search */}
+      <div className="px-4 pb-4">
+        <SearchBar onSubmit={onClose} />
+      </div>
+
+      {/* Explore */}
+      <div className="px-4">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2.5">Explore</p>
+        <nav className="flex flex-col gap-2">
+          {MAIN_MENU.map((item) => (
+            <MobileMenuItem key={item.label} item={item} onNavigate={onClose} />
+          ))}
+        </nav>
+      </div>
+
+      {/* Stay informed / Subscribe */}
+      <div className="px-4 mt-6">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2.5">Stay Informed</p>
+        <a
+          href="/newsletter"
+          onClick={onClose}
+          className="flex items-center gap-3 rounded-xl bg-primary p-4 hover:bg-primary/90 transition-colors"
+        >
+          <span className="flex items-center justify-center w-11 h-11 rounded-lg bg-white/15 text-white shrink-0">
+            <Mail className="h-5 w-5" />
+          </span>
+          <span className="flex-1 min-w-0">
+            <span className="block font-bold text-sm text-white">Subscribe to theSun</span>
+            <span className="block text-xs text-white/80">Get the latest headlines delivered to you daily.</span>
+          </span>
+          <span className="shrink-0 bg-white text-primary font-bold text-xs uppercase tracking-wide rounded-md px-3.5 py-2">
+            Subscribe
+          </span>
+        </a>
+      </div>
+
+      {/* Read e-Paper */}
+      <div className="px-4 mt-6">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2.5">Read e-Paper</p>
+        <a
+          href={IPAPER_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Read iPaper"
+          className="relative flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-4 pr-2 overflow-hidden hover:bg-muted/50 transition-colors"
+        >
+          <span className="flex-1 min-w-0">
+            <img src={IPAPER_LOGO} alt="iPaper" className="h-6 w-auto mb-2" />
+            <span className="block font-bold text-sm">iPaper</span>
+            <span className="block text-xs text-muted-foreground">Read today's edition anytime, anywhere.</span>
+          </span>
+          <img
+            src={IPAPER_PHONE_MOCKUP}
+            alt=""
+            aria-hidden="true"
+            className="w-24 h-auto shrink-0 -mb-4 -mr-2 drop-shadow-md"
+          />
+        </a>
+      </div>
+
+      {/* Follow us */}
+      <div className="px-4 mt-6 pb-8">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2.5">Follow Us</p>
+        <SocialIcons size="md" dark />
+      </div>
     </div>
   )
 }
@@ -266,51 +460,11 @@ export default function SiteHeader() {
   const closeMobile = () => setOpen(false)
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <style>{`@keyframes wcBounce { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-5px) rotate(20deg); } }`}</style>
 
-      {/* Mobile menu sheet content (trigger lives in the mobile logo row below) */}
-        <SheetContent side="left" className="w-[320px] sm:w-[380px] bg-white text-foreground p-0 overflow-y-auto">
-          <div className="p-5 border-b border-border bg-white">
-            <Logo size="md" />
-          </div>
-          <div className="p-4 border-b border-border">
-            <SearchBar onSubmit={closeMobile} />
-          </div>
-          <nav className="flex flex-col px-2 py-3">
-            {MAIN_MENU.map((item) => (
-              <MobileMenuItem key={item.label} item={item} onNavigate={closeMobile} />
-            ))}
-          </nav>
-          {/* Subscribe button in mobile sidebar */}
-          <div className="px-5 py-4 border-t border-border">
-            <a
-              href="/newsletter"
-              onClick={closeMobile}
-              className="flex items-center justify-center w-full bg-primary hover:bg-primary/90 text-white font-bold uppercase tracking-wider text-sm py-2.5 rounded transition-colors"
-            >
-              Subscribe
-            </a>
-          </div>
-          {/* iPaper in mobile sidebar */}
-          <div className="px-5 py-4 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Read e-Paper</p>
-            <a
-              href={IPAPER_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Read iPaper"
-              className="inline-flex items-center rounded overflow-hidden hover:opacity-75 transition-opacity bg-white p-1"
-            >
-              <img src={IPAPER_LOGO} alt="iPaper" className="h-9 w-auto" />
-            </a>
-          </div>
-          <div className="px-5 py-4 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-3 uppercase tracking-wider">Follow Us</p>
-            <SocialIcons size="md" dark />
-          </div>
-        </SheetContent>
+      {/* Mobile full-page menu (trigger lives in the mobile logo row below) */}
+      <MobileFullPageMenu open={open} onClose={closeMobile} />
 
       {/* ── ROW 1: Dark ticker bar ── */}
       <div className="bg-[#2d2d2d] text-white">
@@ -383,11 +537,15 @@ export default function SiteHeader() {
             >
               <Search className="h-5 w-5" strokeWidth={2.75} />
             </button>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md border-2 border-border bg-muted/40 text-foreground hover:bg-muted hover:border-primary/50" aria-label="Open menu">
-                <Menu className="h-5 w-5" strokeWidth={2.75} />
-              </Button>
-            </SheetTrigger>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setOpen(true)}
+              className="h-9 w-9 rounded-md border-2 border-border bg-muted/40 text-foreground hover:bg-muted hover:border-primary/50"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" strokeWidth={2.75} />
+            </Button>
           </div>
         </div>
         {mobileSearchOpen && (
@@ -436,6 +594,5 @@ export default function SiteHeader() {
       </div>
 
     </header>
-    </Sheet>
   )
 }

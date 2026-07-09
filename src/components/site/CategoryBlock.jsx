@@ -2,17 +2,19 @@ import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import { FeatureCard, HorizontalCard, FeatureCardSkeleton, HorizontalCardSkeleton } from './NewsCard'
-import { postsKey, categoryBySlugKey, decodeHtml } from '@/lib/wp'
+import { postsKey, categoryBySlugKey, decodeHtml, asArray } from '@/lib/wp'
 
 export default function CategoryBlock({ slug, name }) {
-  const { data: cats } = useSWR(categoryBySlugKey(slug))
-  const cat = cats && cats[0]
-  const { data: posts } = useSWR(
+  const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
+  const cats = asArray(catsRaw)
+  const cat = cats[0]
+  const { data: postsRaw } = useSWR(
     cat ? postsKey({ categories: cat.id, per_page: 5 }) : null
   )
 
   if (!cat) return null
-  const loading = !posts
+  const loading = !postsRaw || !Array.isArray(postsRaw)
+  const posts = asArray(postsRaw)
   const displayName = decodeHtml(name || cat.name)
 
   return (
@@ -34,7 +36,7 @@ export default function CategoryBlock({ slug, name }) {
           </div>
         </div>
       )}
-      {!loading && posts && posts.length > 0 && (
+      {!loading && posts.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <FeatureCard post={posts[0]} large />
           <div className="space-y-4">

@@ -1,9 +1,8 @@
-
 import { useState } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { postsKey, getFeaturedImage, getImageAlt, getPrimaryCategory, decodeHtml, FALLBACK_IMAGE } from '@/lib/wp'
+import { postsKey, getFeaturedImage, getImageAlt, getPrimaryCategory, decodeHtml, FALLBACK_IMAGE, asArray } from '@/lib/wp'
 
 const PER_PAGE = 5
 
@@ -56,8 +55,9 @@ export default function MostViewedBlock() {
   const { data: posts } = useSWR(
     postsKey({ per_page: PER_PAGE, page, orderby: 'modified', order: 'desc' })
   )
-  const loading = !posts
-  const hasNext = !loading && posts.length >= PER_PAGE
+  const loading = !posts || !Array.isArray(posts)
+  const postsArr = asArray(posts)
+  const hasNext = !loading && postsArr.length >= PER_PAGE
 
   return (
     <section className="border border-border rounded-md overflow-hidden h-fit">
@@ -68,7 +68,7 @@ export default function MostViewedBlock() {
       <div className="px-5">
         {loading
           ? [...Array(PER_PAGE)].map((_, i) => <MostViewedItemSkeleton key={i} />)
-          : posts.map((p, i) => (
+          : postsArr.map((p, i) => (
               <MostViewedItem key={p.id} post={p} rank={(page - 1) * PER_PAGE + i + 1} />
             ))}
       </div>

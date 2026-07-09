@@ -1,11 +1,12 @@
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { Zap } from 'lucide-react'
-import { postsKey, decodeHtml } from '@/lib/wp'
+import { postsKey, decodeHtml, asArray } from '@/lib/wp'
 
 export default function BreakingTicker() {
-  const { data: posts } = useSWR(postsKey({ per_page: 8 }))
-  if (!posts?.length) {
+  const { data: postsRaw } = useSWR(postsKey({ per_page: 8 }))
+  const posts = asArray(postsRaw)
+  if (!posts.length) {
     return (
       <div className="bg-black text-white border-b border-white/10">
         <div className="container mx-auto px-0 sm:px-4 flex items-stretch">

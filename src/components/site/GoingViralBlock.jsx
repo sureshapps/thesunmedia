@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   getFeaturedImage, getThumbnail, getImageAlt, getPrimaryCategory, getTags,
-  decodeHtml, FALLBACK_IMAGE, postsKey, categoryBySlugKey,
+  decodeHtml, FALLBACK_IMAGE, postsKey, categoryBySlugKey, asArray,
 } from '@/lib/wp'
 
 const AUTO_INTERVAL_MS = 3000
@@ -106,11 +106,12 @@ export default function GoingViralBlock() {
   const { data: posts } = useSWR(
     cat ? postsKey({ categories: cat.id, per_page: 12, _embed: 1 }) : null
   )
-  const loading = !posts
+  const loading = !posts || !Array.isArray(posts)
+  const postsArr = asArray(posts)
 
   // First 8 posts feed the auto-sliding carousel, the next 4 feed the list below.
-  const carouselPosts = (posts || []).slice(0, 8)
-  const listItems = (posts && posts.length > 4) ? posts.slice(4, 8) : (posts || []).slice(0, 4)
+  const carouselPosts = postsArr.slice(0, 8)
+  const listItems = postsArr.length > 4 ? postsArr.slice(4, 8) : postsArr.slice(0, 4)
   const total = carouselPosts.length
 
   const [index, setIndex] = useState(0)

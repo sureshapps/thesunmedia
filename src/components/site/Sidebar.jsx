@@ -3,24 +3,29 @@ import { Link } from 'react-router-dom'
 import { TrendingUp, Newspaper, Tag, BarChart2, ChevronRight } from 'lucide-react'
 import { ListItem, HorizontalCard, HorizontalCardSkeleton } from './NewsCard'
 import NewsletterForm from './NewsletterForm'
-import { postsKey, categoriesKey, decodeHtml } from '@/lib/wp'
+import { postsKey, categoriesKey, decodeHtml, asArray } from '@/lib/wp'
 
 export default function Sidebar({ excludeId } = {}) {
   // Latest News — newest first
-  const { data: latest = [] } = useSWR(postsKey({ per_page: 6, orderby: 'date', order: 'desc' }))
+  const { data: latestRaw } = useSWR(postsKey({ per_page: 6, orderby: 'date', order: 'desc' }))
 
   // Most Viewed — recently modified posts (always supported by WP REST)
-  const { data: mostViewed = [] } = useSWR(postsKey({ per_page: 6, orderby: 'modified', order: 'desc' }))
+  const { data: mostViewedRaw } = useSWR(postsKey({ per_page: 6, orderby: 'modified', order: 'desc' }))
 
   // Trending — highest ID (most recently published by insertion order, different slice)
-  const { data: trending = [] } = useSWR(postsKey({ per_page: 11, orderby: 'date', order: 'desc' }))
+  const { data: trendingRaw } = useSWR(postsKey({ per_page: 11, orderby: 'date', order: 'desc' }))
 
-  const { data: cats = [] } = useSWR(categoriesKey({ per_page: 15, orderby: 'count', order: 'desc' }))
+  const { data: catsRaw } = useSWR(categoriesKey({ per_page: 15, orderby: 'count', order: 'desc' }))
 
-  const latestFiltered   = (latest     || []).filter(p => p.id !== excludeId).slice(0, 5)
-  const mostViewedFiltered = (mostViewed || []).filter(p => p.id !== excludeId).slice(0, 5)
+  const latest = asArray(latestRaw)
+  const mostViewed = asArray(mostViewedRaw)
+  const trending = asArray(trendingRaw)
+  const cats = asArray(catsRaw)
+
+  const latestFiltered   = latest.filter(p => p.id !== excludeId).slice(0, 5)
+  const mostViewedFiltered = mostViewed.filter(p => p.id !== excludeId).slice(0, 5)
   // Trending uses posts 6-11 (different slice from latest to show different articles)
-  const trendingFiltered = (trending   || []).filter(p => p.id !== excludeId).slice(5, 10)
+  const trendingFiltered = trending.filter(p => p.id !== excludeId).slice(5, 10)
 
   return (
     <aside className="space-y-8">
@@ -92,7 +97,7 @@ export default function Sidebar({ excludeId } = {}) {
           <Tag className="h-4 w-4 text-primary" /> Categories
         </h3>
         <div className="flex flex-wrap gap-2">
-          {(cats || []).slice(0, 15).map(c => (
+          {cats.slice(0, 15).map(c => (
             <Link key={c.id} to={`/category/${c.slug}`} className="text-xs font-medium px-3 py-1.5 rounded-full border border-border hover:bg-primary hover:text-white hover:border-primary transition-colors">
               {decodeHtml(c.name)} <span className="text-muted-foreground">({c.count})</span>
             </Link>
