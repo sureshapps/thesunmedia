@@ -324,7 +324,7 @@ function MobileMenuItem({ item, onNavigate }) {
       )}
       {hasChildren && (
         <button
-          onClick={() => setOpen(o => !o)}
+          onClick={(e) => { e.stopPropagation(); setOpen(o => !o) }}
           aria-label={`${open ? 'Collapse' : 'Expand'} ${item.label}`}
           aria-expanded={open}
           className="p-1.5 -mr-1 text-primary shrink-0"
@@ -338,9 +338,16 @@ function MobileMenuItem({ item, onNavigate }) {
   return (
     <div className="rounded-xl border border-white/60 bg-white/40 backdrop-blur-md shadow-sm shadow-black/5 overflow-hidden">
       {!item.to && !item.slug && hasChildren ? (
-        <button onClick={() => setOpen(o => !o)} className="w-full text-left" aria-expanded={open}>
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setOpen(o => !o)}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(o => !o) } }}
+          className="w-full text-left cursor-pointer"
+          aria-expanded={open}
+        >
           {row}
-        </button>
+        </div>
       ) : (
         row
       )}
