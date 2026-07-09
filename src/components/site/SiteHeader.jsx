@@ -453,7 +453,7 @@ function MobileFullPageMenu({ open, onClose }) {
       aria-label="Mobile navigation menu"
     >
       {/* Top row: logo + daily quote */}
-      <div className="flex items-center px-4 py-4">
+      <div className="flex items-center px-4 py-4" style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}>
         <Logo size="md" />
         <DailyQuote />
       </div>
