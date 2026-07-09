@@ -239,7 +239,7 @@ function MobileWorldCupBanner({ item, onNavigate }) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={onNavigate}
-      className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-primary/5 via-primary/5 to-transparent p-3.5"
+      className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-primary/5 via-primary/5 to-transparent p-3.5 mt-2"
     >
       <span className="flex items-center justify-center w-11 h-11 rounded-full bg-white shadow-sm shrink-0 text-xl">
         ⚽
