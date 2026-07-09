@@ -67,8 +67,10 @@ export function getImageAlt(post) {
 }
 
 export function getPrimaryCategory(post) {
-  const terms = post?._embedded?.['wp:term'] || []
+  const terms = post?._embedded?.['wp:term']
+  if (!Array.isArray(terms)) return null
   for (const group of terms) {
+    if (!Array.isArray(group)) continue
     for (const t of group) {
       if (t.taxonomy === 'category' && t.slug !== 'uncategorized') {
         return { name: decodeHtml(t.name), slug: t.slug, id: t.id }
@@ -79,9 +81,11 @@ export function getPrimaryCategory(post) {
 }
 
 export function getAllCategories(post) {
-  const terms = post?._embedded?.['wp:term'] || []
+  const terms = post?._embedded?.['wp:term']
   const cats = []
+  if (!Array.isArray(terms)) return cats
   for (const group of terms) {
+    if (!Array.isArray(group)) continue
     for (const t of group) {
       if (t.taxonomy === 'category') cats.push({ name: decodeHtml(t.name), slug: t.slug, id: t.id })
     }
@@ -90,9 +94,11 @@ export function getAllCategories(post) {
 }
 
 export function getTags(post) {
-  const terms = post?._embedded?.['wp:term'] || []
+  const terms = post?._embedded?.['wp:term']
   const tags = []
+  if (!Array.isArray(terms)) return tags
   for (const group of terms) {
+    if (!Array.isArray(group)) continue
     for (const t of group) {
       if (t.taxonomy === 'post_tag') tags.push({ name: decodeHtml(t.name), slug: t.slug, id: t.id })
     }
