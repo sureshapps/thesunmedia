@@ -24,3 +24,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </SWRConfig>
   </React.StrictMode>,
 )
+
+// Register service worker (required for installability / beforeinstallprompt on Chrome & Android).
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => { /* noop — PWA install just won't be offered */ })
+  })
+}
