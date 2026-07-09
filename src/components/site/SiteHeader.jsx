@@ -551,7 +551,10 @@ export default function SiteHeader() {
       <MobileFullPageMenu open={open} onClose={closeMobile} />
 
       {/* ── ROW 1: Dark ticker bar ── */}
-      <div className="bg-[#2d2d2d] text-white">
+      {/* paddingTop uses the safe-area inset so the dark background still fills all the way
+          to the top of the screen (behind the status bar/notch), while the ticker's actual
+          content is pushed down below it — fixes the PWA "merged with status bar" look. */}
+      <div className="bg-[#2d2d2d] text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
         <div className="container mx-auto px-4 flex items-center h-10 gap-3">
 
           {/* Ticker */}
