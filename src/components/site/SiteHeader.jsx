@@ -4,7 +4,7 @@ import {
   Search, Menu, X, ChevronDown,
   Home as HomeIcon, Newspaper, Flame, Briefcase, MessageSquare,
   Coffee, Trophy, Car, GraduationCap, PlayCircle, MoreHorizontal,
-  Tag, Mail, ArrowRight,
+  Tag, Mail,
   MapPin, Globe, Globe2, MapPinned, Smartphone, HeartPulse, Shirt,
   Plane, UtensilsCrossed, Drama, CircleDot, Feather, Disc3, Gauge,
   Target, Flag, Landmark, ClipboardList, TrendingUp, Clock, Star, Compass,
@@ -22,8 +22,6 @@ const IPAPER_LOGO = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/ipaper.
 const WORLD_CUP_BANNER = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/wcside.png'
 const IPAPER_URL = 'https://thesun-ipaper.cld.bz/'
 const ADS_BANNER_URL = 'https://via.placeholder.com/728x90/cccccc/666666?text=Advertisement'
-// e-Paper phone mockup shown in the mobile menu "Read e-Paper" card
-const IPAPER_PHONE_MOCKUP = '/images/ipaper-iphone-mockup.png'
 
 // Icon shown in the red badge next to each top-level mobile menu label.
 // Matched by label text with a sane fallback, since MAIN_MENU items don't carry their own icon.
@@ -238,18 +236,9 @@ function MobileWorldCupBanner({ item, onNavigate }) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={onNavigate}
-      className="flex items-center gap-3 rounded-xl bg-gradient-to-r from-primary/5 via-primary/5 to-transparent p-3.5 mt-2"
+      className="block mt-2 rounded-xl overflow-hidden"
     >
-      <span className="flex items-center justify-center w-11 h-11 rounded-full bg-white shadow-sm shrink-0 text-xl">
-        ⚽
-      </span>
-      <span className="flex-1 min-w-0">
-        <span className="block font-bold text-sm">{item.label}</span>
-        <span className="block text-xs text-muted-foreground">Latest updates, fixtures, and more</span>
-      </span>
-      <span className="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white shrink-0">
-        <ArrowRight className="h-4 w-4" />
-      </span>
+      <img src={WORLD_CUP_BANNER} alt={item.label || "World Cup '26"} className="w-full h-auto" />
     </a>
   )
 }
@@ -510,19 +499,9 @@ function MobileFullPageMenu({ open, onClose }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Read iPaper"
-          className="relative flex items-center gap-3 rounded-xl border border-border bg-muted/30 p-4 pr-2 overflow-hidden hover:bg-muted/50 transition-colors"
+          className="block rounded-xl overflow-hidden border border-border"
         >
-          <span className="flex-1 min-w-0">
-            <img src={IPAPER_LOGO} alt="iPaper" className="h-6 w-auto mb-2" />
-            <span className="block font-bold text-sm">iPaper</span>
-            <span className="block text-xs text-muted-foreground">Read today's edition anytime, anywhere.</span>
-          </span>
-          <img
-            src={IPAPER_PHONE_MOCKUP}
-            alt=""
-            aria-hidden="true"
-            className="w-24 h-auto shrink-0 -mb-4 -mr-2 drop-shadow-md"
-          />
+          <img src={IPAPER_LOGO} alt="iPaper - Read today's edition anytime, anywhere" className="w-full h-auto" />
         </a>
       </div>
 
