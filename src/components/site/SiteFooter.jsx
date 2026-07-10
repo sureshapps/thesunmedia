@@ -1,94 +1,153 @@
 import { Link } from 'react-router-dom'
-import Logo from './Logo'
 import SocialIcons from './SocialIcons'
 
-const APP_BADGES = [
-  {
-    name: 'App Store',
-    href: 'https://itunes.apple.com/my/app/the-sun-daily-epaper/id1440139272',
-    img: 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/ohyk04tp_Apple-strore-Logo.png',
-  },
-  {
-    name: 'Google Play',
-    href: 'https://play.google.com/store/apps/details?id=my.thesundaily.android',
-    img: 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/7359gfbr_Google-Playstore-logo.png',
-  },
-  {
-    name: 'Huawei AppGallery',
-    href: 'https://appgallery7.huawei.com/#/app/C101189379',
-    img: 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/fhivby7m_Huawei-Gallery-logo.png',
-  },
+// theSun app — single AppsFlyer OneLink smart link that routes the visitor
+// to the correct store (App Store / Play Store / AppGallery) automatically.
+// The banner AND the 3-badge image both point here — one link, not three.
+const APP_LINK = 'https://onelink.to/k5mbcg'
+
+const FOOTER_BG = '#545454'
+
+// Two side-by-side link columns (left group)
+const LINK_COLUMNS = [
+  [
+    { label: 'Malaysia', slug: 'malaysia-news' },
+    { label: 'Asia', slug: 'asia' },
+    { label: 'World', slug: 'world' },
+    { label: 'Going Viral', slug: 'going-viral' },
+    { label: 'Business', slug: 'business' },
+    { label: 'Opinion', slug: 'opinion' },
+  ],
+  [
+    { label: 'Lifestyle', slug: 'lifestyle' },
+    { label: 'Spotlight', slug: 'spotlight' },
+    { label: 'Sports', slug: 'sports' },
+    { label: 'Education', slug: 'education' },
+    { label: 'Property', slug: 'property' },
+    { label: 'Motoring', slug: 'motoring' },
+  ],
 ]
 
-const FOOTER_BG = '#2d2d2d'
+// Company column (right group, after the vertical divider)
+const COMPANY_LINKS = [
+  { label: 'About Us', to: '/about' },
+  { label: 'Contact', to: '/contact' },
+  { label: 'Advertise', to: '/advertise' },
+  { label: 'Privacy Policy', to: '/privacy-policy' },
+  { label: 'Terms of Use', to: '/terms' },
+  { label: 'Disclaimer', to: '/disclaimer' },
+]
 
 export default function SiteFooter() {
   return (
-    <footer className="text-white mt-16" style={{ backgroundColor: FOOTER_BG }}>
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="md:col-span-2">
-            <div className="bg-white inline-block p-2 rounded">
-              <Logo size="lg" />
-            </div>
+    <footer className="text-white mt-16 overflow-hidden" style={{ backgroundColor: FOOTER_BG }}>
+      {/* Decorative wave — sits inside the footer so the dark footer bg shows through
+          its transparent areas, creating the wavy white/gray transition at the top */}
+      <img
+        src="/footer/wave-top.png"
+        alt=""
+        aria-hidden="true"
+        className="w-full h-auto block select-none pointer-events-none"
+      />
+
+      <div className="container mx-auto px-4 pt-2 pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-10">
+          {/* Logo + tagline + app promo + social */}
+          <div className="lg:col-span-5">
+            <Link to="/" aria-label="theSun - Home" className="inline-block">
+              <img src="/footer/logo-gray.png" alt="theSun" className="h-16 w-auto" />
+            </Link>
+
             <p className="mt-4 text-base text-white/80 font-semibold">
-              Independent Malaysian journalism.
+              Independent Malaysian Journalism.
             </p>
 
-            {/* App store badges */}
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              {APP_BADGES.map((b) => (
-                <a
-                  key={b.name}
-                  href={b.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Download from ${b.name}`}
-                  className="block transition-transform hover:scale-105"
-                >
-                  <img
-                    src={b.img}
-                    alt={b.name}
-                    className="h-10 sm:h-11 md:h-12 w-auto rounded-md"
-                    loading="lazy"
-                  />
-                </a>
-              ))}
-            </div>
+            {/* "Download theSun app now" banner — links to the OneLink smart link */}
+            <a
+              href={APP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Download theSun app"
+              className="mt-5 block max-w-[300px] transition-opacity hover:opacity-90"
+            >
+              <img
+                src="/footer/download-app-banner.png"
+                alt="Download theSun App Now"
+                className="w-full h-auto"
+              />
+            </a>
 
-            <div className="mt-5">
+            {/* App Store / Play Store / AppGallery badges — same OneLink for all three */}
+            <a
+              href={APP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Get theSun app on the App Store, Play Store or AppGallery"
+              className="mt-3 block max-w-[360px] transition-transform hover:scale-[1.02]"
+            >
+              <img
+                src="/footer/store-badges.png"
+                alt="Download it from App Store, Get it on Play Store, Explore it AppGallery"
+                className="w-full h-auto"
+              />
+            </a>
+
+            <p className="mt-5 text-sm text-white/60">
+              Your trusted source for news that matters.
+            </p>
+
+            <div className="mt-6">
+              <p className="text-xs font-semibold text-white/60 uppercase tracking-widest mb-2.5">
+                Follow The Sun Malaysia
+              </p>
               <SocialIcons />
             </div>
           </div>
 
-          <div>
-            <h4 className="font-bold uppercase text-sm tracking-wider mb-4 text-white">Sections</h4>
-            <ul className="space-y-2 text-sm text-white/70">
-              <li><Link to="/category/malaysia-news" className="hover:text-primary">Malaysia</Link></li>
-              <li><Link to="/category/business" className="hover:text-primary">Business</Link></li>
-              <li><Link to="/category/world" className="hover:text-primary">World</Link></li>
-              <li><Link to="/category/sports" className="hover:text-primary">Sports</Link></li>
-              <li><Link to="/category/lifestyle" className="hover:text-primary">Lifestyle</Link></li>
-              <li><Link to="/category/entertainment" className="hover:text-primary">Entertainment</Link></li>
-              <li><Link to="/category/opinion" className="hover:text-primary">Opinion</Link></li>
+          {/* Section links — column 1 */}
+          <div className="lg:col-span-2">
+            <ul className="space-y-3 text-[15px] text-white/75">
+              {LINK_COLUMNS[0].map((item) => (
+                <li key={item.slug}>
+                  <Link to={`/category/${item.slug}`} className="hover:text-primary transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          <div>
-            <h4 className="font-bold uppercase text-sm tracking-wider mb-4 text-white">Company</h4>
-            <ul className="space-y-2 text-sm text-white/70">
-              <li><Link to="/about" className="hover:text-primary">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
-              <li><Link to="/advertise" className="hover:text-primary">Advertise</Link></li>
-              <li><Link to="/privacy-policy" className="hover:text-primary">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-primary">Terms of Use</Link></li>
-              <li><Link to="/disclaimer" className="hover:text-primary">Disclaimer</Link></li>
+          {/* Section links — column 2 */}
+          <div className="lg:col-span-2">
+            <ul className="space-y-3 text-[15px] text-white/75">
+              {LINK_COLUMNS[1].map((item) => (
+                <li key={item.slug}>
+                  <Link to={`/category/${item.slug}`} className="hover:text-primary transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Company links — separated by a vertical divider on desktop */}
+          <div className="lg:col-span-3 lg:pl-8 lg:border-l lg:border-white/20">
+            <ul className="space-y-3 text-[15px] text-white/75">
+              {COMPANY_LINKS.map((item) => (
+                <li key={item.to}>
+                  <Link to={item.to} className="hover:text-primary transition-colors">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-white/20 text-xs text-white/60 text-center md:text-left">
-          <p>© 1993-2026 All Rights Reserved. The Sun Malaysia is proudly owned by Sun Media Corporation Sdn Bhd. (221220-K)</p>
+        {/* Copyright */}
+        <div className="mt-10 text-xs text-white/60 text-center md:text-right">
+          <p>© 1993-2026 All Rights Reserved.</p>
+          <p>The Sun Malaysia is proudly owned by Sun Media Corporation Sdn Bhd. (221220-K)</p>
         </div>
       </div>
     </footer>
