@@ -18,7 +18,8 @@ import { MAIN_MENU, itemHref } from '@/lib/menu'
 import { postsKey, decodeHtml, asArray } from '@/lib/wp'
 import useSWR from 'swr'
 
-const IPAPER_LOGO = 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/0tbdiob5_IPAPER.png'
+const IPAPER_LOGO = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/ipaper.png'
+const WORLD_CUP_BANNER = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/wcside.png'
 const IPAPER_URL = 'https://thesun-ipaper.cld.bz/'
 const ADS_BANNER_URL = 'https://via.placeholder.com/728x90/cccccc/666666?text=Advertisement'
 // e-Paper phone mockup shown in the mobile menu "Read e-Paper" card
@@ -130,10 +131,9 @@ function WorldCupLink() {
       href="https://worldcup2026.thesun.my/"
       target="_blank"
       rel="noopener noreferrer"
-      className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors"
+      className="mx-1 my-1 inline-flex items-center rounded overflow-hidden hover:opacity-90 transition-opacity"
     >
-      World Cup '26
-      <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
+      <img src={WORLD_CUP_BANNER} alt="World Cup '26" className="h-9 w-auto" />
     </a>
   )
 }
@@ -176,10 +176,9 @@ function Dropdown({ item }) {
           href={item.to}
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors"
+          className="mx-1 my-1 inline-flex items-center rounded overflow-hidden hover:opacity-90 transition-opacity"
         >
-          World Cup '26
-          <span className="inline-block animate-bounce" style={{ animationDuration: '1.8s' }}>⚽</span>
+          <img src={WORLD_CUP_BANNER} alt="World Cup '26" className="h-9 w-auto" />
         </a>
       )
     }
