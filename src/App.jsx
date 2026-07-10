@@ -7,6 +7,7 @@ import ArticlePage from '@/pages/ArticlePage'
 import CategoryPage from '@/pages/CategoryPage'
 import SearchPage from '@/pages/SearchPage'
 import LatestPage from '@/pages/LatestPage'
+import VideoPage from '@/pages/VideoPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage'
 import ContactPage from '@/pages/ContactPage'
@@ -36,6 +37,7 @@ export default function App() {
           <Route path="/category/:slug" element={<CategoryPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/latest" element={<LatestPage />} />
+          <Route path="/videos" element={<VideoPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/about" element={<AboutPage />} />
