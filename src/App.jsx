@@ -37,7 +37,7 @@ export default function App() {
           <Route path="/category/:slug" element={<CategoryPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/latest" element={<LatestPage />} />
-          <Route path="/videos" element={<VideoPage />} />
+          <Route path="/category/videos" element={<VideoPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/about" element={<AboutPage />} />
