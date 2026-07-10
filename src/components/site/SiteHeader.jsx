@@ -241,7 +241,12 @@ function MobileWorldCupBanner({ item, onNavigate }) {
       onClick={onNavigate}
       className="block mt-2 rounded-xl overflow-hidden"
     >
-      <img src={WORLD_CUP_BANNER} alt={item.label || "World Cup '26"} className="w-full h-auto" />
+      <img
+        src={WORLD_CUP_BANNER}
+        alt={item.label || "World Cup '26"}
+        className="w-full h-auto"
+        style={{ transform: 'scale(1.045)', transformOrigin: 'center' }}
+      />
     </a>
   )
 }
@@ -504,7 +509,12 @@ function MobileFullPageMenu({ open, onClose }) {
           aria-label="Read iPaper"
           className="block rounded-xl overflow-hidden"
         >
-          <img src={IPAPER_BANNER} alt="iPaper - Read today's edition anytime, anywhere" className="w-full h-auto" />
+          <img
+            src={IPAPER_BANNER}
+            alt="iPaper - Read today's edition anytime, anywhere"
+            className="w-full h-auto"
+            style={{ transform: 'scale(1.042)', transformOrigin: 'center' }}
+          />
         </a>
       </div>
 
