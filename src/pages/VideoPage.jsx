@@ -44,6 +44,7 @@ const VIDEO_PAGE_CSS = `
   color:var(--tvp-text);
   font-family:'Sofia Sans',system-ui,-apple-system,sans-serif;
   -webkit-font-smoothing:antialiased;
+  min-height:100%;
   display:block;
 }
 .thesun-video-page *{box-sizing:border-box;}
@@ -766,5 +767,5 @@ export default function VideoPage() {
     }
   }, [])
 
-  return <div className="thesun-video-page" ref={containerRef} />
+  return <div className="thesun-video-page" ref={containerRef} style={{ minHeight: '100%' }} />
 }
