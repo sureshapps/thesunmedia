@@ -413,7 +413,7 @@ export default function VideoPage() {
   useSeo({
     title: 'Videos - theSun | Latest News Videos, Shorts & Viral Clips',
     description: 'Watch the latest news videos, shorts and viral clips from theSun Malaysia.',
-    url: window.location.origin + '/videos',
+    url: window.location.origin + '/category/videos',
   })
 
   useEffect(() => {
