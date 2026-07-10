@@ -18,7 +18,8 @@ import { MAIN_MENU, itemHref } from '@/lib/menu'
 import { postsKey, decodeHtml, asArray } from '@/lib/wp'
 import useSWR from 'swr'
 
-const IPAPER_LOGO = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/ipaper.png'
+const IPAPER_LOGO = 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/0tbdiob5_IPAPER.png'
+const IPAPER_BANNER = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/ipaper.png'
 const WORLD_CUP_BANNER = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/wcside.png'
 const IPAPER_URL = 'https://thesun-ipaper.cld.bz/'
 const ADS_BANNER_URL = 'https://via.placeholder.com/728x90/cccccc/666666?text=Advertisement'
@@ -503,7 +504,7 @@ function MobileFullPageMenu({ open, onClose }) {
           aria-label="Read iPaper"
           className="block rounded-xl overflow-hidden"
         >
-          <img src={IPAPER_LOGO} alt="iPaper - Read today's edition anytime, anywhere" className="w-full h-auto" />
+          <img src={IPAPER_BANNER} alt="iPaper - Read today's edition anytime, anywhere" className="w-full h-auto" />
         </a>
       </div>
 
