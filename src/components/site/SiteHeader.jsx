@@ -129,9 +129,10 @@ function WorldCupLink() {
       href="https://worldcup2026.thesun.my/"
       target="_blank"
       rel="noopener noreferrer"
-      className="mx-1 my-1 inline-flex items-center rounded overflow-hidden hover:opacity-90 transition-opacity"
+      className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors"
     >
-      <img src={WORLD_CUP_BANNER} alt="World Cup '26" className="h-9 w-auto" />
+      World Cup '26
+      <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
     </a>
   )
 }
@@ -174,9 +175,10 @@ function Dropdown({ item }) {
           href={item.to}
           target="_blank"
           rel="noopener noreferrer"
-          className="mx-1 my-1 inline-flex items-center rounded overflow-hidden hover:opacity-90 transition-opacity"
+          className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors"
         >
-          <img src={WORLD_CUP_BANNER} alt="World Cup '26" className="h-9 w-auto" />
+          World Cup '26
+          <span className="inline-block animate-bounce" style={{ animationDuration: '1.8s' }}>⚽</span>
         </a>
       )
     }
@@ -499,7 +501,7 @@ function MobileFullPageMenu({ open, onClose }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Read iPaper"
-          className="block rounded-xl overflow-hidden border border-border"
+          className="block rounded-xl overflow-hidden"
         >
           <img src={IPAPER_LOGO} alt="iPaper - Read today's edition anytime, anywhere" className="w-full h-auto" />
         </a>
