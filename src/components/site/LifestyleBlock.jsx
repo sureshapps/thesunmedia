@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, ArrowRight, Clock } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
 import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
 // Full-width "Lifestyle" section — card-carousel layout.
@@ -105,51 +105,47 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
 }
 
 function LifestyleCard({ post, categoryName }) {
-  const author = post?._embedded?.author?.[0]?.name
   const img = getLargeImage(post) || getFeaturedImage(post) || FALLBACK_IMAGE
+  const excerpt = decodeHtml((post.excerpt?.rendered || '').replace(/<[^>]+>/g, '').trim())
 
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group relative block h-80 w-full rounded-2xl border border-white/40 overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+      className="group flex flex-col h-80 w-full bg-white rounded-[10px] p-1.5 border-4 border-transparent cursor-pointer transition-all duration-150 ease-in-out hover:border-red-600 hover:shadow-[10px_10px_0_#ef4444,20px_20px_0_#7f1d1d] hover:-translate-x-5 hover:-translate-y-5 active:shadow-none active:translate-x-0 active:translate-y-0"
     >
-      {/* Gradient frame layer — thin colored border around a notched image window */}
-      <div className="absolute inset-0 w-full h-full p-1 bg-gradient-to-tr from-red-600 via-orange-400 to-purple-500">
-        <div className="relative w-full h-full rounded-xl rounded-tr-[56px] rounded-br-[22px] overflow-hidden">
-          <img
-            src={img}
-            alt={getImageAlt(post)}
-            loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-          />
-          {/* Darken the image so white text stays legible */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/50" />
-        </div>
+      {/* Thumbnail */}
+      <div className="relative w-full h-32 shrink-0 rounded-lg overflow-hidden bg-muted">
+        <img
+          src={img}
+          alt={getImageAlt(post)}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       </div>
 
-      {/* Time badge, top corner */}
-      <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 text-white text-[11px] font-medium bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
-        <Clock className="h-3 w-3" />
-        {timeAgo(post.date)}
-      </span>
-
-      {/* Bottom content row: glass text panel + circular arrow button */}
-      <div className="absolute inset-x-0 bottom-0 p-2.5 flex items-end justify-between gap-2">
-        <div className="flex-1 min-w-0 p-3 rounded-xl backdrop-blur-lg bg-white/10 border border-white/20 text-white">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-300">
-            {categoryName}
-          </span>
-          <h3 className="mt-1 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-white">
+      {/* Info */}
+      <div className="flex-1 min-h-0 flex flex-col gap-2 p-2.5">
+        <div className="flex items-center justify-between gap-2">
+          <h3 className="font-serif-headline text-base font-bold text-foreground leading-snug line-clamp-1 flex-1">
             {decodeHtml(post.title?.rendered || '')}
           </h3>
-          <span className="mt-1.5 block text-[11px] text-white/70 truncate">
-            {author ? `by ${author}` : timeAgo(post.date)}
+          <span className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:rotate-[-45deg] group-hover:bg-red-100">
+            <ArrowRight className="h-5 w-5 text-foreground" />
           </span>
         </div>
 
-        <span className="shrink-0 w-8 h-8 rounded-full backdrop-blur-lg bg-white/20 border border-white/30 flex items-center justify-center group-hover:bg-red-600 transition-colors duration-300">
-          <ArrowRight className="h-4 w-4 text-white" />
-        </span>
+        <p className="text-xs text-muted-foreground leading-snug line-clamp-3 flex-1">
+          {excerpt}
+        </p>
+
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="bg-red-100 text-red-700 font-bold px-2.5 py-1 rounded-full text-[11px] tracking-tight">
+            • {categoryName}
+          </span>
+          <span className="bg-muted text-muted-foreground font-bold px-2.5 py-1 rounded-full text-[11px] tracking-tight">
+            • {timeAgo(post.date)}
+          </span>
+        </div>
       </div>
     </Link>
   )
