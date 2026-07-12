@@ -9,7 +9,7 @@ export default function CategoryBlock({ slug, name }) {
   const cats = asArray(catsRaw)
   const cat = cats[0]
   const { data: postsRaw } = useSWR(
-    cat ? postsKey({ categories: cat.id, per_page: 8 }) : null
+    cat ? postsKey({ categories: cat.id, per_page: 5 }) : null
   )
 
   if (!cat) return null
@@ -30,12 +30,7 @@ export default function CategoryBlock({ slug, name }) {
       </div>
       {loading && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <FeatureCardSkeleton />
-            <div className="space-y-4 mt-4">
-              {[...Array(3)].map((_, i) => <HorizontalCardSkeleton key={i} />)}
-            </div>
-          </div>
+          <FeatureCardSkeleton />
           <div className="space-y-4">
             {[...Array(4)].map((_, i) => <HorizontalCardSkeleton key={i} />)}
           </div>
@@ -43,17 +38,9 @@ export default function CategoryBlock({ slug, name }) {
       )}
       {!loading && posts.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <FeatureCard post={posts[0]} large />
-            {/* Fills the space left under the hero card with a few more stories */}
-            {posts.length > 5 && (
-              <div className="space-y-4 mt-4">
-                {posts.slice(5, 8).map(p => <HorizontalCard key={p.id} post={p} />)}
-              </div>
-            )}
-          </div>
+          <FeatureCard post={posts[0]} large />
           <div className="space-y-4">
-            {posts.slice(1, 5).map(p => <HorizontalCard key={p.id} post={p} />)}
+            {posts.slice(1).map(p => <HorizontalCard key={p.id} post={p} />)}
           </div>
         </div>
       )}
