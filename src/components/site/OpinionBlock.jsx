@@ -80,7 +80,7 @@ export default function OpinionBlock() {
         </Link>
       </div>
 
-      <div className="hover-vertical-ticker h-[820px] overflow-hidden relative">
+      <div className="hover-vertical-ticker h-[560px] overflow-hidden relative">
         {loading && (
           <div>
             {[...Array(4)].map((_, i) => <OpinionItemSkeleton key={i} />)}
