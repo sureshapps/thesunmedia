@@ -21,18 +21,12 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
 
   const [index, setIndex] = useState(0)
 
-  if (!cat) return null
   const loading = !postsRaw || !Array.isArray(postsRaw)
   const posts = asArray(postsRaw).slice(0, MAX_ITEMS)
-  const displayName = decodeHtml(name || cat.name)
-
   const maxIndex = Math.max(0, posts.length - VISIBLE_COUNT)
-  const visiblePosts = posts.slice(index, index + VISIBLE_COUNT)
-
-  const goPrev = () => setIndex(i => Math.max(0, i - VISIBLE_COUNT))
-  const goNext = () => setIndex(i => (i + VISIBLE_COUNT > maxIndex ? 0 : i + VISIBLE_COUNT))
 
   // Auto-advance to the next 5 cards every 5 seconds, looping back to the start.
+  // This must stay above any early return so hook order never changes between renders.
   useEffect(() => {
     if (posts.length <= VISIBLE_COUNT) return
     const timer = setInterval(() => {
@@ -40,6 +34,13 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
     }, 5000)
     return () => clearInterval(timer)
   }, [maxIndex, posts.length])
+
+  if (!cat) return null
+  const displayName = decodeHtml(name || cat.name)
+  const visiblePosts = posts.slice(index, index + VISIBLE_COUNT)
+
+  const goPrev = () => setIndex(i => Math.max(0, i - VISIBLE_COUNT))
+  const goNext = () => setIndex(i => (i + VISIBLE_COUNT > maxIndex ? 0 : i + VISIBLE_COUNT))
 
   return (
     <section className="py-6">
@@ -128,8 +129,8 @@ function LifestyleCard({ post, categoryName }) {
         {timeAgo(post.date)}
       </span>
 
-      {/* Frosted glassmorphic info panel */}
-      <div className="relative mt-auto p-4 bg-white/25 backdrop-blur-xl border-t border-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+      {/* Frosted glassmorphic info panel — floats as a rounded glass card over the image */}
+      <div className="relative mx-3 mb-3 mt-auto p-4 rounded-2xl bg-white/30 backdrop-blur-2xl border border-white/50 shadow-[0_8px_24px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.6)]">
         <span className="text-[11px] font-semibold uppercase tracking-wider text-red-600 drop-shadow-sm">
           {categoryName}
         </span>
@@ -140,7 +141,7 @@ function LifestyleCard({ post, categoryName }) {
           <span className="text-[11px] font-medium text-muted-foreground truncate">
             {author ? `by ${author}` : timeAgo(post.date)}
           </span>
-          <span className="shrink-0 w-6 h-6 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center group-hover:bg-red-600 transition-colors">
+          <span className="shrink-0 w-6 h-6 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center group-hover:bg-red-600 transition-colors">
             <ArrowRight className="h-3 w-3 text-red-600 group-hover:text-white transition-colors" />
           </span>
         </div>
