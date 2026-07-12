@@ -44,7 +44,39 @@ export default function TrendingBlock() {
     return () => clearInterval(timer)
   }, [posts.length])
 
-  if (error || posts.length === 0) return null
+  if (error) {
+    return (
+      <section className="py-6">
+        <div className="rounded-md border-2 border-dashed border-red-300 bg-red-50 p-4 text-sm text-red-700">
+          <strong>Weekly Trending failed to load.</strong> Error: {error.message}
+          <br />
+          URL: <code className="bg-red-100 px-1 rounded break-all">{key}</code>
+        </div>
+      </section>
+    )
+  }
+
+  if (!data) {
+    return (
+      <section className="py-6">
+        <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+          Loading Weekly Trending…
+        </div>
+      </section>
+    )
+  }
+
+  if (recentPosts.length === 0) {
+    return (
+      <section className="py-6">
+        <div className="rounded-md border-2 border-dashed border-amber-300 bg-amber-50 p-4 text-sm text-amber-700">
+          <strong>0 posts found in the last {RANGE_DAYS} days.</strong>
+          <br />
+          URL: <code className="bg-amber-100 px-1 rounded break-all">{key}</code>
+        </div>
+      </section>
+    )
+  }
 
   const windowItems = Array.from(
     { length: Math.min(VISIBLE_COUNT, posts.length) },
