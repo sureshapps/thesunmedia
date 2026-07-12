@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, ArrowRight, Clock } from 'lucide-react'
-import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
+import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
 // Full-width "Lifestyle" section — card-carousel layout.
 // 5 cards visible per row, previous arrow in front of the row,
@@ -29,8 +29,17 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
   const maxIndex = Math.max(0, posts.length - VISIBLE_COUNT)
   const visiblePosts = posts.slice(index, index + VISIBLE_COUNT)
 
-  const goPrev = () => setIndex(i => Math.max(0, i - 1))
-  const goNext = () => setIndex(i => Math.min(maxIndex, i + 1))
+  const goPrev = () => setIndex(i => Math.max(0, i - VISIBLE_COUNT))
+  const goNext = () => setIndex(i => (i + VISIBLE_COUNT > maxIndex ? 0 : i + VISIBLE_COUNT))
+
+  // Auto-advance to the next 5 cards every 5 seconds, looping back to the start.
+  useEffect(() => {
+    if (posts.length <= VISIBLE_COUNT) return
+    const timer = setInterval(() => {
+      setIndex(i => (i + VISIBLE_COUNT > maxIndex ? 0 : i + VISIBLE_COUNT))
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [maxIndex, posts.length])
 
   return (
     <section className="py-6">
@@ -47,12 +56,11 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
       {loading && (
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-5">
           {[...Array(VISIBLE_COUNT)].map((_, i) => (
-            <div key={i} className="rounded-2xl overflow-hidden bg-white border border-border">
-              <div className="h-40 skeleton-shimmer" />
-              <div className="p-4 space-y-2">
+            <div key={i} className="h-80 rounded-2xl overflow-hidden bg-white border border-border flex flex-col">
+              <div className="flex-1 skeleton-shimmer" />
+              <div className="p-4 space-y-2 bg-white/40">
                 <div className="h-2.5 w-1/3 rounded skeleton-shimmer" />
                 <div className="h-3.5 w-full rounded skeleton-shimmer" />
-                <div className="h-3.5 w-2/3 rounded skeleton-shimmer" />
               </div>
             </div>
           ))}
@@ -83,7 +91,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
           <button
             type="button"
             onClick={goNext}
-            disabled={index >= maxIndex}
+            disabled={posts.length <= VISIBLE_COUNT}
             aria-label="Next"
             className="shrink-0 self-center w-10 h-10 rounded-full border border-border bg-white flex items-center justify-center hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none shadow-sm"
           >
@@ -102,41 +110,37 @@ function LifestyleCard({ post, categoryName }) {
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group relative flex flex-col rounded-2xl overflow-hidden bg-white border border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+      className="group relative flex flex-col h-80 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
     >
-      {/* Image */}
-      <div className="relative h-40 shrink-0 overflow-hidden">
-        <img
-          src={img}
-          alt={getImageAlt(post)}
-          loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-        />
-        {/* Hover overlay with time */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
-          <span className="inline-flex items-center gap-1 text-white text-[11px] font-medium">
-            <Clock className="h-3 w-3" />
-            {timeAgo(post.date)}
-          </span>
-        </div>
-      </div>
+      {/* Full-bleed background image */}
+      <img
+        src={img}
+        alt={getImageAlt(post)}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+      />
+      {/* Subtle top gradient so the category tag stays legible */}
+      <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/40 to-transparent" />
 
-      {/* Info */}
-      <div className="flex-1 flex flex-col p-4">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-red-600">
+      {/* Time badge, top corner */}
+      <span className="relative m-3 self-end inline-flex items-center gap-1 text-white text-[11px] font-medium bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
+        <Clock className="h-3 w-3" />
+        {timeAgo(post.date)}
+      </span>
+
+      {/* Frosted glassmorphic info panel */}
+      <div className="relative mt-auto p-4 bg-white/25 backdrop-blur-xl border-t border-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-red-600 drop-shadow-sm">
           {categoryName}
         </span>
-        <h3 className="mt-1.5 font-serif-headline text-sm font-bold leading-snug line-clamp-3 group-hover:text-red-700 transition-colors">
+        <h3 className="mt-1 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors">
           {decodeHtml(post.title?.rendered || '')}
         </h3>
-        <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2">
-          {stripHtml(post.excerpt?.rendered, 70)}
-        </p>
-        <div className="mt-auto pt-3 flex items-center justify-between">
-          <span className="text-[11px] font-medium text-muted-foreground">
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-[11px] font-medium text-muted-foreground truncate">
             {author ? `by ${author}` : timeAgo(post.date)}
           </span>
-          <span className="shrink-0 w-6 h-6 rounded-full bg-red-50 flex items-center justify-center group-hover:bg-red-600 transition-colors">
+          <span className="shrink-0 w-6 h-6 rounded-full bg-white/50 backdrop-blur-sm flex items-center justify-center group-hover:bg-red-600 transition-colors">
             <ArrowRight className="h-3 w-3 text-red-600 group-hover:text-white transition-colors" />
           </span>
         </div>
