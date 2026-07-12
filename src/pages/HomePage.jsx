@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkeleton, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
 import CategoryBlock from '@/components/site/CategoryBlock'
 import LifestyleBlock from '@/components/site/LifestyleBlock'
+import TrendingBlock from '@/components/site/TrendingBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
 import OpinionBlock from '@/components/site/OpinionBlock'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
@@ -116,6 +117,9 @@ export default function HomePage() {
 
       {/* Lifestyle — full-width purple section, placed right after Business */}
       <LifestyleBlock />
+
+      {/* Weekly Trending — most-viewed posts this week, auto-advancing */}
+      <TrendingBlock />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
