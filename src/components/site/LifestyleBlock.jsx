@@ -130,35 +130,15 @@ function LifestyleCard({ post, categoryName }) {
       </span>
 
       {/* Frosted glassmorphic info panel — floats as a rounded glass card over the image */}
-      <div
-        className="relative mx-3 mb-3 mt-auto p-4 rounded-2xl backdrop-blur-md border border-white/40 shadow-[0_8px_24px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)]"
-        style={{
-          background: `linear-gradient(
-            to bottom,
-            rgba(255,255,255,0.55) 0%,
-            rgba(255,255,255,0.55) 40%,
-            rgba(255,255,255,0) 100%
-          ),
-          linear-gradient(to right, rgba(255,165,0,0.55), rgba(255,0,255,0.55))`,
-        }}
-      >
-        <span
-          className="text-[11px] font-semibold uppercase tracking-wider text-red-600"
-          style={{ textShadow: '0 1px 3px rgba(255,255,255,0.8)' }}
-        >
+      <div className="relative mx-3 mb-3 mt-auto p-4 rounded-2xl bg-white/30 backdrop-blur-2xl border border-white/50 shadow-[0_8px_24px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.6)]">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-red-600 drop-shadow-sm">
           {categoryName}
         </span>
-        <h3
-          className="mt-1 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors"
-          style={{ textShadow: '0 1px 4px rgba(255,255,255,0.9)' }}
-        >
+        <h3 className="mt-1 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors">
           {decodeHtml(post.title?.rendered || '')}
         </h3>
         <div className="mt-2 flex items-center justify-between">
-          <span
-            className="text-[11px] font-medium text-muted-foreground truncate"
-            style={{ textShadow: '0 1px 3px rgba(255,255,255,0.8)' }}
-          >
+          <span className="text-[11px] font-medium text-muted-foreground truncate">
             {author ? `by ${author}` : timeAgo(post.date)}
           </span>
           <span className="shrink-0 w-6 h-6 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center group-hover:bg-red-600 transition-colors">
