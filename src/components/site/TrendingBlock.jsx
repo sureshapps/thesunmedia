@@ -1,34 +1,41 @@
 import { useState, useEffect, useRef } from 'react'
 import useSWR from 'swr'
+import { Link } from 'react-router-dom'
 import { ChevronsLeft, ChevronsRight } from 'lucide-react'
-import { decodeHtml } from '@/lib/wp'
+import { buildUrl, asArray, decodeHtml, getFeaturedImage, getImageAlt, FALLBACK_IMAGE } from '@/lib/wp'
 
-// NOTE: matches the WP_BASE origin used in @/lib/wp.js. If that ever changes,
-// update WP_ROOT here too. Assumes the WordPress Popular Posts plugin is
-// installed and active on the WP backend, with its REST endpoint enabled
-// (Settings > WP Popular Posts > Tools in the plugin's admin screen).
-const WP_ROOT = 'https://thesun.my'
-const TRENDING_URL = `${WP_ROOT}/wp-json/wordpress-popular-posts/v1/popular-posts?range=weekly&limit=12`
-
+// Uses the site's existing /wp/v2/posts endpoint (same one every other block
+// uses) rather than a separate plugin route — 'post_views_count' is already
+// a field WordPress returns on each post here, so we just fetch a wide-enough
+// window of recent posts and sort client-side by views. No extra backend
+// dependency, and it can't 404 since it's the same endpoint already in use
+// elsewhere in the app.
+const RANGE_DAYS = 7
+const FETCH_COUNT = 100
 const VISIBLE_COUNT = 4
+const MAX_TRENDING = 12
 const AUTO_ADVANCE_MS = 2000
 
-const fetcher = (url) => fetch(url).then(r => {
-  if (!r.ok) throw new Error(`HTTP ${r.status}`)
-  return r.json()
-})
-
 export default function TrendingBlock() {
-  const { data, error } = useSWR(TRENDING_URL, fetcher, {
-    revalidateOnFocus: false,
-    dedupingInterval: 5 * 60_000, // popular-posts range is weekly, no need to refetch often
+  const sevenDaysAgo = new Date(Date.now() - RANGE_DAYS * 24 * 60 * 60 * 1000).toISOString()
+  const key = buildUrl('/posts', {
+    after: sevenDaysAgo,
+    per_page: FETCH_COUNT,
+    orderby: 'date',
+    order: 'desc',
+    _embed: 1,
   })
 
-  const posts = Array.isArray(data) ? data : []
+  const { data, error } = useSWR(key, { revalidateOnFocus: false, dedupingInterval: 5 * 60_000 })
+
+  const recentPosts = asArray(data)
+  const posts = [...recentPosts]
+    .sort((a, b) => (b.post_views_count || 0) - (a.post_views_count || 0))
+    .slice(0, MAX_TRENDING)
+
   const [offset, setOffset] = useState(0)
   const pausedRef = useRef(false)
 
-  // Advance one item at a time, looping back to the start.
   useEffect(() => {
     if (posts.length <= 1) return
     const timer = setInterval(() => {
@@ -37,41 +44,7 @@ export default function TrendingBlock() {
     return () => clearInterval(timer)
   }, [posts.length])
 
-  if (error) {
-    return (
-      <section className="py-6">
-        <div className="rounded-md border-2 border-dashed border-red-300 bg-red-50 p-4 text-sm text-red-700">
-          <strong>Weekly Trending failed to load.</strong> Could not reach{' '}
-          <code className="bg-red-100 px-1 rounded">{TRENDING_URL}</code>.
-          <br />
-          Error: {error.message}. Check that the domain is correct and the WordPress Popular Posts
-          plugin's REST endpoint is active.
-        </div>
-      </section>
-    )
-  }
-
-  if (!data) {
-    return (
-      <section className="py-6">
-        <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-          Loading Weekly Trending…
-        </div>
-      </section>
-    )
-  }
-
-  if (posts.length === 0) {
-    return (
-      <section className="py-6">
-        <div className="rounded-md border-2 border-dashed border-amber-300 bg-amber-50 p-4 text-sm text-amber-700">
-          <strong>Weekly Trending loaded but returned 0 posts.</strong> The endpoint responded, but with
-          an empty list — double check the plugin has tracked views yet, or that <code>range=weekly</code>{' '}
-          isn't too narrow.
-        </div>
-      </section>
-    )
-  }
+  if (error || posts.length === 0) return null
 
   const windowItems = Array.from(
     { length: Math.min(VISIBLE_COUNT, posts.length) },
@@ -133,31 +106,25 @@ export default function TrendingBlock() {
 }
 
 function TrendingItem({ post, className = '' }) {
-  const img =
-    post.image?.sizes?.thumbnail?.url ||
-    post.image?.sizes?.medium?.url ||
-    post.image?.sizes?.large?.url ||
-    null
-  const title = decodeHtml(typeof post.title === 'string' ? post.title : (post.title?.rendered || ''))
+  const img = getFeaturedImage(post) || FALLBACK_IMAGE
+  const title = decodeHtml(post.title?.rendered || '')
 
   return (
-    <a
-      href={post.url}
+    <Link
+      to={`/article/${post.slug}`}
       className={`group flex-1 min-w-0 items-center gap-3 ${className || 'flex'}`}
     >
-      {img && (
-        <div className="w-16 h-16 sm:w-20 sm:h-16 shrink-0 rounded overflow-hidden bg-muted">
-          <img
-            src={img}
-            alt={title}
-            loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-          />
-        </div>
-      )}
+      <div className="w-16 h-16 sm:w-20 sm:h-16 shrink-0 rounded overflow-hidden bg-muted">
+        <img
+          src={img}
+          alt={getImageAlt(post)}
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+        />
+      </div>
       <p className="text-sm leading-snug line-clamp-3 text-foreground group-hover:text-red-700 transition-colors">
         {title}
       </p>
-    </a>
+    </Link>
   )
 }
