@@ -2,36 +2,15 @@ import { useState, useEffect, useRef } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { ChevronsLeft, ChevronsRight } from 'lucide-react'
-import { buildUrl, asArray, decodeHtml, getFeaturedImage, getImageAlt, FALLBACK_IMAGE } from '@/lib/wp'
+import { postsKey, asArray, decodeHtml, getFeaturedImage, getImageAlt, FALLBACK_IMAGE } from '@/lib/wp'
 
-// Uses the site's existing /wp/v2/posts endpoint (same one every other block
-// uses) rather than a separate plugin route — 'post_views_count' is already
-// a field WordPress returns on each post here, so we just fetch a wide-enough
-// window of recent posts and sort client-side by views. No extra backend
-// dependency, and it can't 404 since it's the same endpoint already in use
-// elsewhere in the app.
-const RANGE_DAYS = 7
-const FETCH_COUNT = 100
 const VISIBLE_COUNT = 4
-const MAX_TRENDING = 12
 const AUTO_ADVANCE_MS = 2000
 
 export default function TrendingBlock() {
-  const sevenDaysAgo = new Date(Date.now() - RANGE_DAYS * 24 * 60 * 60 * 1000).toISOString()
-  const key = buildUrl('/posts', {
-    after: sevenDaysAgo,
-    per_page: FETCH_COUNT,
-    orderby: 'date',
-    order: 'desc',
-    _embed: 1,
-  })
+  const { data, error } = useSWR(postsKey({ per_page: 10 }))
 
-  const { data, error } = useSWR(key, { revalidateOnFocus: false, dedupingInterval: 5 * 60_000 })
-
-  const recentPosts = asArray(data)
-  const posts = [...recentPosts]
-    .sort((a, b) => (b.post_views_count || 0) - (a.post_views_count || 0))
-    .slice(0, MAX_TRENDING)
+  const posts = asArray(data)
 
   const [offset, setOffset] = useState(0)
   const pausedRef = useRef(false)
@@ -44,39 +23,7 @@ export default function TrendingBlock() {
     return () => clearInterval(timer)
   }, [posts.length])
 
-  if (error) {
-    return (
-      <section className="py-6">
-        <div className="rounded-md border-2 border-dashed border-red-300 bg-red-50 p-4 text-sm text-red-700">
-          <strong>Weekly Trending failed to load.</strong> Error: {error.message}
-          <br />
-          URL: <code className="bg-red-100 px-1 rounded break-all">{key}</code>
-        </div>
-      </section>
-    )
-  }
-
-  if (!data) {
-    return (
-      <section className="py-6">
-        <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
-          Loading Weekly Trending…
-        </div>
-      </section>
-    )
-  }
-
-  if (recentPosts.length === 0) {
-    return (
-      <section className="py-6">
-        <div className="rounded-md border-2 border-dashed border-amber-300 bg-amber-50 p-4 text-sm text-amber-700">
-          <strong>0 posts found in the last {RANGE_DAYS} days.</strong>
-          <br />
-          URL: <code className="bg-amber-100 px-1 rounded break-all">{key}</code>
-        </div>
-      </section>
-    )
-  }
+  if (error || posts.length === 0) return null
 
   const windowItems = Array.from(
     { length: Math.min(VISIBLE_COUNT, posts.length) },
