@@ -5,11 +5,29 @@ import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
 import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
 // Full-width "Lifestyle" section — card-carousel layout.
-// 5 cards visible per row, previous arrow in front of the row,
-// next arrow sitting right after the last visible card.
-// Fetches up to 20 posts total, scrollable one card at a time.
-const VISIBLE_COUNT = 5
+// Shows exactly one row of cards (2 on mobile, 3 on tablet, 5 on desktop)
+// so mobile never wraps into a second stacked row; the row keeps
+// auto-advancing and can be paged with the prev/next arrows.
+// Fetches up to 20 posts total.
 const MAX_ITEMS = 20
+
+function getResponsiveVisibleCount() {
+  if (typeof window === 'undefined') return 5
+  const w = window.innerWidth
+  if (w < 640) return 2   // matches grid-cols-2
+  if (w < 1024) return 3  // matches sm:grid-cols-3
+  return 5                // matches lg:grid-cols-5
+}
+
+function useResponsiveVisibleCount() {
+  const [count, setCount] = useState(getResponsiveVisibleCount)
+  useEffect(() => {
+    const onResize = () => setCount(getResponsiveVisibleCount())
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+  return count
+}
 
 export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' }) {
   const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
@@ -20,12 +38,13 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
   )
 
   const [index, setIndex] = useState(0)
+  const VISIBLE_COUNT = useResponsiveVisibleCount()
 
   const loading = !postsRaw || !Array.isArray(postsRaw)
   const posts = asArray(postsRaw).slice(0, MAX_ITEMS)
   const maxIndex = Math.max(0, posts.length - VISIBLE_COUNT)
 
-  // Auto-advance to the next 5 cards every 5 seconds, looping back to the start.
+  // Auto-advance to the next set of cards every 5 seconds, looping back to the start.
   // This must stay above any early return so hook order never changes between renders.
   useEffect(() => {
     if (posts.length <= VISIBLE_COUNT) return
@@ -33,7 +52,12 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
       setIndex(i => (i + VISIBLE_COUNT > maxIndex ? 0 : i + VISIBLE_COUNT))
     }, 5000)
     return () => clearInterval(timer)
-  }, [maxIndex, posts.length])
+  }, [maxIndex, posts.length, VISIBLE_COUNT])
+
+  // Keep the current index in range whenever VISIBLE_COUNT changes (e.g. rotating the device).
+  useEffect(() => {
+    setIndex(i => Math.min(i, maxIndex))
+  }, [maxIndex])
 
   if (!cat) return null
   const displayName = decodeHtml(name || cat.name)
@@ -55,11 +79,14 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
       </div>
 
       {loading && (
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-5">
-          {[...Array(VISIBLE_COUNT)].map((_, i) => (
-            <div key={i} className="h-80 rounded-2xl overflow-hidden bg-white border border-border flex flex-col">
-              <div className="flex-1 skeleton-shimmer" />
-              <div className="p-4 space-y-2 bg-white/40">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className={`aspect-square rounded-[10px] overflow-hidden bg-white border-4 border-border flex flex-col ${i >= 2 ? 'hidden sm:flex' : ''} ${i >= 3 ? 'lg:flex sm:hidden' : ''}`}
+            >
+              <div className="flex-[2] skeleton-shimmer" />
+              <div className="flex-[3] p-2.5 space-y-2 bg-white/40">
                 <div className="h-2.5 w-1/3 rounded skeleton-shimmer" />
                 <div className="h-3.5 w-full rounded skeleton-shimmer" />
               </div>
@@ -111,10 +138,10 @@ function LifestyleCard({ post, categoryName }) {
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group flex flex-col h-[380px] sm:h-80 w-full bg-white rounded-[10px] p-1.5 border-4 border-red-600 sm:border-transparent shadow-[6px_6px_0_#ef4444,12px_12px_0_#7f1d1d] sm:shadow-none cursor-pointer transition-all duration-150 ease-in-out sm:hover:border-red-600 sm:hover:shadow-[10px_10px_0_#ef4444,20px_20px_0_#7f1d1d] sm:hover:-translate-x-5 sm:hover:-translate-y-5 active:shadow-none active:translate-x-0 active:translate-y-0"
+      className="group flex flex-col aspect-square w-full bg-white rounded-[10px] p-1.5 border-4 border-red-600 sm:border-transparent shadow-[6px_6px_0_#ef4444,12px_12px_0_#7f1d1d] sm:shadow-none cursor-pointer transition-all duration-150 ease-in-out sm:hover:border-red-600 sm:hover:shadow-[10px_10px_0_#ef4444,20px_20px_0_#7f1d1d] sm:hover:-translate-x-5 sm:hover:-translate-y-5 active:shadow-none active:translate-x-0 active:translate-y-0"
     >
       {/* Thumbnail */}
-      <div className="relative w-full h-36 sm:h-32 shrink-0 rounded-lg overflow-hidden bg-muted">
+      <div className="relative w-full flex-[2] shrink-0 rounded-lg overflow-hidden bg-muted">
         <img
           src={img}
           alt={getImageAlt(post)}
@@ -124,17 +151,17 @@ function LifestyleCard({ post, categoryName }) {
       </div>
 
       {/* Info */}
-      <div className="flex-1 min-h-0 flex flex-col gap-2 p-2.5">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="font-serif-headline text-base font-bold text-foreground leading-snug line-clamp-1 flex-1">
+      <div className="flex-[3] min-h-0 flex flex-col gap-1.5 p-2.5">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="font-serif-headline text-sm sm:text-base font-bold text-foreground leading-snug line-clamp-2 flex-1">
             {decodeHtml(post.title?.rendered || '')}
           </h3>
-          <span className="shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:rotate-[-45deg] group-hover:bg-red-100">
-            <ArrowRight className="h-5 w-5 text-foreground" />
+          <span className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 group-hover:rotate-[-45deg] group-hover:bg-red-100">
+            <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
           </span>
         </div>
 
-        <p className="text-xs text-muted-foreground leading-snug line-clamp-4 sm:line-clamp-3 flex-1">
+        <p className="text-[11px] sm:text-xs text-muted-foreground leading-snug line-clamp-3 flex-1">
           {excerpt}
         </p>
 
