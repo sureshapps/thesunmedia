@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ChevronRight, ArrowRight } from 'lucide-react'
 import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getThumbnail, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
-// Full-width "Lifestyle" section — purple themed, sits outside the sidebar grid.
+// Full-width "Lifestyle" section — red themed, sits outside the sidebar grid.
 // Card map: hero (Top Story) + 2 compact info cards (Featured / Highlight)
 // + 1 wide info card (desktop only) + a 4-item image list on the right.
 export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' }) {
@@ -55,19 +55,19 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
           {hero && (
             <Link
               to={`/article/${hero.slug}`}
-              className="lg:col-span-4 group relative flex flex-row overflow-hidden rounded-2xl bg-gradient-to-br from-white via-purple-50 to-purple-200 border border-purple-100"
+              className="lg:col-span-4 group relative flex flex-row overflow-hidden rounded-2xl bg-transparent"
             >
               <div className="flex-1 min-w-0 p-5 flex flex-col justify-center">
-                <span className="self-start bg-purple-600 text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
-                  Top Story
+                <span className="self-start bg-red-600 text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
+                  Featured
                 </span>
-                <h3 className="font-serif-headline text-lg sm:text-xl font-bold leading-tight line-clamp-3 group-hover:text-purple-700 transition-colors">
+                <h3 className="font-serif-headline text-lg sm:text-xl font-bold leading-tight line-clamp-3 group-hover:text-red-700 transition-colors">
                   {decodeHtml(hero.title?.rendered || '')}
                 </h3>
                 <p className="mt-2 text-xs text-muted-foreground leading-relaxed line-clamp-2">
                   {stripHtml(hero.excerpt?.rendered, 100)}
                 </p>
-                <span className="mt-4 inline-flex items-center gap-1.5 bg-purple-600 group-hover:bg-purple-700 transition-colors text-white text-xs font-semibold px-4 py-2 rounded-full w-fit">
+                <span className="mt-4 inline-flex items-center gap-1.5 bg-red-600 group-hover:bg-red-700 transition-colors text-white text-xs font-semibold px-4 py-2 rounded-full w-fit">
                   Read Full Story <ArrowRight className="h-3.5 w-3.5" />
                 </span>
               </div>
@@ -78,7 +78,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-200/80 via-purple-300/20 to-transparent mix-blend-multiply" />
+                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/30 to-transparent" />
               </div>
             </Link>
           )}
@@ -87,7 +87,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
           {cardFeatured && (
             <Link
               to={`/article/${cardFeatured.slug}`}
-              className="lg:col-span-2 group flex flex-col overflow-hidden rounded-2xl bg-purple-50 border border-purple-100"
+              className="lg:col-span-2 group flex flex-col overflow-hidden rounded-2xl bg-red-50 border border-red-100"
             >
               <div className="relative h-36 sm:h-40 shrink-0">
                 <img
@@ -96,17 +96,17 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-50/60 to-purple-50" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-50/60 to-red-50" />
               </div>
               <div className="flex-1 flex flex-col p-4 pt-0">
-                <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-purple-700 transition-colors">
+                <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-red-700 transition-colors">
                   {decodeHtml(cardFeatured.title?.rendered || '')}
                 </h4>
                 <p className="mt-1.5 text-xs text-muted-foreground line-clamp-3">
                   {stripHtml(cardFeatured.excerpt?.rendered, 80)}
                 </p>
-                <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
-                  Learn more <ArrowRight className="h-3 w-3" />
+                <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-red-700">
+                  Read more <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
             </Link>
@@ -116,7 +116,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
           {cardHighlight && (
             <Link
               to={`/article/${cardHighlight.slug}`}
-              className="lg:col-span-2 group flex flex-col overflow-hidden rounded-2xl bg-purple-50 border border-purple-100"
+              className="lg:col-span-2 group flex flex-col overflow-hidden rounded-2xl bg-red-50 border border-red-100"
             >
               <div className="relative h-36 sm:h-40 shrink-0">
                 <img
@@ -125,17 +125,17 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
                   loading="lazy"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-50/60 to-purple-50" />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-50/60 to-red-50" />
               </div>
               <div className="flex-1 flex flex-col p-4 pt-0">
-                <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-purple-700 transition-colors">
+                <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-red-700 transition-colors">
                   {decodeHtml(cardHighlight.title?.rendered || '')}
                 </h4>
                 <p className="mt-1.5 text-xs text-muted-foreground line-clamp-3">
                   {stripHtml(cardHighlight.excerpt?.rendered, 80)}
                 </p>
-                <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
-                  Learn more <ArrowRight className="h-3 w-3" />
+                <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-red-700">
+                  Read more <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
             </Link>
@@ -153,7 +153,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-indigo-700/70 via-purple-800/80 to-purple-950/90" />
+              <div className="absolute inset-0 bg-gradient-to-b from-red-700/70 via-red-800/80 to-red-950/90" />
               <div className="relative flex-1 flex flex-col p-4">
                 <span className="self-start bg-white/20 backdrop-blur text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
                   Featured
@@ -165,7 +165,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
                   {stripHtml(cardWide.excerpt?.rendered, 90)}
                 </p>
                 <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold">
-                  Learn more <ArrowRight className="h-3 w-3" />
+                  Read more <ArrowRight className="h-3 w-3" />
                 </span>
               </div>
             </Link>
@@ -178,7 +178,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
                 <Link
                   key={p.id}
                   to={`/article/${p.slug}`}
-                  className="group flex items-center gap-3 rounded-xl bg-purple-50/60 hover:bg-purple-50 transition-colors border border-purple-100 p-2"
+                  className="group flex items-center gap-3 rounded-xl bg-red-50/60 hover:bg-red-50 transition-colors border border-red-100 p-2"
                 >
                   <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 overflow-hidden rounded-lg bg-muted">
                     <img
@@ -189,13 +189,13 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h5 className="text-xs font-semibold leading-snug line-clamp-2 group-hover:text-purple-700 transition-colors">
+                    <h5 className="text-xs font-semibold leading-snug line-clamp-2 group-hover:text-red-700 transition-colors">
                       {decodeHtml(p.title?.rendered || '')}
                     </h5>
                     <div className="mt-1 text-[10px] text-muted-foreground">{timeAgo(p.date)}</div>
                   </div>
-                  <span className="shrink-0 w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center group-hover:bg-purple-600 transition-colors">
-                    <ArrowRight className="h-3 w-3 text-purple-600 group-hover:text-white transition-colors" />
+                  <span className="shrink-0 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center group-hover:bg-red-600 transition-colors">
+                    <ArrowRight className="h-3 w-3 text-red-600 group-hover:text-white transition-colors" />
                   </span>
                 </Link>
               ))}
