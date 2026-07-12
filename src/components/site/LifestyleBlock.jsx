@@ -111,10 +111,10 @@ function LifestyleCard({ post, categoryName }) {
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group flex flex-col h-80 w-full bg-white rounded-[10px] p-1.5 border-4 border-transparent cursor-pointer transition-all duration-150 ease-in-out hover:border-red-600 hover:shadow-[10px_10px_0_#ef4444,20px_20px_0_#7f1d1d] hover:-translate-x-5 hover:-translate-y-5 active:shadow-none active:translate-x-0 active:translate-y-0"
+      className="group flex flex-col h-[380px] sm:h-80 w-full bg-white rounded-[10px] p-1.5 border-4 border-red-600 sm:border-transparent shadow-[6px_6px_0_#ef4444,12px_12px_0_#7f1d1d] sm:shadow-none cursor-pointer transition-all duration-150 ease-in-out sm:hover:border-red-600 sm:hover:shadow-[10px_10px_0_#ef4444,20px_20px_0_#7f1d1d] sm:hover:-translate-x-5 sm:hover:-translate-y-5 active:shadow-none active:translate-x-0 active:translate-y-0"
     >
       {/* Thumbnail */}
-      <div className="relative w-full h-32 shrink-0 rounded-lg overflow-hidden bg-muted">
+      <div className="relative w-full h-36 sm:h-32 shrink-0 rounded-lg overflow-hidden bg-muted">
         <img
           src={img}
           alt={getImageAlt(post)}
@@ -134,7 +134,7 @@ function LifestyleCard({ post, categoryName }) {
           </span>
         </div>
 
-        <p className="text-xs text-muted-foreground leading-snug line-clamp-3 flex-1">
+        <p className="text-xs text-muted-foreground leading-snug line-clamp-4 sm:line-clamp-3 flex-1">
           {excerpt}
         </p>
 
