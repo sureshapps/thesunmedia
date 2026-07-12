@@ -2,13 +2,13 @@ import { useState, useEffect, useRef } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { ChevronsLeft, ChevronsRight } from 'lucide-react'
-import { asArray, decodeHtml, getFeaturedImage, getImageAlt, FALLBACK_IMAGE } from '@/lib/wp'
+import { postsKey, asArray, decodeHtml, getFeaturedImage, getImageAlt, FALLBACK_IMAGE } from '@/lib/wp'
 
 const VISIBLE_COUNT = 4
 const AUTO_ADVANCE_MS = 2000
 
 export default function TrendingBlock() {
-  const { data, error } = useSWR('https://thesun.my/wp-json/thesun/v1/top-stories')
+  const { data, error } = useSWR(postsKey({ per_page: 10 }))
 
   const posts = asArray(data)
 
@@ -41,7 +41,7 @@ export default function TrendingBlock() {
     >
       <div className="flex items-center gap-3 mb-5">
         <span className="shrink-0 bg-red-600 text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-sm">
-          TREANDING
+          Breaking News
         </span>
         <div className="flex-1 h-0.5 bg-red-600" />
       </div>
