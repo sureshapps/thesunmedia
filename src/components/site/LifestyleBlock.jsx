@@ -71,16 +71,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
       {!loading && posts.length > 0 && (
         <div className="flex items-stretch gap-3">
           {/* Previous arrow — sits in front of the row */}
-          <button
-            type="button"
-            onClick={goPrev}
-            disabled={index === 0}
-            aria-label="Previous"
-            className="shrink-0 self-center w-10 h-10 rounded-full border border-border bg-white flex items-center justify-center hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none shadow-sm"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-
+         
           {/* Card row */}
           <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
             {visiblePosts.map(p => (
@@ -89,15 +80,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
           </div>
 
           {/* Next arrow — placed right after the last card */}
-          <button
-            type="button"
-            onClick={goNext}
-            disabled={posts.length <= VISIBLE_COUNT}
-            aria-label="Next"
-            className="shrink-0 self-center w-10 h-10 rounded-full border border-border bg-white flex items-center justify-center hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none shadow-sm"
-          >
-            <ChevronRight className="h-5 w-5" />
-          </button>
+       
         </div>
       )}
     </section>
