@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Clock } from 'lucide-react'
+import { Clock } from 'lucide-react'
 import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
 // Full-width "Lifestyle" section — big featured card on the left,
@@ -42,9 +42,6 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
   const visiblePosts = posts.slice(index, index + VISIBLE_COUNT)
   const [featured, ...rest] = visiblePosts
 
-  const goPrev = () => setIndex(i => Math.max(0, i - VISIBLE_COUNT))
-  const goNext = () => setIndex(i => (i + VISIBLE_COUNT > maxIndex ? 0 : i + VISIBLE_COUNT))
-
   return (
     <section className="py-6">
       <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-5">
@@ -56,7 +53,7 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
         <div className="flex items-center gap-3">
           {/* Page dots */}
           {pageCount > 1 && (
-            <div className="hidden sm:flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5">
               {[...Array(pageCount)].map((_, i) => (
                 <span
                   key={i}
@@ -68,32 +65,12 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
             </div>
           )}
 
-          {/* Prev / next */}
-          <button
-            type="button"
-            onClick={goPrev}
-            disabled={index === 0}
-            aria-label="Previous"
-            className="w-9 h-9 rounded-full border border-border bg-white flex items-center justify-center hover:border-red-600 hover:text-red-600 transition-colors disabled:opacity-30 disabled:pointer-events-none"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={goNext}
-            disabled={posts.length <= VISIBLE_COUNT}
-            aria-label="Next"
-            className="w-9 h-9 rounded-full border border-border bg-white flex items-center justify-center hover:border-red-600 hover:text-red-600 transition-colors disabled:opacity-30 disabled:pointer-events-none"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-
-          {/* View more */}
+          {/* View all */}
           <a
             href={VIEW_MORE_URL}
-            className="inline-flex items-center bg-red-600 text-white text-xs font-bold uppercase tracking-wide px-4 py-2.5 rounded-full hover:bg-red-700 transition-colors"
+            className="inline-flex items-center border-2 border-red-600 text-red-600 text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-sm hover:bg-red-600 hover:text-white transition-colors"
           >
-            View More
+            View All
           </a>
         </div>
       </div>
