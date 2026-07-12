@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { ChevronRight, ArrowRight, TrendingUp, Globe2 } from 'lucide-react'
-import { postsKey, categoryBySlugKey, getLargeImage, getThumbnail, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
+import { ChevronRight, ArrowRight } from 'lucide-react'
+import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getThumbnail, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
 // Full-width "Lifestyle" section — purple themed, sits outside the sidebar grid.
 // Card map: hero (Top Story) + 2 compact info cards (Featured / Highlight)
@@ -87,23 +87,28 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
           {cardFeatured && (
             <Link
               to={`/article/${cardFeatured.slug}`}
-              className="lg:col-span-2 group flex flex-col rounded-2xl bg-gradient-to-b from-purple-50 to-purple-100 border border-purple-100 p-4"
+              className="lg:col-span-2 group flex flex-col overflow-hidden rounded-2xl bg-purple-50 border border-purple-100"
             >
-              <span className="self-start bg-white text-purple-700 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3 shadow-sm">
-                Featured
-              </span>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mb-3 shadow-sm">
-                <TrendingUp className="h-5 w-5 text-white" />
+              <div className="relative h-36 sm:h-40 shrink-0">
+                <img
+                  src={getFeaturedImage(cardFeatured) || FALLBACK_IMAGE}
+                  alt={getImageAlt(cardFeatured)}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-50/60 to-purple-50" />
               </div>
-              <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-purple-700 transition-colors">
-                {decodeHtml(cardFeatured.title?.rendered || '')}
-              </h4>
-              <p className="mt-1.5 text-xs text-muted-foreground line-clamp-3">
-                {stripHtml(cardFeatured.excerpt?.rendered, 80)}
-              </p>
-              <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
-                Learn more <ArrowRight className="h-3 w-3" />
-              </span>
+              <div className="flex-1 flex flex-col p-4 pt-0">
+                <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-purple-700 transition-colors">
+                  {decodeHtml(cardFeatured.title?.rendered || '')}
+                </h4>
+                <p className="mt-1.5 text-xs text-muted-foreground line-clamp-3">
+                  {stripHtml(cardFeatured.excerpt?.rendered, 80)}
+                </p>
+                <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </span>
+              </div>
             </Link>
           )}
 
@@ -111,23 +116,28 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
           {cardHighlight && (
             <Link
               to={`/article/${cardHighlight.slug}`}
-              className="lg:col-span-2 group flex flex-col rounded-2xl bg-gradient-to-b from-purple-50 to-purple-100 border border-purple-100 p-4"
+              className="lg:col-span-2 group flex flex-col overflow-hidden rounded-2xl bg-purple-50 border border-purple-100"
             >
-              <span className="self-start bg-white text-purple-700 text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3 shadow-sm">
-                Highlight
-              </span>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mb-3 shadow-sm">
-                <Globe2 className="h-5 w-5 text-white" />
+              <div className="relative h-36 sm:h-40 shrink-0">
+                <img
+                  src={getFeaturedImage(cardHighlight) || FALLBACK_IMAGE}
+                  alt={getImageAlt(cardHighlight)}
+                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-50/60 to-purple-50" />
               </div>
-              <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-purple-700 transition-colors">
-                {decodeHtml(cardHighlight.title?.rendered || '')}
-              </h4>
-              <p className="mt-1.5 text-xs text-muted-foreground line-clamp-3">
-                {stripHtml(cardHighlight.excerpt?.rendered, 80)}
-              </p>
-              <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
-                Learn more <ArrowRight className="h-3 w-3" />
-              </span>
+              <div className="flex-1 flex flex-col p-4 pt-0">
+                <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-purple-700 transition-colors">
+                  {decodeHtml(cardHighlight.title?.rendered || '')}
+                </h4>
+                <p className="mt-1.5 text-xs text-muted-foreground line-clamp-3">
+                  {stripHtml(cardHighlight.excerpt?.rendered, 80)}
+                </p>
+                <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-purple-700">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </span>
+              </div>
             </Link>
           )}
 
@@ -135,23 +145,29 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
           {cardWide && (
             <Link
               to={`/article/${cardWide.slug}`}
-              className="hidden lg:flex lg:col-span-2 flex-col rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 p-4 text-white group"
+              className="hidden lg:flex lg:col-span-2 relative flex-col overflow-hidden rounded-2xl text-white group"
             >
-              <span className="self-start bg-white/20 backdrop-blur text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
-                Featured
-              </span>
-              <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-3">
-                <TrendingUp className="h-5 w-5 text-white" />
+              <img
+                src={getLargeImage(cardWide) || getFeaturedImage(cardWide) || FALLBACK_IMAGE}
+                alt={getImageAlt(cardWide)}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-indigo-700/70 via-purple-800/80 to-purple-950/90" />
+              <div className="relative flex-1 flex flex-col p-4">
+                <span className="self-start bg-white/20 backdrop-blur text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
+                  Featured
+                </span>
+                <h4 className="mt-auto font-bold text-sm leading-snug line-clamp-3">
+                  {decodeHtml(cardWide.title?.rendered || '')}
+                </h4>
+                <p className="mt-1.5 text-xs text-white/80 line-clamp-3">
+                  {stripHtml(cardWide.excerpt?.rendered, 90)}
+                </p>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold">
+                  Learn more <ArrowRight className="h-3 w-3" />
+                </span>
               </div>
-              <h4 className="font-bold text-sm leading-snug line-clamp-3">
-                {decodeHtml(cardWide.title?.rendered || '')}
-              </h4>
-              <p className="mt-1.5 text-xs text-white/80 line-clamp-3">
-                {stripHtml(cardWide.excerpt?.rendered, 90)}
-              </p>
-              <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold">
-                Learn more <ArrowRight className="h-3 w-3" />
-              </span>
             </Link>
           )}
 
