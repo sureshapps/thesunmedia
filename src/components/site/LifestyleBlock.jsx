@@ -111,40 +111,45 @@ function LifestyleCard({ post, categoryName }) {
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group relative flex flex-col h-80 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
+      className="group relative block h-80 w-full rounded-2xl border border-white/40 overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
     >
-      {/* Full-bleed background image */}
-      <img
-        src={img}
-        alt={getImageAlt(post)}
-        loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-      />
-      {/* Subtle top gradient so the category tag stays legible */}
-      <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/40 to-transparent" />
+      {/* Gradient frame layer — thin colored border around a notched image window */}
+      <div className="absolute inset-0 w-full h-full p-1 bg-gradient-to-tr from-red-600 via-orange-400 to-purple-500">
+        <div className="relative w-full h-full rounded-xl rounded-tr-[56px] rounded-br-[22px] overflow-hidden">
+          <img
+            src={img}
+            alt={getImageAlt(post)}
+            loading="lazy"
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          />
+          {/* Darken the image so white text stays legible */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/50" />
+        </div>
+      </div>
 
       {/* Time badge, top corner */}
-      <span className="relative m-3 self-end inline-flex items-center gap-1 text-white text-[11px] font-medium bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
+      <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 text-white text-[11px] font-medium bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
         <Clock className="h-3 w-3" />
         {timeAgo(post.date)}
       </span>
 
-      {/* Frosted glassmorphic info panel — floats as a rounded glass card over the image */}
-      <div className="relative mx-3 mb-3 mt-auto p-4 rounded-2xl bg-white/30 backdrop-blur-2xl border border-white/50 shadow-[0_8px_24px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.6)]">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-red-600 drop-shadow-sm">
-          {categoryName}
-        </span>
-        <h3 className="mt-1 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors">
-          {decodeHtml(post.title?.rendered || '')}
-        </h3>
-        <div className="mt-2 flex items-center justify-between">
-          <span className="text-[11px] font-medium text-muted-foreground truncate">
+      {/* Bottom content row: glass text panel + circular arrow button */}
+      <div className="absolute inset-x-0 bottom-0 p-2.5 flex items-end justify-between gap-2">
+        <div className="flex-1 min-w-0 p-3 rounded-xl backdrop-blur-lg bg-white/10 border border-white/20 text-white">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-orange-300">
+            {categoryName}
+          </span>
+          <h3 className="mt-1 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-white">
+            {decodeHtml(post.title?.rendered || '')}
+          </h3>
+          <span className="mt-1.5 block text-[11px] text-white/70 truncate">
             {author ? `by ${author}` : timeAgo(post.date)}
           </span>
-          <span className="shrink-0 w-6 h-6 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center group-hover:bg-red-600 transition-colors">
-            <ArrowRight className="h-3 w-3 text-red-600 group-hover:text-white transition-colors" />
-          </span>
         </div>
+
+        <span className="shrink-0 w-8 h-8 rounded-full backdrop-blur-lg bg-white/20 border border-white/30 flex items-center justify-center group-hover:bg-red-600 transition-colors duration-300">
+          <ArrowRight className="h-4 w-4 text-white" />
+        </span>
       </div>
     </Link>
   )
