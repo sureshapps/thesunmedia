@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkeleton, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
 import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
+import LifestyleBlock from '@/components/site/LifestyleBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
 import MostViewedBlock from '@/components/site/MostViewedBlock'
 import OpinionBlock from '@/components/site/OpinionBlock'
@@ -12,10 +13,8 @@ import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
 const FEATURED_CATEGORY_SLUGS = [
-  'business',
   'malaysia-news',
   'sports',
-  'lifestyle',
   'entertainment',
   'spotlight',
   'motoring',
@@ -138,15 +137,24 @@ export default function HomePage() {
             />
           </a>
 
-          {FEATURED_CATEGORY_SLUGS.map(slug => (
-            <CategoryBlock key={slug} slug={slug} />
-          ))}
+          <CategoryBlock slug="business" />
         </div>
 
         <div className="space-y-8">
           {/* Opinion block — sits at the top of the sidebar, next to the Business section */}
           <OpinionBlock />
           <Sidebar />
+        </div>
+      </div>
+
+      {/* Lifestyle — full-width purple section, placed right after Business */}
+      <LifestyleBlock />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="lg:col-span-2 space-y-10">
+          {FEATURED_CATEGORY_SLUGS.map(slug => (
+            <CategoryBlock key={slug} slug={slug} />
+          ))}
         </div>
       </div>
     </div>
