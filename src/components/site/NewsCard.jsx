@@ -64,6 +64,16 @@ export function FeatureCard({ post, large = false }) {
       <h3 className={`font-serif-headline font-bold leading-tight mt-1.5 group-hover:text-primary transition-colors line-clamp-3 ${large ? 'text-xl sm:text-2xl' : 'text-lg'}`}>
         {decodeHtml(post.title?.rendered || '')}
       </h3>
+      {large && (
+        <>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+            {stripHtml(post.excerpt?.rendered, 160)}
+          </p>
+          <span className="inline-block mt-2 text-sm font-semibold text-primary group-hover:underline">
+            read more...
+          </span>
+        </>
+      )}
     </Link>
   )
 }
