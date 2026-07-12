@@ -107,49 +107,61 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
 function LifestyleCard({ post, categoryName }) {
   const author = post?._embedded?.author?.[0]?.name
   const img = getLargeImage(post) || getFeaturedImage(post) || FALLBACK_IMAGE
-  const excerpt = decodeHtml((post.excerpt?.rendered || '').replace(/<[^>]+>/g, ''))
 
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group relative block h-[400px] w-full rounded-2xl overflow-hidden shadow-[0_0_20px_8px_rgba(0,0,0,0.08)] transition-all duration-300"
+      className="group relative flex flex-col h-80 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
     >
-      {/* Card image — fills the entire card, revealed as the description slides away */}
-      <div className="absolute inset-0 w-full h-full">
-        <img
-          src={img}
-          alt={getImageAlt(post)}
-          loading="lazy"
-          className="w-full h-full object-cover"
-        />
-        {/* Time badge, top corner, over the image */}
-        <span className="absolute top-3 right-3 inline-flex items-center gap-1 text-white text-[11px] font-medium bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
-          <Clock className="h-3 w-3" />
-          {timeAgo(post.date)}
-        </span>
-      </div>
+      {/* Full-bleed background image */}
+      <img
+        src={img}
+        alt={getImageAlt(post)}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+      />
+      {/* Subtle top gradient so the category tag stays legible */}
+      <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/40 to-transparent" />
 
-      {/* Description panel — covers bottom 70%, slides fully down on hover to reveal the image */}
-      <div className="absolute inset-x-0 bottom-0 h-[70%] flex flex-col gap-2 bg-[#f5f5f5] text-foreground rounded-2xl p-4 transition-transform duration-1000 ease-[cubic-bezier(0.645,0.045,0.355,1)] group-hover:translate-y-full">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-red-600">
+      {/* Time badge, top corner */}
+      <span className="relative m-3 self-end inline-flex items-center gap-1 text-white text-[11px] font-medium bg-black/30 backdrop-blur-sm px-2 py-1 rounded-full">
+        <Clock className="h-3 w-3" />
+        {timeAgo(post.date)}
+      </span>
+
+      {/* Frosted glassmorphic info panel — floats as a rounded glass card over the image */}
+      <div
+        className="relative mx-3 mb-3 mt-auto p-4 rounded-2xl backdrop-blur-md border border-white/40 shadow-[0_8px_24px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.4)]"
+        style={{
+          background: `linear-gradient(
+            to bottom,
+            rgba(255,255,255,0.55) 0%,
+            rgba(255,255,255,0.55) 40%,
+            rgba(255,255,255,0) 100%
+          ),
+          linear-gradient(to right, rgba(255,165,0,0.55), rgba(255,0,255,0.55))`,
+        }}
+      >
+        <span
+          className="text-[11px] font-semibold uppercase tracking-wider text-red-600"
+          style={{ textShadow: '0 1px 3px rgba(255,255,255,0.8)' }}
+        >
           {categoryName}
         </span>
-        <p className="font-serif-headline text-lg font-bold leading-snug line-clamp-3">
+        <h3
+          className="mt-1 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors"
+          style={{ textShadow: '0 1px 4px rgba(255,255,255,0.9)' }}
+        >
           {decodeHtml(post.title?.rendered || '')}
-        </p>
-        <p className="text-sm leading-snug text-muted-foreground line-clamp-4">
-          {excerpt}
-        </p>
-        <span className="text-[11px] font-medium text-muted-foreground truncate">
-          {author ? `by ${author}` : timeAgo(post.date)}
-        </span>
-
-        {/* Read more, pinned to the bottom of the description panel */}
-        <div className="mt-auto pt-2 flex items-center justify-between border-t border-black/10">
-          <span className="text-xs font-semibold uppercase tracking-wider text-red-600 group-hover:text-red-700 transition-colors">
-            Read more
+        </h3>
+        <div className="mt-2 flex items-center justify-between">
+          <span
+            className="text-[11px] font-medium text-muted-foreground truncate"
+            style={{ textShadow: '0 1px 3px rgba(255,255,255,0.8)' }}
+          >
+            {author ? `by ${author}` : timeAgo(post.date)}
           </span>
-          <span className="shrink-0 w-6 h-6 rounded-full bg-red-600/10 flex items-center justify-center group-hover:bg-red-600 transition-colors">
+          <span className="shrink-0 w-6 h-6 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center group-hover:bg-red-600 transition-colors">
             <ArrowRight className="h-3 w-3 text-red-600 group-hover:text-white transition-colors" />
           </span>
         </div>
