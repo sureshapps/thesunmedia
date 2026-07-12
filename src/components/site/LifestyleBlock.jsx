@@ -1,115 +1,36 @@
-import { useEffect, useRef } from 'react'
+import { useState } from 'react'
 import useSWR from 'swr'
-import { Link, useNavigate } from 'react-router-dom'
-import { ChevronRight } from 'lucide-react'
-import { postsKey, categoryBySlugKey, getFeaturedImage, getPrimaryCategory, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
+import { Link } from 'react-router-dom'
+import { ChevronLeft, ChevronRight, ArrowRight, Clock } from 'lucide-react'
+import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
-const CARD_W = 304
-const CARD_H = 430
-const RADIUS = 650
-const DRAG_SENSITIVITY = 0.15
-const CLICK_THRESHOLD = 6 // px of movement below which a mouseup/touchend counts as a click, not a drag
+// Full-width "Lifestyle" section — card-carousel layout.
+// 5 cards visible per row, previous arrow in front of the row,
+// next arrow sitting right after the last visible card.
+// Fetches up to 20 posts total, scrollable one card at a time.
+const VISIBLE_COUNT = 5
+const MAX_ITEMS = 20
 
 export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' }) {
   const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
   const cats = asArray(catsRaw)
   const cat = cats[0]
   const { data: postsRaw } = useSWR(
-    cat ? postsKey({ categories: cat.id, per_page: 6 }) : null
+    cat ? postsKey({ categories: cat.id, per_page: MAX_ITEMS, _embed: 1 }) : null
   )
 
-  const loading = !cat || !postsRaw || !Array.isArray(postsRaw)
-  const basePosts = asArray(postsRaw)
-  // Triple the set so the ring has enough cards to feel continuous
-  const data = basePosts.length ? [...basePosts, ...basePosts, ...basePosts] : []
-  const cardCount = data.length
-  const displayName = decodeHtml(name || cat?.name || 'Lifestyle')
-
-  const navigate = useNavigate()
-  const viewportRef = useRef(null)
-  const carouselRef = useRef(null)
-  const rotationRef = useRef(0)
-  const velocityRef = useRef(0)
-  const draggingRef = useRef(false)
-  const lastXRef = useRef(0)
-  const dragDistanceRef = useRef(0)
-  const rafRef = useRef(null)
-
-  useEffect(() => {
-    if (!cardCount) return undefined
-
-    const viewport = viewportRef.current
-    const carousel = carouselRef.current
-    if (!viewport || !carousel) return undefined
-
-    const animate = () => {
-      if (!draggingRef.current) {
-        rotationRef.current += velocityRef.current
-        velocityRef.current *= 0.95
-        if (Math.abs(velocityRef.current) < 0.01) {
-          rotationRef.current -= 0.05
-        }
-      }
-      carousel.style.transform = `translate(-50%, -50%) rotateY(${rotationRef.current}deg)`
-      rafRef.current = requestAnimationFrame(animate)
-    }
-
-    const getX = (e) => e.pageX ?? (e.touches ? e.touches[0].pageX : 0)
-
-    const onStart = (e) => {
-      draggingRef.current = true
-      lastXRef.current = getX(e)
-      dragDistanceRef.current = 0
-      velocityRef.current = 0
-    }
-
-    const onMove = (e) => {
-      if (!draggingRef.current) return
-      if (e.touches) e.preventDefault()
-      const x = getX(e)
-      const deltaX = x - lastXRef.current
-      rotationRef.current += deltaX * DRAG_SENSITIVITY
-      velocityRef.current = deltaX * DRAG_SENSITIVITY
-      dragDistanceRef.current += Math.abs(deltaX)
-      lastXRef.current = x
-    }
-
-    const onEnd = () => {
-      draggingRef.current = false
-    }
-
-    const onWheel = (e) => {
-      velocityRef.current += e.deltaY * 0.01
-    }
-
-    viewport.addEventListener('mousedown', onStart)
-    window.addEventListener('mousemove', onMove)
-    window.addEventListener('mouseup', onEnd)
-    viewport.addEventListener('touchstart', onStart, { passive: false })
-    window.addEventListener('touchmove', onMove, { passive: false })
-    window.addEventListener('touchend', onEnd)
-    viewport.addEventListener('wheel', onWheel, { passive: true })
-
-    rafRef.current = requestAnimationFrame(animate)
-
-    return () => {
-      cancelAnimationFrame(rafRef.current)
-      viewport.removeEventListener('mousedown', onStart)
-      window.removeEventListener('mousemove', onMove)
-      window.removeEventListener('mouseup', onEnd)
-      viewport.removeEventListener('touchstart', onStart)
-      window.removeEventListener('touchmove', onMove)
-      window.removeEventListener('touchend', onEnd)
-      viewport.removeEventListener('wheel', onWheel)
-    }
-  }, [cardCount])
-
-  const handleCardClick = (postSlug) => {
-    if (dragDistanceRef.current > CLICK_THRESHOLD) return
-    navigate(`/article/${postSlug}`)
-  }
+  const [index, setIndex] = useState(0)
 
   if (!cat) return null
+  const loading = !postsRaw || !Array.isArray(postsRaw)
+  const posts = asArray(postsRaw).slice(0, MAX_ITEMS)
+  const displayName = decodeHtml(name || cat.name)
+
+  const maxIndex = Math.max(0, posts.length - VISIBLE_COUNT)
+  const visiblePosts = posts.slice(index, index + VISIBLE_COUNT)
+
+  const goPrev = () => setIndex(i => Math.max(0, i - 1))
+  const goNext = () => setIndex(i => Math.min(maxIndex, i + 1))
 
   return (
     <section className="py-6">
@@ -124,141 +45,102 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
       </div>
 
       {loading && (
-        <div className="w-full h-[420px] rounded-2xl skeleton-shimmer" />
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-5">
+          {[...Array(VISIBLE_COUNT)].map((_, i) => (
+            <div key={i} className="rounded-2xl overflow-hidden bg-white border border-border">
+              <div className="h-40 skeleton-shimmer" />
+              <div className="p-4 space-y-2">
+                <div className="h-2.5 w-1/3 rounded skeleton-shimmer" />
+                <div className="h-3.5 w-full rounded skeleton-shimmer" />
+                <div className="h-3.5 w-2/3 rounded skeleton-shimmer" />
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
-      {!loading && cardCount > 0 && (
-        <>
-          <style>{`
-            .lsc-viewport {
-              width: 100%;
-              height: 65vh;
-              min-height: 460px;
-              max-height: 560px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              perspective: 1000px;
-              perspective-origin: 50% 50%;
-              cursor: grab;
-              position: relative;
-              overflow: hidden;
-            }
-            .lsc-viewport:active { cursor: grabbing; }
-            .lsc-carousel {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              width: ${CARD_W}px;
-              transform-style: preserve-3d;
-              will-change: transform;
-            }
-            .lsc-card {
-              position: absolute;
-              width: ${CARD_W}px;
-              height: ${CARD_H}px;
-              background: #fff;
-              border-radius: 28px;
-              padding: 24px;
-              box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-              border: 1px solid rgba(0,0,0,0.04);
-              backface-visibility: hidden;
-              display: flex;
-              flex-direction: column;
-              left: 50%;
-              top: 50%;
-              margin-left: -${CARD_W / 2}px;
-              margin-top: -${CARD_H / 2}px;
-              cursor: pointer;
-              user-select: none;
-              overflow: hidden;
-            }
-            .lsc-card img {
-              width: 100%;
-              aspect-ratio: 4/3;
-              border-radius: 20px;
-              margin-bottom: 20px;
-              object-fit: cover;
-              pointer-events: none;
-            }
-            .lsc-card-meta {
-              font-size: 12px;
-              line-height: 16px;
-              font-weight: 700;
-              color: #aaa;
-              margin-bottom: 20px;
-              display: flex;
-              align-items: center;
-              text-transform: uppercase;
-              letter-spacing: 0.02em;
-            }
-            .lsc-card-dot {
-              width: 6px;
-              height: 6px;
-              background: hsl(var(--primary));
-              border-radius: 50%;
-              margin-right: 6px;
-              flex-shrink: 0;
-            }
-            .lsc-card h3 {
-              font-size: 20px;
-              line-height: 28px;
-              font-weight: 700;
-              color: #111;
-              margin-bottom: 20px;
-              text-align: left;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-              font-family: inherit;
-            }
-            .lsc-card p {
-              font-size: 14px;
-              line-height: 20px;
-              color: #666;
-              text-align: left;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-              overflow: hidden;
-            }
-            @media (max-width: 768px) {
-              .lsc-viewport { height: 60vh; min-height: 420px; }
-            }
-          `}</style>
+      {!loading && posts.length > 0 && (
+        <div className="flex items-stretch gap-3">
+          {/* Previous arrow — sits in front of the row */}
+          <button
+            type="button"
+            onClick={goPrev}
+            disabled={index === 0}
+            aria-label="Previous"
+            className="shrink-0 self-center w-10 h-10 rounded-full border border-border bg-white flex items-center justify-center hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
 
-          <div className="lsc-viewport" ref={viewportRef}>
-            <div className="lsc-carousel" ref={carouselRef}>
-              {data.map((post, i) => {
-                const angle = (i * 360) / cardCount
-                const catName = getPrimaryCategory(post)?.name || displayName
-                return (
-                  <div
-                    key={`${post.id}-${i}`}
-                    className="lsc-card"
-                    style={{ transform: `rotateY(${angle}deg) translateZ(${RADIUS}px) rotateY(180deg)` }}
-                    onClick={() => handleCardClick(post.slug)}
-                  >
-                    <img
-                      src={getFeaturedImage(post) || FALLBACK_IMAGE}
-                      alt={getImageAlt(post)}
-                      loading="lazy"
-                      draggable={false}
-                    />
-                    <div className="lsc-card-meta">
-                      <span className="lsc-card-dot" />
-                      {catName.toUpperCase()} • {timeAgo(post.date)}
-                    </div>
-                    <h3>{decodeHtml(post.title?.rendered || '')}</h3>
-                    <p>{stripHtml(post.excerpt?.rendered, 120)}</p>
-                  </div>
-                )
-              })}
-            </div>
+          {/* Card row */}
+          <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+            {visiblePosts.map(p => (
+              <LifestyleCard key={p.id} post={p} categoryName={displayName} />
+            ))}
           </div>
-        </>
+
+          {/* Next arrow — placed right after the last card */}
+          <button
+            type="button"
+            onClick={goNext}
+            disabled={index >= maxIndex}
+            aria-label="Next"
+            className="shrink-0 self-center w-10 h-10 rounded-full border border-border bg-white flex items-center justify-center hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none shadow-sm"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
       )}
     </section>
+  )
+}
+
+function LifestyleCard({ post, categoryName }) {
+  const author = post?._embedded?.author?.[0]?.name
+  const img = getLargeImage(post) || getFeaturedImage(post) || FALLBACK_IMAGE
+
+  return (
+    <Link
+      to={`/article/${post.slug}`}
+      className="group relative flex flex-col rounded-2xl overflow-hidden bg-white border border-border shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+    >
+      {/* Image */}
+      <div className="relative h-40 shrink-0 overflow-hidden">
+        <img
+          src={img}
+          alt={getImageAlt(post)}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        />
+        {/* Hover overlay with time */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+          <span className="inline-flex items-center gap-1 text-white text-[11px] font-medium">
+            <Clock className="h-3 w-3" />
+            {timeAgo(post.date)}
+          </span>
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="flex-1 flex flex-col p-4">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-red-600">
+          {categoryName}
+        </span>
+        <h3 className="mt-1.5 font-serif-headline text-sm font-bold leading-snug line-clamp-3 group-hover:text-red-700 transition-colors">
+          {decodeHtml(post.title?.rendered || '')}
+        </h3>
+        <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2">
+          {stripHtml(post.excerpt?.rendered, 70)}
+        </p>
+        <div className="mt-auto pt-3 flex items-center justify-between">
+          <span className="text-[11px] font-medium text-muted-foreground">
+            {author ? `by ${author}` : timeAgo(post.date)}
+          </span>
+          <span className="shrink-0 w-6 h-6 rounded-full bg-red-50 flex items-center justify-center group-hover:bg-red-600 transition-colors">
+            <ArrowRight className="h-3 w-3 text-red-600 group-hover:text-white transition-colors" />
+          </span>
+        </div>
+      </div>
+    </Link>
   )
 }
