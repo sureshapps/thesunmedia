@@ -3,11 +3,9 @@ import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkeleton, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
-import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
 import LifestyleBlock from '@/components/site/LifestyleBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
-import MostViewedBlock from '@/components/site/MostViewedBlock'
 import OpinionBlock from '@/components/site/OpinionBlock'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
@@ -79,71 +77,40 @@ export default function HomePage() {
               ? [...Array(PER_PAGE)].map((_, i) => <TimelineCardSkeleton key={i} />)
               : topStories.map(p => <TimelineCard key={p.id} post={p} />)}
           </div>
-          {/* Ad banner + Prev / Next buttons */}
-          <div className="flex items-start justify-between gap-3 mt-3 pt-3 border-t border-border">
-            <a
-              href="#"
-              className="block w-full rounded overflow-hidden shrink"
-              aria-label="Advertisement"
+          {/* Prev / Next buttons */}
+          <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-border">
+            <button
+              onClick={() => setTopPage(p => Math.max(1, p - 1))}
+              disabled={topPage === 1}
+              aria-label="Previous"
+              className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
             >
-              <img src="/ads/tmbanner.png" alt="Advertisement" className="w-full h-auto rounded" />
-            </a>
-            <div className="flex gap-2 shrink-0">
-              <button
-                onClick={() => setTopPage(p => Math.max(1, p - 1))}
-                disabled={topPage === 1}
-                aria-label="Previous"
-                className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => setTopPage(p => p + 1)}
-                disabled={topStories.length < PER_PAGE}
-                aria-label="Next"
-                className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setTopPage(p => p + 1)}
+              disabled={topStories.length < PER_PAGE}
+              aria-label="Next"
+              className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
       </section>
 
-      <section className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-start">
-        {/* Going Viral section (replaces Editor's Picks) */}
-        <div className="lg:col-span-2">
-          <GoingViralBlock />
-        </div>
-        {/* Most Viewed News — sits beside Going Viral on desktop, stacks below on mobile */}
-        <div>
-          <MostViewedBlock />
-        </div>
+      <section className="mb-6">
+        <GoingViralBlock />
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
-          {/* Inline Ads Banner — theSun app promo */}
-          <a
-            href="#"
-            className="block w-full rounded overflow-hidden"
-            aria-label="Advertisement"
-          >
-            <img
-              src="/ads/thesun-app-banner.png"
-              alt="Advertisement - Download the updated theSun app"
-              loading="lazy"
-              className="w-full h-auto rounded"
-            />
-          </a>
-
           <CategoryBlock slug="business" />
         </div>
 
         <div className="space-y-8">
           {/* Opinion block — sits at the top of the sidebar, next to the Business section */}
           <OpinionBlock />
-          <Sidebar />
         </div>
       </div>
 
