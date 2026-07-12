@@ -1,29 +1,115 @@
+import { useEffect, useRef } from 'react'
 import useSWR from 'swr'
-import { Link } from 'react-router-dom'
-import { ChevronRight, ArrowRight } from 'lucide-react'
-import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getThumbnail, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
+import { Link, useNavigate } from 'react-router-dom'
+import { ChevronRight } from 'lucide-react'
+import { postsKey, categoryBySlugKey, getFeaturedImage, getPrimaryCategory, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
-// Full-width "Lifestyle" section — red themed, sits outside the sidebar grid.
-// Card map: hero (Top Story) + 2 compact info cards (Featured / Highlight)
-// + 1 wide info card (desktop only) + a 4-item image list on the right.
+const CARD_W = 304
+const CARD_H = 430
+const RADIUS = 650
+const DRAG_SENSITIVITY = 0.15
+const CLICK_THRESHOLD = 6 // px of movement below which a mouseup/touchend counts as a click, not a drag
+
 export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' }) {
   const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
   const cats = asArray(catsRaw)
   const cat = cats[0]
   const { data: postsRaw } = useSWR(
-    cat ? postsKey({ categories: cat.id, per_page: 8 }) : null
+    cat ? postsKey({ categories: cat.id, per_page: 6 }) : null
   )
 
-  if (!cat) return null
-  const loading = !postsRaw || !Array.isArray(postsRaw)
-  const posts = asArray(postsRaw)
-  const displayName = decodeHtml(name || cat.name)
+  const loading = !cat || !postsRaw || !Array.isArray(postsRaw)
+  const basePosts = asArray(postsRaw)
+  // Triple the set so the ring has enough cards to feel continuous
+  const data = basePosts.length ? [...basePosts, ...basePosts, ...basePosts] : []
+  const cardCount = data.length
+  const displayName = decodeHtml(name || cat?.name || 'Lifestyle')
 
-  const hero = posts[0]
-  const cardFeatured = posts[1]
-  const cardHighlight = posts[2]
-  const cardWide = posts[3]
-  const listItems = posts.slice(4, 8)
+  const navigate = useNavigate()
+  const viewportRef = useRef(null)
+  const carouselRef = useRef(null)
+  const rotationRef = useRef(0)
+  const velocityRef = useRef(0)
+  const draggingRef = useRef(false)
+  const lastXRef = useRef(0)
+  const dragDistanceRef = useRef(0)
+  const rafRef = useRef(null)
+
+  useEffect(() => {
+    if (!cardCount) return undefined
+
+    const viewport = viewportRef.current
+    const carousel = carouselRef.current
+    if (!viewport || !carousel) return undefined
+
+    const animate = () => {
+      if (!draggingRef.current) {
+        rotationRef.current += velocityRef.current
+        velocityRef.current *= 0.95
+        if (Math.abs(velocityRef.current) < 0.01) {
+          rotationRef.current -= 0.05
+        }
+      }
+      carousel.style.transform = `translate(-50%, -50%) rotateY(${rotationRef.current}deg)`
+      rafRef.current = requestAnimationFrame(animate)
+    }
+
+    const getX = (e) => e.pageX ?? (e.touches ? e.touches[0].pageX : 0)
+
+    const onStart = (e) => {
+      draggingRef.current = true
+      lastXRef.current = getX(e)
+      dragDistanceRef.current = 0
+      velocityRef.current = 0
+    }
+
+    const onMove = (e) => {
+      if (!draggingRef.current) return
+      if (e.touches) e.preventDefault()
+      const x = getX(e)
+      const deltaX = x - lastXRef.current
+      rotationRef.current += deltaX * DRAG_SENSITIVITY
+      velocityRef.current = deltaX * DRAG_SENSITIVITY
+      dragDistanceRef.current += Math.abs(deltaX)
+      lastXRef.current = x
+    }
+
+    const onEnd = () => {
+      draggingRef.current = false
+    }
+
+    const onWheel = (e) => {
+      velocityRef.current += e.deltaY * 0.01
+    }
+
+    viewport.addEventListener('mousedown', onStart)
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onEnd)
+    viewport.addEventListener('touchstart', onStart, { passive: false })
+    window.addEventListener('touchmove', onMove, { passive: false })
+    window.addEventListener('touchend', onEnd)
+    viewport.addEventListener('wheel', onWheel, { passive: true })
+
+    rafRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      viewport.removeEventListener('mousedown', onStart)
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onEnd)
+      viewport.removeEventListener('touchstart', onStart)
+      window.removeEventListener('touchmove', onMove)
+      window.removeEventListener('touchend', onEnd)
+      viewport.removeEventListener('wheel', onWheel)
+    }
+  }, [cardCount])
+
+  const handleCardClick = (postSlug) => {
+    if (dragDistanceRef.current > CLICK_THRESHOLD) return
+    navigate(`/article/${postSlug}`)
+  }
+
+  if (!cat) return null
 
   return (
     <section className="py-6">
@@ -38,170 +124,140 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
       </div>
 
       {loading && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div className="lg:col-span-4 h-[220px] lg:h-[300px] rounded-2xl skeleton-shimmer" />
-          <div className="lg:col-span-2 h-[220px] lg:h-[300px] rounded-2xl skeleton-shimmer" />
-          <div className="lg:col-span-2 h-[220px] lg:h-[300px] rounded-2xl skeleton-shimmer" />
-          <div className="hidden lg:block lg:col-span-2 h-[300px] rounded-2xl skeleton-shimmer" />
-          <div className="lg:col-span-2 space-y-3">
-            {[...Array(4)].map((_, i) => <div key={i} className="h-[68px] rounded-xl skeleton-shimmer" />)}
-          </div>
-        </div>
+        <div className="w-full h-[420px] rounded-2xl skeleton-shimmer" />
       )}
 
-      {!loading && posts.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-          {/* Hero card — Top Story */}
-          {hero && (
-            <Link
-              to={`/article/${hero.slug}`}
-              className="lg:col-span-4 group relative flex flex-row overflow-hidden rounded-2xl bg-transparent"
-            >
-              <div className="flex-1 min-w-0 p-5 flex flex-col justify-center">
-                <span className="self-start bg-red-600 text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
-                  Featured
-                </span>
-                <h3 className="font-serif-headline text-lg sm:text-xl font-bold leading-tight line-clamp-3 group-hover:text-red-700 transition-colors">
-                  {decodeHtml(hero.title?.rendered || '')}
-                </h3>
-                <p className="mt-2 text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                  {stripHtml(hero.excerpt?.rendered, 100)}
-                </p>
-                <span className="mt-4 inline-flex items-center gap-1.5 bg-red-600 group-hover:bg-red-700 transition-colors text-white text-xs font-semibold px-4 py-2 rounded-full w-fit">
-                  Read Full Story <ArrowRight className="h-3.5 w-3.5" />
-                </span>
-              </div>
-              <div className="w-[42%] sm:w-[45%] shrink-0 relative">
-                <img
-                  src={getLargeImage(hero) || FALLBACK_IMAGE}
-                  alt={getImageAlt(hero)}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-white via-white/30 to-transparent" />
-              </div>
-            </Link>
-          )}
+      {!loading && cardCount > 0 && (
+        <>
+          <style>{`
+            .lsc-viewport {
+              width: 100%;
+              height: 65vh;
+              min-height: 460px;
+              max-height: 560px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              perspective: 1000px;
+              perspective-origin: 50% 50%;
+              cursor: grab;
+              position: relative;
+              overflow: hidden;
+            }
+            .lsc-viewport:active { cursor: grabbing; }
+            .lsc-carousel {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              width: ${CARD_W}px;
+              transform-style: preserve-3d;
+              will-change: transform;
+            }
+            .lsc-card {
+              position: absolute;
+              width: ${CARD_W}px;
+              height: ${CARD_H}px;
+              background: #fff;
+              border-radius: 28px;
+              padding: 24px;
+              box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+              border: 1px solid rgba(0,0,0,0.04);
+              backface-visibility: hidden;
+              display: flex;
+              flex-direction: column;
+              left: 50%;
+              top: 50%;
+              margin-left: -${CARD_W / 2}px;
+              margin-top: -${CARD_H / 2}px;
+              cursor: pointer;
+              user-select: none;
+              overflow: hidden;
+            }
+            .lsc-card img {
+              width: 100%;
+              aspect-ratio: 4/3;
+              border-radius: 20px;
+              margin-bottom: 20px;
+              object-fit: cover;
+              pointer-events: none;
+            }
+            .lsc-card-meta {
+              font-size: 12px;
+              line-height: 16px;
+              font-weight: 700;
+              color: #aaa;
+              margin-bottom: 20px;
+              display: flex;
+              align-items: center;
+              text-transform: uppercase;
+              letter-spacing: 0.02em;
+            }
+            .lsc-card-dot {
+              width: 6px;
+              height: 6px;
+              background: hsl(var(--primary));
+              border-radius: 50%;
+              margin-right: 6px;
+              flex-shrink: 0;
+            }
+            .lsc-card h3 {
+              font-size: 20px;
+              line-height: 28px;
+              font-weight: 700;
+              color: #111;
+              margin-bottom: 20px;
+              text-align: left;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              font-family: inherit;
+            }
+            .lsc-card p {
+              font-size: 14px;
+              line-height: 20px;
+              color: #666;
+              text-align: left;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+            }
+            @media (max-width: 768px) {
+              .lsc-viewport { height: 60vh; min-height: 420px; }
+            }
+          `}</style>
 
-          {/* Featured compact card */}
-          {cardFeatured && (
-            <Link
-              to={`/article/${cardFeatured.slug}`}
-              className="lg:col-span-2 group flex flex-col overflow-hidden rounded-2xl bg-red-50 border border-red-100"
-            >
-              <div className="relative h-36 sm:h-40 shrink-0">
-                <img
-                  src={getFeaturedImage(cardFeatured) || FALLBACK_IMAGE}
-                  alt={getImageAlt(cardFeatured)}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-50/60 to-red-50" />
-              </div>
-              <div className="flex-1 flex flex-col p-4 pt-0">
-                <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-red-700 transition-colors">
-                  {decodeHtml(cardFeatured.title?.rendered || '')}
-                </h4>
-                <p className="mt-1.5 text-xs text-muted-foreground line-clamp-3">
-                  {stripHtml(cardFeatured.excerpt?.rendered, 80)}
-                </p>
-                <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-red-700">
-                  Read more <ArrowRight className="h-3 w-3" />
-                </span>
-              </div>
-            </Link>
-          )}
-
-          {/* Highlight compact card */}
-          {cardHighlight && (
-            <Link
-              to={`/article/${cardHighlight.slug}`}
-              className="lg:col-span-2 group flex flex-col overflow-hidden rounded-2xl bg-red-50 border border-red-100"
-            >
-              <div className="relative h-36 sm:h-40 shrink-0">
-                <img
-                  src={getFeaturedImage(cardHighlight) || FALLBACK_IMAGE}
-                  alt={getImageAlt(cardHighlight)}
-                  loading="lazy"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-50/60 to-red-50" />
-              </div>
-              <div className="flex-1 flex flex-col p-4 pt-0">
-                <h4 className="font-bold text-sm leading-snug line-clamp-3 group-hover:text-red-700 transition-colors">
-                  {decodeHtml(cardHighlight.title?.rendered || '')}
-                </h4>
-                <p className="mt-1.5 text-xs text-muted-foreground line-clamp-3">
-                  {stripHtml(cardHighlight.excerpt?.rendered, 80)}
-                </p>
-                <span className="mt-auto pt-3 inline-flex items-center gap-1 text-xs font-semibold text-red-700">
-                  Read more <ArrowRight className="h-3 w-3" />
-                </span>
-              </div>
-            </Link>
-          )}
-
-          {/* Wide featured card — desktop only, matches mobile screenshot (not repeated on mobile) */}
-          {cardWide && (
-            <Link
-              to={`/article/${cardWide.slug}`}
-              className="hidden lg:flex lg:col-span-2 relative flex-col overflow-hidden rounded-2xl text-white group"
-            >
-              <img
-                src={getLargeImage(cardWide) || getFeaturedImage(cardWide) || FALLBACK_IMAGE}
-                alt={getImageAlt(cardWide)}
-                loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-red-700/70 via-red-800/80 to-red-950/90" />
-              <div className="relative flex-1 flex flex-col p-4">
-                <span className="self-start bg-white/20 backdrop-blur text-white text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full mb-3">
-                  Featured
-                </span>
-                <h4 className="mt-auto font-bold text-sm leading-snug line-clamp-3">
-                  {decodeHtml(cardWide.title?.rendered || '')}
-                </h4>
-                <p className="mt-1.5 text-xs text-white/80 line-clamp-3">
-                  {stripHtml(cardWide.excerpt?.rendered, 90)}
-                </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold">
-                  Read more <ArrowRight className="h-3 w-3" />
-                </span>
-              </div>
-            </Link>
-          )}
-
-          {/* Right-hand list column */}
-          {listItems.length > 0 && (
-            <div className="lg:col-span-2 flex flex-col gap-3">
-              {listItems.map(p => (
-                <Link
-                  key={p.id}
-                  to={`/article/${p.slug}`}
-                  className="group flex items-center gap-3 rounded-xl bg-red-50/60 hover:bg-red-50 transition-colors border border-red-100 p-2"
-                >
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 overflow-hidden rounded-lg bg-muted">
+          <div className="lsc-viewport" ref={viewportRef}>
+            <div className="lsc-carousel" ref={carouselRef}>
+              {data.map((post, i) => {
+                const angle = (i * 360) / cardCount
+                const catName = getPrimaryCategory(post)?.name || displayName
+                return (
+                  <div
+                    key={`${post.id}-${i}`}
+                    className="lsc-card"
+                    style={{ transform: `rotateY(${angle}deg) translateZ(${RADIUS}px) rotateY(180deg)` }}
+                    onClick={() => handleCardClick(post.slug)}
+                  >
                     <img
-                      src={getThumbnail(p) || FALLBACK_IMAGE}
-                      alt={getImageAlt(p)}
+                      src={getFeaturedImage(post) || FALLBACK_IMAGE}
+                      alt={getImageAlt(post)}
                       loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      draggable={false}
                     />
+                    <div className="lsc-card-meta">
+                      <span className="lsc-card-dot" />
+                      {catName.toUpperCase()} • {timeAgo(post.date)}
+                    </div>
+                    <h3>{decodeHtml(post.title?.rendered || '')}</h3>
+                    <p>{stripHtml(post.excerpt?.rendered, 120)}</p>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h5 className="text-xs font-semibold leading-snug line-clamp-2 group-hover:text-red-700 transition-colors">
-                      {decodeHtml(p.title?.rendered || '')}
-                    </h5>
-                    <div className="mt-1 text-[10px] text-muted-foreground">{timeAgo(p.date)}</div>
-                  </div>
-                  <span className="shrink-0 w-6 h-6 rounded-full bg-red-100 flex items-center justify-center group-hover:bg-red-600 transition-colors">
-                    <ArrowRight className="h-3 w-3 text-red-600 group-hover:text-white transition-colors" />
-                  </span>
-                </Link>
-              ))}
+                )
+              })}
             </div>
-          )}
-        </div>
+          </div>
+        </>
       )}
     </section>
   )
