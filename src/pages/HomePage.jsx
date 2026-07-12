@@ -7,12 +7,13 @@ import Sidebar from '@/components/site/Sidebar'
 import CategoryBlock from '@/components/site/CategoryBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
 import MostViewedBlock from '@/components/site/MostViewedBlock'
+import OpinionBlock from '@/components/site/OpinionBlock'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
 const FEATURED_CATEGORY_SLUGS = [
-  'malaysia-news',
   'business',
+  'malaysia-news',
   'sports',
   'lifestyle',
   'entertainment',
@@ -110,7 +111,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mb-10 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-start">
+      <section className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 items-start">
         {/* Going Viral section (replaces Editor's Picks) */}
         <div className="lg:col-span-2">
           <GoingViralBlock />
@@ -137,13 +138,16 @@ export default function HomePage() {
             />
           </a>
 
-
           {FEATURED_CATEGORY_SLUGS.map(slug => (
             <CategoryBlock key={slug} slug={slug} />
           ))}
         </div>
 
-        <Sidebar />
+        <div className="space-y-8">
+          {/* Opinion block — sits at the top of the sidebar, next to the Business section */}
+          <OpinionBlock />
+          <Sidebar />
+        </div>
       </div>
     </div>
   )
