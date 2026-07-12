@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { Clock } from 'lucide-react'
-import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, timeAgo, asArray, FALLBACK_IMAGE } from '@/lib/wp'
+
+import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
 // Full-width "Lifestyle" section — big featured card on the left,
 // 2x2 grid of smaller cards on the right. Fetches up to 20 posts total,
@@ -10,6 +10,24 @@ import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageA
 const VISIBLE_COUNT = 5
 const MAX_ITEMS = 20
 const VIEW_MORE_URL = 'https://www.thesunit.my/category/lifestyle'
+
+// Relative time like "1d ago", "3h ago", "2mo ago" — matches the reference design.
+function formatRelativeTime(dateStr) {
+  if (!dateStr) return ''
+  const diffMs = Date.now() - new Date(dateStr).getTime()
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHr = Math.floor(diffMin / 60)
+  const diffDay = Math.floor(diffHr / 24)
+  const diffMonth = Math.floor(diffDay / 30)
+  const diffYear = Math.floor(diffDay / 365)
+
+  if (diffMin < 1) return 'just now'
+  if (diffMin < 60) return `${diffMin}m ago`
+  if (diffHr < 24) return `${diffHr}h ago`
+  if (diffDay < 30) return `${diffDay}d ago`
+  if (diffMonth < 12) return `${diffMonth}mo ago`
+  return `${diffYear}y ago`
+}
 
 export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' }) {
   const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
@@ -152,10 +170,6 @@ function SmallCard({ post, categoryName }) {
           loading="lazy"
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
-        <span className="absolute left-2 top-2 inline-flex items-center gap-1 text-white text-[10px] font-medium bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full">
-          <Clock className="h-2.5 w-2.5" />
-          {timeAgo(post.date)}
-        </span>
       </div>
       <div className="p-3 flex-1 flex flex-col">
         <span className="text-[10px] font-bold uppercase tracking-wide text-white bg-red-600 self-start px-2 py-0.5 rounded-full">
@@ -164,6 +178,9 @@ function SmallCard({ post, categoryName }) {
         <h3 className="mt-1.5 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors">
           {decodeHtml(post.title?.rendered || '')}
         </h3>
+        <span className="mt-1.5 text-[11px] text-muted-foreground">
+          {formatRelativeTime(post.date)}
+        </span>
       </div>
     </Link>
   )
