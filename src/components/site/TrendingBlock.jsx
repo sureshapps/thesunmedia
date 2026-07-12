@@ -41,7 +41,7 @@ export default function TrendingBlock() {
     >
       <div className="flex items-center gap-3 mb-5">
         <span className="shrink-0 bg-red-600 text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-sm">
-          Weekly Trending
+          Breaking News
         </span>
         <div className="flex-1 h-0.5 bg-red-600" />
       </div>
@@ -93,13 +93,18 @@ function TrendingItem({ post, className = '' }) {
       to={`/article/${post.slug}`}
       className={`group flex-1 min-w-0 items-center gap-3 ${className || 'flex'}`}
     >
-      <div className="w-16 h-16 sm:w-20 sm:h-16 shrink-0 rounded overflow-hidden bg-muted">
+      <div className="w-16 h-16 sm:w-20 sm:h-16 shrink-0 relative rounded overflow-hidden bg-muted">
         <img
           src={img}
           alt={getImageAlt(post)}
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
         />
+        {/* Red gradient overlay + badge, matching the site's other card styles */}
+        <div className="absolute inset-0 bg-gradient-to-t from-red-700/60 via-red-700/0 to-transparent" />
+        <span className="absolute bottom-1 left-1 bg-red-600 text-white text-[8px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-sm">
+          Hot
+        </span>
       </div>
       <p className="text-sm leading-snug line-clamp-3 text-foreground group-hover:text-red-700 transition-colors">
         {title}
