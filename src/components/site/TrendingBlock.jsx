@@ -3,12 +3,12 @@ import useSWR from 'swr'
 import { ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { decodeHtml } from '@/lib/wp'
 
-// NOTE: assumes the WordPress Popular Posts plugin is installed and active on
-// the WP backend, with its REST endpoint enabled (Settings > Tools in the
-// plugin's admin screen). If the backend lives at a different domain than
-// 'https://www.thesunit.my', update WP_BASE below.
-const WP_BASE = 'https://www.thesunit.my'
-const TRENDING_URL = `${WP_BASE}/wp-json/wordpress-popular-posts/v1/popular-posts?range=weekly&limit=12`
+// NOTE: matches the WP_BASE origin used in @/lib/wp.js. If that ever changes,
+// update WP_ROOT here too. Assumes the WordPress Popular Posts plugin is
+// installed and active on the WP backend, with its REST endpoint enabled
+// (Settings > WP Popular Posts > Tools in the plugin's admin screen).
+const WP_ROOT = 'https://thesun.my'
+const TRENDING_URL = `${WP_ROOT}/wp-json/wordpress-popular-posts/v1/popular-posts?range=weekly&limit=12`
 
 const VISIBLE_COUNT = 4
 const AUTO_ADVANCE_MS = 2000
@@ -37,7 +37,41 @@ export default function TrendingBlock() {
     return () => clearInterval(timer)
   }, [posts.length])
 
-  if (error || posts.length === 0) return null
+  if (error) {
+    return (
+      <section className="py-6">
+        <div className="rounded-md border-2 border-dashed border-red-300 bg-red-50 p-4 text-sm text-red-700">
+          <strong>Weekly Trending failed to load.</strong> Could not reach{' '}
+          <code className="bg-red-100 px-1 rounded">{TRENDING_URL}</code>.
+          <br />
+          Error: {error.message}. Check that the domain is correct and the WordPress Popular Posts
+          plugin's REST endpoint is active.
+        </div>
+      </section>
+    )
+  }
+
+  if (!data) {
+    return (
+      <section className="py-6">
+        <div className="rounded-md border border-border bg-muted/40 p-4 text-sm text-muted-foreground">
+          Loading Weekly Trending…
+        </div>
+      </section>
+    )
+  }
+
+  if (posts.length === 0) {
+    return (
+      <section className="py-6">
+        <div className="rounded-md border-2 border-dashed border-amber-300 bg-amber-50 p-4 text-sm text-amber-700">
+          <strong>Weekly Trending loaded but returned 0 posts.</strong> The endpoint responded, but with
+          an empty list — double check the plugin has tracked views yet, or that <code>range=weekly</code>{' '}
+          isn't too narrow.
+        </div>
+      </section>
+    )
+  }
 
   const windowItems = Array.from(
     { length: Math.min(VISIBLE_COUNT, posts.length) },
