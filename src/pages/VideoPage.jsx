@@ -30,16 +30,16 @@ import useSeo from '@/lib/useSeo'
 
 const VIDEO_PAGE_CSS = `
 .thesun-video-page{
-  --tvp-bg:#000000;
-  --tvp-panel:rgba(255,255,255,.045);
-  --tvp-panel-2:rgba(255,255,255,.09);
-  --tvp-line:rgba(255,255,255,.12);
-  --tvp-blue:#3b82f6;
-  --tvp-purple:#8b5cf6;
-  --tvp-cyan:#22d3ee;
-  --tvp-text:#f5f5f7;
-  --tvp-muted:#9aa0ac;
-  --tvp-muted-2:#6b7280;
+  --tvp-bg:hsl(var(--background));
+  --tvp-panel:hsl(var(--card));
+  --tvp-panel-2:hsl(var(--muted));
+  --tvp-line:hsl(var(--border));
+  --tvp-blue:hsl(var(--primary));
+  --tvp-purple:hsl(var(--secondary));
+  --tvp-cyan:hsl(var(--primary));
+  --tvp-text:hsl(var(--foreground));
+  --tvp-muted:hsl(var(--muted-foreground));
+  --tvp-muted-2:hsl(var(--muted-foreground));
   --tvp-header-h:64px;
   --tvp-mobile-nav-h:76px;
   background:var(--tvp-bg);
@@ -55,9 +55,9 @@ const VIDEO_PAGE_CSS = `
 .thesun-video-page::before{
   content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:
-    radial-gradient(600px circle at 8% 0%, rgba(59,130,246,.16), transparent 60%),
-    radial-gradient(700px circle at 100% 15%, rgba(139,92,246,.14), transparent 60%),
-    radial-gradient(650px circle at 15% 100%, rgba(34,211,238,.10), transparent 60%);
+    radial-gradient(600px circle at 8% 0%, hsl(var(--primary) / .06), transparent 60%),
+    radial-gradient(700px circle at 100% 15%, hsl(var(--secondary) / .05), transparent 60%),
+    radial-gradient(650px circle at 15% 100%, hsl(var(--primary) / .04), transparent 60%);
 }
 .thesun-video-page *{box-sizing:border-box;}
 .thesun-video-page h1,.thesun-video-page h2,.thesun-video-page h3,.thesun-video-page .hero-title{
@@ -66,12 +66,12 @@ const VIDEO_PAGE_CSS = `
 .thesun-video-page a{color:inherit;text-decoration:none;}
 .thesun-video-page button{font-family:inherit;cursor:pointer;}
 .thesun-video-page img{display:block;max-width:100%;}
-.thesun-video-page ::selection{background:var(--tvp-blue);color:#fff;}
+.thesun-video-page ::selection{background:hsl(var(--primary));color:#fff;}
 
 /* ---------- Header (tab menu + search only) ---------- */
 .thesun-video-page header.site-header{
   position:sticky;top:0;z-index:40;
-  background:rgba(10,10,14,.55);
+  background:hsl(var(--background) / .85);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid var(--tvp-line);
 }
@@ -85,29 +85,29 @@ const VIDEO_PAGE_CSS = `
   background:transparent;border:1px solid transparent;color:var(--tvp-muted);
   font-weight:700;font-size:14.5px;padding:9px 16px;border-radius:999px;transition:.2s;
 }
-.thesun-video-page nav.desktop-nav button:hover{color:#fff;background:rgba(255,255,255,.06);border-color:var(--tvp-line);}
+.thesun-video-page nav.desktop-nav button:hover{color:var(--tvp-text);background:hsl(var(--muted));border-color:var(--tvp-line);}
 .thesun-video-page nav.desktop-nav button.active{
-  color:#0a0a0f;background:#fff;
-  box-shadow:0 0 0 1px rgba(255,255,255,.5), 0 8px 24px -8px rgba(59,130,246,.6);
+  color:hsl(var(--primary-foreground));background:hsl(var(--primary));
+  box-shadow:0 8px 20px -8px hsl(var(--primary) / .5);
 }
 
 .thesun-video-page .header-right{display:flex;align-items:center;gap:14px;}
 .thesun-video-page .icon-btn{
-  background:rgba(255,255,255,.05);border:1px solid var(--tvp-line);color:var(--tvp-muted);width:36px;height:36px;
+  background:hsl(var(--muted));border:1px solid var(--tvp-line);color:var(--tvp-muted);width:36px;height:36px;
   display:flex;align-items:center;justify-content:center;border-radius:50%;
-  transition:.2s;backdrop-filter:blur(8px);
+  transition:.2s;
 }
-.thesun-video-page .icon-btn:hover{color:#fff;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);}
+.thesun-video-page .icon-btn:hover{color:hsl(var(--primary));background:hsl(var(--muted));border-color:hsl(var(--primary) / .4);}
 .thesun-video-page #subscribe-slot{width:154px;height:34px;overflow:hidden;flex-shrink:0;border-radius:8px;}
 .thesun-video-page #subscribe-slot iframe{width:100%;height:100%;}
 
 .thesun-video-page .search-bar{
-  display:none;align-items:center;gap:8px;background:rgba(255,255,255,.05);
-  border:1px solid var(--tvp-line);border-radius:999px;padding:7px 14px;backdrop-filter:blur(8px);
+  display:none;align-items:center;gap:8px;background:hsl(var(--muted));
+  border:1px solid var(--tvp-line);border-radius:999px;padding:7px 14px;
 }
 .thesun-video-page .search-bar.open{display:flex;}
 .thesun-video-page .search-bar input{
-  background:none;border:none;color:#fff;font-size:14px;outline:none;width:180px;
+  background:none;border:none;color:var(--tvp-text);font-size:14px;outline:none;width:180px;
 }
 
 /* ---------- Layout ---------- */
@@ -119,79 +119,78 @@ const VIDEO_PAGE_CSS = `
 }
 .thesun-video-page .section-head:first-child{margin-top:0;}
 .thesun-video-page .section-head h2{
-  font-size:21px;color:#fff;margin:0;display:flex;align-items:center;gap:10px;
+  font-size:21px;color:var(--tvp-text);margin:0;display:flex;align-items:center;gap:10px;
 }
 .thesun-video-page .section-head h2::before{
   content:'';width:9px;height:9px;border-radius:3px;flex-shrink:0;
   background:linear-gradient(135deg,var(--tvp-blue),var(--tvp-purple));
-  box-shadow:0 0 12px rgba(59,130,246,.8);
+  box-shadow:0 0 12px hsl(var(--primary) / .5);
 }
 .thesun-video-page .view-all{
-  color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;gap:4px;cursor:pointer;
-  background:rgba(255,255,255,.06);border:1px solid var(--tvp-line);padding:7px 14px;border-radius:999px;transition:.2s;
+  color:var(--tvp-text);font-weight:700;font-size:13px;display:flex;align-items:center;gap:4px;cursor:pointer;
+  background:hsl(var(--muted));border:1px solid var(--tvp-line);padding:7px 14px;border-radius:999px;transition:.2s;
 }
-.thesun-video-page .view-all:hover{background:rgba(255,255,255,.12);}
+.thesun-video-page .view-all:hover{background:hsl(var(--primary) / .08);color:hsl(var(--primary));}
 
 /* ---------- Hero ---------- */
 .thesun-video-page .hero{
   position:relative;overflow:hidden;
   display:grid;grid-template-columns:1fr 1.4fr;gap:32px;align-items:center;
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.14);border-radius:32px;padding:36px;
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  box-shadow:0 20px 60px -20px rgba(0,0,0,.6);
+  background:hsl(var(--card));
+  border:1px solid var(--tvp-line);border-radius:32px;padding:36px;
+  box-shadow:0 10px 40px -20px rgba(0,0,0,.12);
 }
 .thesun-video-page .hero::before{
   content:'';position:absolute;left:-10%;bottom:-30%;width:420px;height:420px;border-radius:50%;
-  background:radial-gradient(circle,rgba(59,130,246,.45),transparent 70%);z-index:0;pointer-events:none;
+  background:radial-gradient(circle,hsl(var(--primary) / .10),transparent 70%);z-index:0;pointer-events:none;
 }
 .thesun-video-page .hero::after{
   content:'';position:absolute;right:-10%;top:-30%;width:380px;height:380px;border-radius:50%;
-  background:radial-gradient(circle,rgba(139,92,246,.35),transparent 70%);z-index:0;pointer-events:none;
+  background:radial-gradient(circle,hsl(var(--secondary) / .08),transparent 70%);z-index:0;pointer-events:none;
 }
 .thesun-video-page .hero > div{position:relative;z-index:1;}
 .thesun-video-page .hero-eyebrow{
-  display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);color:#fff;
+  display:inline-flex;align-items:center;gap:7px;background:hsl(var(--primary) / .08);color:hsl(var(--primary));
   font-weight:700;font-size:11.5px;letter-spacing:1.2px;padding:7px 12px;border-radius:999px;margin-bottom:16px;
-  border:1px solid var(--tvp-line);
+  border:1px solid hsl(var(--primary) / .2);
 }
-.thesun-video-page .hero-eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--tvp-cyan);box-shadow:0 0 8px var(--tvp-cyan);}
-.thesun-video-page .hero-title{font-size:40px;line-height:1.08;color:#fff;margin:0 0 14px;}
+.thesun-video-page .hero-eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:hsl(var(--primary));box-shadow:0 0 8px hsl(var(--primary) / .6);}
+.thesun-video-page .hero-title{font-size:40px;line-height:1.08;color:var(--tvp-text);margin:0 0 14px;}
 .thesun-video-page .hero-title .accent{
   background:linear-gradient(135deg,var(--tvp-blue),var(--tvp-purple));
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .thesun-video-page .hero-sub{color:var(--tvp-muted);font-size:15px;margin-bottom:22px;max-width:420px;}
 .thesun-video-page .subscribe-cta{
-  display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0a0a0f;
+  display:inline-flex;align-items:center;gap:8px;background:hsl(var(--primary));color:hsl(var(--primary-foreground));
   font-weight:800;font-size:14px;padding:14px 24px;border-radius:999px;border:none;
-  box-shadow:0 8px 24px -8px rgba(255,255,255,.3);transition:.2s;
+  box-shadow:0 8px 24px -8px hsl(var(--primary) / .5);transition:.2s;
 }
-.thesun-video-page .subscribe-cta:hover{background:#eee;transform:translateY(-1px);box-shadow:0 12px 28px -8px rgba(255,255,255,.4);}
+.thesun-video-page .subscribe-cta:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 12px 28px -8px hsl(var(--primary) / .6);}
 
 .thesun-video-page .hero-video{
   position:relative;border-radius:22px;overflow:hidden;aspect-ratio:16/9;
-  background:#0a0a0f;cursor:pointer;border:1px solid var(--tvp-line);
+  background:#111318;cursor:pointer;border:1px solid var(--tvp-line);
 }
 .thesun-video-page .hero-video img{width:100%;height:100%;object-fit:cover;}
 .thesun-video-page .live-badge{
   position:absolute;top:14px;left:14px;background:rgba(10,10,15,.65);backdrop-filter:blur(8px);color:#fff;font-weight:700;
   font-size:11px;padding:5px 10px;border-radius:999px;display:flex;align-items:center;gap:6px;z-index:2;border:1px solid rgba(255,255,255,.18);
 }
-.thesun-video-page .live-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--tvp-cyan);box-shadow:0 0 8px var(--tvp-cyan);}
+.thesun-video-page .live-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:hsl(var(--primary));box-shadow:0 0 8px hsl(var(--primary) / .8);}
 .thesun-video-page .watching-badge{
   position:absolute;bottom:0;left:0;right:0;padding:40px 16px 14px;
   background:linear-gradient(transparent,rgba(0,0,0,.85));
   display:flex;justify-content:space-between;align-items:flex-end;
 }
 .thesun-video-page .watching-badge .wtitle{font-weight:700;color:#fff;font-size:16px;}
-.thesun-video-page .watching-badge .wsub{color:var(--tvp-muted);font-size:12.5px;margin-top:2px;}
+.thesun-video-page .watching-badge .wsub{color:rgba(255,255,255,.75);font-size:12.5px;margin-top:2px;}
 .thesun-video-page .play-circle{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   width:66px;height:66px;border-radius:50%;background:rgba(10,10,15,.5);border:1.5px solid rgba(255,255,255,.5);
   backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:2;transition:.2s;
 }
-.thesun-video-page .hero-video:hover .play-circle{background:rgba(59,130,246,.35);border-color:var(--tvp-blue);}
+.thesun-video-page .hero-video:hover .play-circle{background:hsl(var(--primary) / .5);border-color:hsl(var(--primary));}
 
 /* ---------- Grids ---------- */
 .thesun-video-page .grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
@@ -200,17 +199,17 @@ const VIDEO_PAGE_CSS = `
 
 .thesun-video-page .vcard{
   position:relative;background:var(--tvp-panel);border:1px solid var(--tvp-line);border-radius:22px;cursor:pointer;
-  transition:transform .2s,border-color .2s;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:transform .2s,border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(0,0,0,.05);
 }
-.thesun-video-page .vcard:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.28);}
+.thesun-video-page .vcard:hover{transform:translateY(-4px);border-color:hsl(var(--primary) / .35);box-shadow:0 12px 30px -14px rgba(0,0,0,.18);}
 .thesun-video-page .vcard::after{
   content:'';position:absolute;left:14%;bottom:-26px;width:150px;height:110px;border-radius:50%;
-  filter:blur(30px);opacity:.55;z-index:0;pointer-events:none;
+  filter:blur(30px);opacity:.16;z-index:0;pointer-events:none;
   background:radial-gradient(circle,var(--tvp-blue),transparent 70%);
 }
 .thesun-video-page .vcard:nth-child(3n+2)::after{background:radial-gradient(circle,var(--tvp-purple),transparent 70%);left:auto;right:14%;}
 .thesun-video-page .vcard:nth-child(3n)::after{background:radial-gradient(circle,var(--tvp-cyan),transparent 70%);}
-.thesun-video-page .thumb-wrap{position:relative;aspect-ratio:16/9;background:#0a0a0f;overflow:hidden;border-radius:22px 22px 0 0;z-index:1;}
+.thesun-video-page .thumb-wrap{position:relative;aspect-ratio:16/9;background:#111318;overflow:hidden;border-radius:22px 22px 0 0;z-index:1;}
 .thesun-video-page .thumb-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
 .thesun-video-page .vcard:hover .thumb-wrap img{transform:scale(1.06);}
 .thesun-video-page .duration-badge{
@@ -222,10 +221,10 @@ const VIDEO_PAGE_CSS = `
   width:48px;height:48px;border-radius:50%;background:rgba(10,10,15,.5);border:1.5px solid rgba(255,255,255,.6);
   backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s;
 }
-.thesun-video-page .vcard:hover .mini-play{opacity:1;background:rgba(59,130,246,.4);border-color:var(--tvp-blue);}
+.thesun-video-page .vcard:hover .mini-play{opacity:1;background:hsl(var(--primary) / .55);border-color:hsl(var(--primary));}
 .thesun-video-page .vcard-body{padding:14px 16px 18px;position:relative;z-index:1;}
 .thesun-video-page .vcard-body h4{
-  font-family:'Inter',sans-serif;font-weight:700;font-size:14.5px;color:#fff;margin:0 0 8px;
+  font-family:'Inter',sans-serif;font-weight:700;font-size:14.5px;color:var(--tvp-text);margin:0 0 8px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;
 }
 .thesun-video-page .vcard-meta{color:var(--tvp-muted-2);font-size:12px;display:flex;gap:6px;align-items:center;}
@@ -240,35 +239,34 @@ const VIDEO_PAGE_CSS = `
 .thesun-video-page .scroll-track .short-card{flex:0 0 170px;}
 .thesun-video-page .scroll-arrow{
   position:absolute;top:40%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;
-  background:rgba(10,10,15,.7);backdrop-filter:blur(10px);border:1px solid var(--tvp-line);color:#fff;display:flex;align-items:center;
+  background:hsl(var(--card));box-shadow:0 4px 16px -6px rgba(0,0,0,.2);border:1px solid var(--tvp-line);color:var(--tvp-text);display:flex;align-items:center;
   justify-content:center;z-index:5;transition:.2s;
 }
 .thesun-video-page .scroll-arrow.left{left:-10px;}
 .thesun-video-page .scroll-arrow.right{right:-10px;}
-.thesun-video-page .scroll-arrow:hover{background:rgba(59,130,246,.35);border-color:var(--tvp-blue);}
+.thesun-video-page .scroll-arrow:hover{background:hsl(var(--primary) / .1);border-color:hsl(var(--primary) / .4);color:hsl(var(--primary));}
 
 .thesun-video-page .load-more-wrap{display:flex;justify-content:center;margin-top:34px;}
 .thesun-video-page .load-more-btn{
-  background:#fff;color:#0a0a0f;font-weight:800;font-size:14.5px;padding:14px 36px;border-radius:999px;border:none;
-  box-shadow:0 10px 30px -10px rgba(255,255,255,.35);transition:.2s;
+  background:hsl(var(--primary));color:hsl(var(--primary-foreground));font-weight:800;font-size:14.5px;padding:14px 36px;border-radius:999px;border:none;
+  box-shadow:0 10px 30px -10px hsl(var(--primary) / .5);transition:.2s;
 }
-.thesun-video-page .load-more-btn:hover{background:#eee;transform:translateY(-1px);box-shadow:0 14px 34px -8px rgba(255,255,255,.45);}
+.thesun-video-page .load-more-btn:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 14px 34px -8px hsl(var(--primary) / .6);}
 .thesun-video-page .load-more-btn:disabled{opacity:.5;cursor:default;transform:none;}
 
 .thesun-video-page .empty-state,.thesun-video-page .loading-state{
   text-align:center;padding:64px 20px;color:var(--tvp-muted);
 }
 .thesun-video-page .loading-state .spinner{
-  width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.12);border-top-color:var(--tvp-blue);
+  width:34px;height:34px;border-radius:50%;border:3px solid var(--tvp-line);border-top-color:hsl(var(--primary));
   margin:0 auto 14px;animation:thesunVideoSpin 0.8s linear infinite;
 }
 @keyframes thesunVideoSpin{to{transform:rotate(360deg);}}
 .thesun-video-page .error-banner{
-  background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.3);color:#e4d8ff;border-radius:16px;padding:16px 20px;
+  background:hsl(var(--primary) / .06);border:1px solid hsl(var(--primary) / .25);color:var(--tvp-text);border-radius:16px;padding:16px 20px;
   font-size:14px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;
-  backdrop-filter:blur(10px);
 }
-.thesun-video-page .error-banner button{background:#fff;color:#0a0a0f;border:none;padding:9px 16px;border-radius:999px;font-weight:700;font-size:13px;flex-shrink:0;}
+.thesun-video-page .error-banner button{background:hsl(var(--primary));color:hsl(var(--primary-foreground));border:none;padding:9px 16px;border-radius:999px;font-weight:700;font-size:13px;flex-shrink:0;}
 
 /* ---------- Lightbox ---------- */
 .thesun-video-page .lightbox{
@@ -277,25 +275,25 @@ const VIDEO_PAGE_CSS = `
 }
 .thesun-video-page .lightbox.open{display:flex;}
 .thesun-video-page .lightbox-inner{width:100%;max-width:960px;position:relative;}
-.thesun-video-page .lightbox-player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:20px;overflow:hidden;border:1px solid var(--tvp-line);}
+.thesun-video-page .lightbox-player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.12);}
 .thesun-video-page .lightbox-player.vertical{max-width:400px;aspect-ratio:9/16;margin:0 auto;}
 .thesun-video-page .lightbox-player iframe{width:100%;height:100%;border:none;}
 .thesun-video-page .lightbox-title{color:#fff;font-weight:700;font-size:16px;margin-top:18px;}
 .thesun-video-page .lightbox-close{
   position:absolute;top:-52px;right:0;width:38px;height:38px;border-radius:50%;
-  background:rgba(255,255,255,.08);border:1px solid var(--tvp-line);color:#fff;font-size:20px;line-height:1;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:20px;line-height:1;
   z-index:5;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:.2s;
 }
-.thesun-video-page .lightbox-close:hover{background:rgba(255,255,255,.16);}
+.thesun-video-page .lightbox-close:hover{background:rgba(255,255,255,.2);}
 @media (max-width:640px){.thesun-video-page .lightbox-close{top:-46px;}}
 
-/* ---------- Mobile bottom nav ---------- */
+/* ---------- Mobile bottom nav — mobile-only tab bar, hidden by default (desktop) ---------- */
 .thesun-video-page nav.mobile-nav{
   position:fixed;left:12px;right:12px;bottom:12px;z-index:50;display:none;
-  background:rgba(15,15,20,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:hsl(var(--background) / .92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border:1px solid var(--tvp-line);border-radius:24px;
   padding:10px 4px calc(10px + env(safe-area-inset-bottom));
-  box-shadow:0 20px 50px -20px rgba(0,0,0,.7);
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.25);
 }
 .thesun-video-page .mobile-nav .row{display:flex;justify-content:space-around;}
 .thesun-video-page .mobile-nav button{
@@ -303,9 +301,11 @@ const VIDEO_PAGE_CSS = `
   align-items:center;gap:5px;font-size:11px;font-weight:600;flex:1;padding:6px 0;border-radius:14px;transition:.2s;
 }
 .thesun-video-page .mobile-nav button svg{width:22px;height:22px;}
-.thesun-video-page .mobile-nav button.active{color:#fff;background:rgba(255,255,255,.08);}
-.thesun-video-page .mobile-nav button.active svg{stroke:var(--tvp-blue);}
+.thesun-video-page .mobile-nav button.active{color:hsl(var(--primary));background:hsl(var(--primary) / .08);}
+.thesun-video-page .mobile-nav button.active svg{stroke:hsl(var(--primary));}
 
+/* Below this breakpoint = "mobile view": desktop tab menu hides, bottom tab bar shows.
+   Above it = "desktop view": nav.mobile-nav stays display:none from the rule above. */
 @media (max-width:900px){
   .thesun-video-page nav.desktop-nav{display:none;}
   .thesun-video-page nav.mobile-nav{display:block;}
