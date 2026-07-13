@@ -30,37 +30,49 @@ import useSeo from '@/lib/useSeo'
 
 const VIDEO_PAGE_CSS = `
 .thesun-video-page{
-  --tvp-bg:#0a0a0a;
-  --tvp-panel:#141414;
-  --tvp-panel-2:#1b1b1b;
-  --tvp-line:rgba(255,255,255,.08);
-  --tvp-red:#ED1C24;
-  --tvp-text:#f5f5f5;
-  --tvp-muted:#9c9c9c;
-  --tvp-muted-2:#6f6f6f;
+  --tvp-bg:#000000;
+  --tvp-panel:rgba(255,255,255,.045);
+  --tvp-panel-2:rgba(255,255,255,.09);
+  --tvp-line:rgba(255,255,255,.12);
+  --tvp-blue:#3b82f6;
+  --tvp-purple:#8b5cf6;
+  --tvp-cyan:#22d3ee;
+  --tvp-text:#f5f5f7;
+  --tvp-muted:#9aa0ac;
+  --tvp-muted-2:#6b7280;
   --tvp-header-h:64px;
   --tvp-mobile-nav-h:76px;
   background:var(--tvp-bg);
   color:var(--tvp-text);
-  font-family:'Sofia Sans',system-ui,-apple-system,sans-serif;
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
   -webkit-font-smoothing:antialiased;
   min-height:100%;
   display:block;
+  position:relative;
+  overflow-x:hidden;
+  isolation:isolate;
+}
+.thesun-video-page::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(600px circle at 8% 0%, rgba(59,130,246,.16), transparent 60%),
+    radial-gradient(700px circle at 100% 15%, rgba(139,92,246,.14), transparent 60%),
+    radial-gradient(650px circle at 15% 100%, rgba(34,211,238,.10), transparent 60%);
 }
 .thesun-video-page *{box-sizing:border-box;}
 .thesun-video-page h1,.thesun-video-page h2,.thesun-video-page h3,.thesun-video-page .hero-title{
-  font-family:'Trajan Pro', sans-serif;letter-spacing:.2px;
+  font-family:'Inter',system-ui,sans-serif;font-weight:800;letter-spacing:-.01em;
 }
 .thesun-video-page a{color:inherit;text-decoration:none;}
 .thesun-video-page button{font-family:inherit;cursor:pointer;}
 .thesun-video-page img{display:block;max-width:100%;}
-.thesun-video-page ::selection{background:var(--tvp-red);color:#fff;}
+.thesun-video-page ::selection{background:var(--tvp-blue);color:#fff;}
 
 /* ---------- Header (tab menu + search only) ---------- */
 .thesun-video-page header.site-header{
   position:sticky;top:0;z-index:40;
-  background:rgba(8,8,8,.92);
-  backdrop-filter:blur(10px);
+  background:rgba(10,10,14,.55);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border-bottom:1px solid var(--tvp-line);
 }
 .thesun-video-page .header-inner{
@@ -70,26 +82,28 @@ const VIDEO_PAGE_CSS = `
 }
 .thesun-video-page nav.desktop-nav{display:flex;gap:6px;flex:1;}
 .thesun-video-page nav.desktop-nav button{
-  background:none;border:none;color:var(--tvp-muted);
-  font-weight:700;font-size:15px;padding:10px 14px;border-radius:6px;
-  border-bottom:2px solid transparent;transition:.15s;
+  background:transparent;border:1px solid transparent;color:var(--tvp-muted);
+  font-weight:700;font-size:14.5px;padding:9px 16px;border-radius:999px;transition:.2s;
 }
-.thesun-video-page nav.desktop-nav button:hover{color:#fff;}
-.thesun-video-page nav.desktop-nav button.active{color:#fff;background:var(--tvp-red);border-radius:6px;}
+.thesun-video-page nav.desktop-nav button:hover{color:#fff;background:rgba(255,255,255,.06);border-color:var(--tvp-line);}
+.thesun-video-page nav.desktop-nav button.active{
+  color:#0a0a0f;background:#fff;
+  box-shadow:0 0 0 1px rgba(255,255,255,.5), 0 8px 24px -8px rgba(59,130,246,.6);
+}
 
 .thesun-video-page .header-right{display:flex;align-items:center;gap:14px;}
 .thesun-video-page .icon-btn{
-  background:none;border:none;color:var(--tvp-muted);width:34px;height:34px;
+  background:rgba(255,255,255,.05);border:1px solid var(--tvp-line);color:var(--tvp-muted);width:36px;height:36px;
   display:flex;align-items:center;justify-content:center;border-radius:50%;
-  transition:.15s;
+  transition:.2s;backdrop-filter:blur(8px);
 }
-.thesun-video-page .icon-btn:hover{color:#fff;background:var(--tvp-panel-2);}
-.thesun-video-page #subscribe-slot{width:154px;height:34px;overflow:hidden;flex-shrink:0;}
+.thesun-video-page .icon-btn:hover{color:#fff;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);}
+.thesun-video-page #subscribe-slot{width:154px;height:34px;overflow:hidden;flex-shrink:0;border-radius:8px;}
 .thesun-video-page #subscribe-slot iframe{width:100%;height:100%;}
 
 .thesun-video-page .search-bar{
-  display:none;align-items:center;gap:8px;background:var(--tvp-panel);
-  border:1px solid var(--tvp-line);border-radius:20px;padding:6px 12px;
+  display:none;align-items:center;gap:8px;background:rgba(255,255,255,.05);
+  border:1px solid var(--tvp-line);border-radius:999px;padding:7px 14px;backdrop-filter:blur(8px);
 }
 .thesun-video-page .search-bar.open{display:flex;}
 .thesun-video-page .search-bar input{
@@ -97,93 +111,122 @@ const VIDEO_PAGE_CSS = `
 }
 
 /* ---------- Layout ---------- */
-.thesun-video-page main{max-width:1400px;margin:0 auto;padding:28px 20px 60px;}
+.thesun-video-page main{max-width:1400px;margin:0 auto;padding:32px 20px 60px;position:relative;z-index:1;}
 .thesun-video-page .panel{display:none;}
 .thesun-video-page .panel.active{display:block;}
 .thesun-video-page .section-head{
-  display:flex;align-items:center;justify-content:space-between;margin:34px 0 16px;
+  display:flex;align-items:center;justify-content:space-between;margin:40px 0 18px;
 }
 .thesun-video-page .section-head:first-child{margin-top:0;}
 .thesun-video-page .section-head h2{
-  font-size:22px;color:#fff;margin:0;position:relative;padding-bottom:8px;
+  font-size:21px;color:#fff;margin:0;display:flex;align-items:center;gap:10px;
 }
-.thesun-video-page .section-head h2::after{
-  content:'';position:absolute;left:0;bottom:0;width:46px;height:3px;background:var(--tvp-red);
+.thesun-video-page .section-head h2::before{
+  content:'';width:9px;height:9px;border-radius:3px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--tvp-blue),var(--tvp-purple));
+  box-shadow:0 0 12px rgba(59,130,246,.8);
 }
-.thesun-video-page .view-all{color:var(--tvp-red);font-weight:700;font-size:14px;display:flex;align-items:center;gap:4px;cursor:pointer;}
-.thesun-video-page .view-all:hover{opacity:.8;}
+.thesun-video-page .view-all{
+  color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;gap:4px;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px solid var(--tvp-line);padding:7px 14px;border-radius:999px;transition:.2s;
+}
+.thesun-video-page .view-all:hover{background:rgba(255,255,255,.12);}
 
 /* ---------- Hero ---------- */
 .thesun-video-page .hero{
-  display:grid;grid-template-columns:1fr 1.4fr;gap:28px;align-items:center;
-  background:linear-gradient(135deg,#120404,#000);
-  border:1px solid var(--tvp-line);border-radius:16px;padding:28px;
+  position:relative;overflow:hidden;
+  display:grid;grid-template-columns:1fr 1.4fr;gap:32px;align-items:center;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.14);border-radius:32px;padding:36px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 20px 60px -20px rgba(0,0,0,.6);
 }
+.thesun-video-page .hero::before{
+  content:'';position:absolute;left:-10%;bottom:-30%;width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(59,130,246,.45),transparent 70%);z-index:0;pointer-events:none;
+}
+.thesun-video-page .hero::after{
+  content:'';position:absolute;right:-10%;top:-30%;width:380px;height:380px;border-radius:50%;
+  background:radial-gradient(circle,rgba(139,92,246,.35),transparent 70%);z-index:0;pointer-events:none;
+}
+.thesun-video-page .hero > div{position:relative;z-index:1;}
 .thesun-video-page .hero-eyebrow{
-  display:inline-flex;align-items:center;gap:6px;background:#000;color:var(--tvp-red);
-  font-weight:800;font-size:12px;letter-spacing:1px;padding:6px 10px;border-radius:4px;margin-bottom:14px;
+  display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);color:#fff;
+  font-weight:700;font-size:11.5px;letter-spacing:1.2px;padding:7px 12px;border-radius:999px;margin-bottom:16px;
+  border:1px solid var(--tvp-line);
 }
-.thesun-video-page .hero-eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--tvp-red);}
-.thesun-video-page .hero-title{font-size:38px;line-height:1.05;color:#fff;margin:0 0 12px;}
-.thesun-video-page .hero-title .accent{color:var(--tvp-red);}
-.thesun-video-page .hero-sub{color:var(--tvp-muted);font-size:15px;margin-bottom:20px;max-width:420px;}
+.thesun-video-page .hero-eyebrow::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--tvp-cyan);box-shadow:0 0 8px var(--tvp-cyan);}
+.thesun-video-page .hero-title{font-size:40px;line-height:1.08;color:#fff;margin:0 0 14px;}
+.thesun-video-page .hero-title .accent{
+  background:linear-gradient(135deg,var(--tvp-blue),var(--tvp-purple));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.thesun-video-page .hero-sub{color:var(--tvp-muted);font-size:15px;margin-bottom:22px;max-width:420px;}
 .thesun-video-page .subscribe-cta{
-  display:inline-flex;align-items:center;gap:8px;background:var(--tvp-red);color:#fff;
-  font-weight:800;font-size:14px;padding:12px 20px;border-radius:8px;border:none;
+  display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0a0a0f;
+  font-weight:800;font-size:14px;padding:14px 24px;border-radius:999px;border:none;
+  box-shadow:0 8px 24px -8px rgba(255,255,255,.3);transition:.2s;
 }
-.thesun-video-page .subscribe-cta:hover{background:#c9151b;}
+.thesun-video-page .subscribe-cta:hover{background:#eee;transform:translateY(-1px);box-shadow:0 12px 28px -8px rgba(255,255,255,.4);}
 
 .thesun-video-page .hero-video{
-  position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/9;
-  background:#111;cursor:pointer;border:1px solid var(--tvp-line);
+  position:relative;border-radius:22px;overflow:hidden;aspect-ratio:16/9;
+  background:#0a0a0f;cursor:pointer;border:1px solid var(--tvp-line);
 }
 .thesun-video-page .hero-video img{width:100%;height:100%;object-fit:cover;}
 .thesun-video-page .live-badge{
-  position:absolute;top:12px;left:12px;background:var(--tvp-red);color:#fff;font-weight:800;
-  font-size:11px;padding:4px 8px;border-radius:4px;display:flex;align-items:center;gap:5px;z-index:2;
+  position:absolute;top:14px;left:14px;background:rgba(10,10,15,.65);backdrop-filter:blur(8px);color:#fff;font-weight:700;
+  font-size:11px;padding:5px 10px;border-radius:999px;display:flex;align-items:center;gap:6px;z-index:2;border:1px solid rgba(255,255,255,.18);
 }
-.thesun-video-page .live-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#fff;}
+.thesun-video-page .live-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--tvp-cyan);box-shadow:0 0 8px var(--tvp-cyan);}
 .thesun-video-page .watching-badge{
-  position:absolute;bottom:0;left:0;right:0;padding:34px 14px 12px;
-  background:linear-gradient(transparent,rgba(0,0,0,.9));
+  position:absolute;bottom:0;left:0;right:0;padding:40px 16px 14px;
+  background:linear-gradient(transparent,rgba(0,0,0,.85));
   display:flex;justify-content:space-between;align-items:flex-end;
 }
-.thesun-video-page .watching-badge .wtitle{font-weight:800;color:#fff;font-size:16px;}
+.thesun-video-page .watching-badge .wtitle{font-weight:700;color:#fff;font-size:16px;}
 .thesun-video-page .watching-badge .wsub{color:var(--tvp-muted);font-size:12.5px;margin-top:2px;}
 .thesun-video-page .play-circle{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:64px;height:64px;border-radius:50%;background:rgba(0,0,0,.55);border:2px solid #fff;
-  display:flex;align-items:center;justify-content:center;z-index:2;transition:.15s;
+  width:66px;height:66px;border-radius:50%;background:rgba(10,10,15,.5);border:1.5px solid rgba(255,255,255,.5);
+  backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:2;transition:.2s;
 }
-.thesun-video-page .hero-video:hover .play-circle{background:var(--tvp-red);border-color:var(--tvp-red);}
+.thesun-video-page .hero-video:hover .play-circle{background:rgba(59,130,246,.35);border-color:var(--tvp-blue);}
 
 /* ---------- Grids ---------- */
-.thesun-video-page .grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
+.thesun-video-page .grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
 .thesun-video-page .grid.large-2{grid-template-columns:repeat(2,1fr);}
 .thesun-video-page .grid.shorts-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));}
 
 .thesun-video-page .vcard{
-  background:var(--tvp-panel);border:1px solid var(--tvp-line);border-radius:12px;overflow:hidden;cursor:pointer;
-  transition:transform .15s,border-color .15s;
+  position:relative;background:var(--tvp-panel);border:1px solid var(--tvp-line);border-radius:22px;cursor:pointer;
+  transition:transform .2s,border-color .2s;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
 }
-.thesun-video-page .vcard:hover{transform:translateY(-3px);border-color:#333;}
-.thesun-video-page .thumb-wrap{position:relative;aspect-ratio:16/9;background:#111;overflow:hidden;}
+.thesun-video-page .vcard:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.28);}
+.thesun-video-page .vcard::after{
+  content:'';position:absolute;left:14%;bottom:-26px;width:150px;height:110px;border-radius:50%;
+  filter:blur(30px);opacity:.55;z-index:0;pointer-events:none;
+  background:radial-gradient(circle,var(--tvp-blue),transparent 70%);
+}
+.thesun-video-page .vcard:nth-child(3n+2)::after{background:radial-gradient(circle,var(--tvp-purple),transparent 70%);left:auto;right:14%;}
+.thesun-video-page .vcard:nth-child(3n)::after{background:radial-gradient(circle,var(--tvp-cyan),transparent 70%);}
+.thesun-video-page .thumb-wrap{position:relative;aspect-ratio:16/9;background:#0a0a0f;overflow:hidden;border-radius:22px 22px 0 0;z-index:1;}
 .thesun-video-page .thumb-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .3s;}
 .thesun-video-page .vcard:hover .thumb-wrap img{transform:scale(1.06);}
 .thesun-video-page .duration-badge{
-  position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.85);color:#fff;
-  font-size:11.5px;font-weight:700;padding:2px 6px;border-radius:4px;
+  position:absolute;bottom:8px;right:8px;background:rgba(10,10,15,.75);backdrop-filter:blur(6px);color:#fff;
+  font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);
 }
 .thesun-video-page .thumb-wrap .mini-play{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.5);border:2px solid #fff;
-  display:flex;align-items:center;justify-content:center;opacity:0;transition:.15s;
+  width:48px;height:48px;border-radius:50%;background:rgba(10,10,15,.5);border:1.5px solid rgba(255,255,255,.6);
+  backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s;
 }
-.thesun-video-page .vcard:hover .mini-play{opacity:1;background:var(--tvp-red);border-color:var(--tvp-red);}
-.thesun-video-page .vcard-body{padding:12px 13px 14px;}
+.thesun-video-page .vcard:hover .mini-play{opacity:1;background:rgba(59,130,246,.4);border-color:var(--tvp-blue);}
+.thesun-video-page .vcard-body{padding:14px 16px 18px;position:relative;z-index:1;}
 .thesun-video-page .vcard-body h4{
-  font-family:'Inter',sans-serif;font-weight:700;font-size:14.5px;color:#fff;margin:0 0 6px;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.35;
+  font-family:'Inter',sans-serif;font-weight:700;font-size:14.5px;color:#fff;margin:0 0 8px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4;
 }
 .thesun-video-page .vcard-meta{color:var(--tvp-muted-2);font-size:12px;display:flex;gap:6px;align-items:center;}
 
@@ -191,85 +234,91 @@ const VIDEO_PAGE_CSS = `
 .thesun-video-page .short-card .vcard-body h4{font-size:13px;-webkit-line-clamp:2;}
 
 .thesun-video-page .shorts-scroller{position:relative;}
-.thesun-video-page .scroll-track{display:flex;gap:16px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;padding-bottom:4px;}
+.thesun-video-page .scroll-track{display:flex;gap:16px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;padding:4px 4px 8px;}
 .thesun-video-page .scroll-track::-webkit-scrollbar{display:none;}
 .thesun-video-page .scroll-track .vcard{flex:0 0 200px;}
 .thesun-video-page .scroll-track .short-card{flex:0 0 170px;}
 .thesun-video-page .scroll-arrow{
-  position:absolute;top:40%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;
-  background:rgba(0,0,0,.8);border:1px solid var(--tvp-line);color:#fff;display:flex;align-items:center;
-  justify-content:center;z-index:5;
+  position:absolute;top:40%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;
+  background:rgba(10,10,15,.7);backdrop-filter:blur(10px);border:1px solid var(--tvp-line);color:#fff;display:flex;align-items:center;
+  justify-content:center;z-index:5;transition:.2s;
 }
-.thesun-video-page .scroll-arrow.left{left:-8px;}
-.thesun-video-page .scroll-arrow.right{right:-8px;}
-.thesun-video-page .scroll-arrow:hover{background:var(--tvp-red);}
+.thesun-video-page .scroll-arrow.left{left:-10px;}
+.thesun-video-page .scroll-arrow.right{right:-10px;}
+.thesun-video-page .scroll-arrow:hover{background:rgba(59,130,246,.35);border-color:var(--tvp-blue);}
 
-.thesun-video-page .load-more-wrap{display:flex;justify-content:center;margin-top:30px;}
+.thesun-video-page .load-more-wrap{display:flex;justify-content:center;margin-top:34px;}
 .thesun-video-page .load-more-btn{
-  background:#fff;color:#000;font-weight:800;font-size:14.5px;padding:13px 34px;border-radius:24px;border:none;
+  background:#fff;color:#0a0a0f;font-weight:800;font-size:14.5px;padding:14px 36px;border-radius:999px;border:none;
+  box-shadow:0 10px 30px -10px rgba(255,255,255,.35);transition:.2s;
 }
-.thesun-video-page .load-more-btn:hover{background:#ddd;}
-.thesun-video-page .load-more-btn:disabled{opacity:.5;cursor:default;}
+.thesun-video-page .load-more-btn:hover{background:#eee;transform:translateY(-1px);box-shadow:0 14px 34px -8px rgba(255,255,255,.45);}
+.thesun-video-page .load-more-btn:disabled{opacity:.5;cursor:default;transform:none;}
 
 .thesun-video-page .empty-state,.thesun-video-page .loading-state{
-  text-align:center;padding:60px 20px;color:var(--tvp-muted);
+  text-align:center;padding:64px 20px;color:var(--tvp-muted);
 }
 .thesun-video-page .loading-state .spinner{
-  width:34px;height:34px;border-radius:50%;border:3px solid #2a2a2a;border-top-color:var(--tvp-red);
+  width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.12);border-top-color:var(--tvp-blue);
   margin:0 auto 14px;animation:thesunVideoSpin 0.8s linear infinite;
 }
 @keyframes thesunVideoSpin{to{transform:rotate(360deg);}}
 .thesun-video-page .error-banner{
-  background:#2a1010;border:1px solid #4a1a1a;color:#ff9d9d;border-radius:10px;padding:14px 18px;
-  font-size:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.3);color:#e4d8ff;border-radius:16px;padding:16px 20px;
+  font-size:14px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  backdrop-filter:blur(10px);
 }
-.thesun-video-page .error-banner button{background:var(--tvp-red);color:#fff;border:none;padding:8px 14px;border-radius:6px;font-weight:700;font-size:13px;flex-shrink:0;}
+.thesun-video-page .error-banner button{background:#fff;color:#0a0a0f;border:none;padding:9px 16px;border-radius:999px;font-weight:700;font-size:13px;flex-shrink:0;}
 
 /* ---------- Lightbox ---------- */
 .thesun-video-page .lightbox{
-  position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:none;
+  position:fixed;inset:0;background:rgba(5,5,8,.85);backdrop-filter:blur(6px);z-index:100;display:none;
   align-items:center;justify-content:center;padding:26px;
 }
 .thesun-video-page .lightbox.open{display:flex;}
 .thesun-video-page .lightbox-inner{width:100%;max-width:960px;position:relative;}
-.thesun-video-page .lightbox-player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:8px;overflow:hidden;}
+.thesun-video-page .lightbox-player{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:20px;overflow:hidden;border:1px solid var(--tvp-line);}
 .thesun-video-page .lightbox-player.vertical{max-width:400px;aspect-ratio:9/16;margin:0 auto;}
 .thesun-video-page .lightbox-player iframe{width:100%;height:100%;border:none;}
-.thesun-video-page .lightbox-title{color:#fff;font-weight:700;font-size:16px;margin-top:16px;}
+.thesun-video-page .lightbox-title{color:#fff;font-weight:700;font-size:16px;margin-top:18px;}
 .thesun-video-page .lightbox-close{
-  position:absolute;top:-46px;right:0;background:none;border:none;color:#fff;font-size:30px;line-height:1;
-  z-index:5;padding:6px;
+  position:absolute;top:-52px;right:0;width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid var(--tvp-line);color:#fff;font-size:20px;line-height:1;
+  z-index:5;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:.2s;
 }
-@media (max-width:640px){.thesun-video-page .lightbox-close{top:-40px;}}
+.thesun-video-page .lightbox-close:hover{background:rgba(255,255,255,.16);}
+@media (max-width:640px){.thesun-video-page .lightbox-close{top:-46px;}}
 
 /* ---------- Mobile bottom nav ---------- */
 .thesun-video-page nav.mobile-nav{
-  position:fixed;left:0;right:0;bottom:0;z-index:50;display:none;
-  background:rgba(8,8,8,.97);backdrop-filter:blur(10px);border-top:1px solid var(--tvp-line);
+  position:fixed;left:12px;right:12px;bottom:12px;z-index:50;display:none;
+  background:rgba(15,15,20,.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--tvp-line);border-radius:24px;
   padding:10px 4px calc(10px + env(safe-area-inset-bottom));
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.7);
 }
 .thesun-video-page .mobile-nav .row{display:flex;justify-content:space-around;}
 .thesun-video-page .mobile-nav button{
   background:none;border:none;color:var(--tvp-muted-2);display:flex;flex-direction:column;
-  align-items:center;gap:5px;font-size:11px;font-weight:600;flex:1;padding:2px 0;
+  align-items:center;gap:5px;font-size:11px;font-weight:600;flex:1;padding:6px 0;border-radius:14px;transition:.2s;
 }
-.thesun-video-page .mobile-nav button svg{width:24px;height:24px;}
-.thesun-video-page .mobile-nav button.active{color:var(--tvp-red);}
-.thesun-video-page .mobile-nav button.active svg{stroke:var(--tvp-red);}
+.thesun-video-page .mobile-nav button svg{width:22px;height:22px;}
+.thesun-video-page .mobile-nav button.active{color:#fff;background:rgba(255,255,255,.08);}
+.thesun-video-page .mobile-nav button.active svg{stroke:var(--tvp-blue);}
 
 @media (max-width:900px){
   .thesun-video-page nav.desktop-nav{display:none;}
   .thesun-video-page nav.mobile-nav{display:block;}
-  .thesun-video-page{padding-bottom:var(--tvp-mobile-nav-h);}
-  .thesun-video-page .hero{grid-template-columns:1fr;}
-  .thesun-video-page .hero-title{font-size:28px;}
+  .thesun-video-page{padding-bottom:calc(var(--tvp-mobile-nav-h) + 12px);}
+  .thesun-video-page .hero{grid-template-columns:1fr;border-radius:26px;padding:26px;}
+  .thesun-video-page .hero-title{font-size:29px;}
   .thesun-video-page .grid.large-2{grid-template-columns:1fr;}
   .thesun-video-page #subscribe-slot{width:120px;}
 }
 @media (max-width:520px){
   .thesun-video-page .header-inner{padding:10px 14px;}
-  .thesun-video-page main{padding:20px 14px 40px;}
-  .thesun-video-page .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+  .thesun-video-page main{padding:24px 14px 40px;}
+  .thesun-video-page .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;}
   .thesun-video-page .grid.shorts-grid{grid-template-columns:repeat(2,1fr);}
 }
 `
