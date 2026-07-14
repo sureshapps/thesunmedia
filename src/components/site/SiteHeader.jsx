@@ -87,9 +87,12 @@ function TopBarTicker() {
   return (
     <div className="flex items-stretch flex-1 min-w-0 overflow-hidden">
       {/* Label */}
-      <div className="flex items-center gap-1.5 shrink-0 bg-primary px-2.5 py-1 mr-2 rounded">
-        <span className="text-[10px] font-black uppercase tracking-widest text-white leading-none">
-          NEWS<br />FEED
+      <div
+        className="flex items-center shrink-0 bg-primary pl-3 pr-5 py-1.5 mr-2"
+        style={{ clipPath: 'polygon(0 0, 100% 0, 78% 100%, 0 100%)' }}
+      >
+        <span className="text-xs font-black italic uppercase tracking-tight text-white leading-none whitespace-nowrap">
+          NewsFeed
         </span>
       </div>
       {/* Scrolling ticker */}
