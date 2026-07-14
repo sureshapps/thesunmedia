@@ -86,15 +86,13 @@ function TopBarTicker() {
 
   return (
     <div className="flex items-stretch flex-1 min-w-0 overflow-hidden">
-      {/* Label */}
-      <div
-        className="flex items-center self-stretch shrink-0 bg-primary pl-4 pr-8 -ml-4"
-        style={{ clipPath: 'polygon(0 0, 100% 0, 60% 100%, 0 100%)' }}
-      >
-        <span className="text-sm font-black italic uppercase tracking-tight text-white leading-none whitespace-nowrap">
-          NewsFeed
+      {/* Red Newsfeed Badge (matches image) */}
+      <div className="flex items-center shrink-0 bg-[#D32F2F] px-5 py-0.5 mr-4 h-full shadow-sm z-10">
+        <span className="text-white font-black italic text-xl tracking-tight uppercase leading-none">
+          NEWSFEED
         </span>
       </div>
+      
       {/* Scrolling ticker */}
       <div className="flex-1 overflow-hidden hover-ticker relative flex items-center">
         {items.length === 0 ? (
@@ -102,18 +100,13 @@ function TopBarTicker() {
         ) : (
           <div className="ticker-track flex items-center whitespace-nowrap" style={{ width: 'max-content' }}>
             {items.map((p, i) => {
-              const cat = getCategoryName(p)
               return (
                 <Link
                   key={`${p.id}-${i}`}
                   to={`/article/${p.slug}`}
                   className="text-xs px-5 hover:text-primary inline-flex items-center gap-2.5 text-white/90"
                 >
-                  {cat && (
-                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-primary bg-white rounded px-1.5 py-0.5 shadow-sm">
-                      {decodeHtml(cat)}
-                    </span>
-                  )}
+                  {/* Removed the category badge to match the clean image style */}
                   {decodeHtml(p.title?.rendered || '')}
                 </Link>
               )
@@ -124,7 +117,6 @@ function TopBarTicker() {
     </div>
   )
 }
-
 
 // ---------- Animated World Cup nav item (desktop) ----------
 function WorldCupLink() {
@@ -556,13 +548,13 @@ export default function SiteHeader() {
           to the top of the screen (behind the status bar/notch), while the ticker's actual
           content is pushed down below it — fixes the PWA "merged with status bar" look. */}
       <div className="bg-[#2d2d2d] text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-        <div className="container mx-auto px-4 flex items-stretch h-10 gap-3">
+        <div className="container mx-auto px-4 flex items-center h-10 gap-3">
 
           {/* Ticker */}
           <TopBarTicker />
 
           {/* Right-side controls — desktop only, mobile has its own row below */}
-          <div className="hidden lg:flex items-center gap-1 shrink-0 ml-2 self-center">
+          <div className="hidden lg:flex items-center gap-1 shrink-0 ml-2">
             {/* Search icon */}
             <button
               onClick={() => setSearchOpen(o => !o)}
