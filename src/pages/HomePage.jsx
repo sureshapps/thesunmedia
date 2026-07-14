@@ -7,6 +7,7 @@ import CategoryBlock from '@/components/site/CategoryBlock'
 import LifestyleBlock from '@/components/site/LifestyleBlock'
 import TrendingBlock from '@/components/site/TrendingBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
+import SpotlightBlock from '@/components/site/SpotlightBlock'
 import MostViewedBlock from '@/components/site/MostViewedBlock'
 import OpinionBlock from '@/components/site/OpinionBlock'
 import AdBanner from '@/components/site/AdBanner'
@@ -17,7 +18,6 @@ const FEATURED_CATEGORY_SLUGS = [
   'malaysia-news',
   'sports',
   'entertainment',
-  'spotlight',
   'motoring',
   'crime',
   'people-issues',
@@ -106,6 +106,11 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Spotlight — sits above Going Viral, full width */}
+      <div className="mb-10">
+        <SpotlightBlock />
+      </div>
 
       {/* Going Viral (2/3) + Most Viewed News (1/3), side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-10">
