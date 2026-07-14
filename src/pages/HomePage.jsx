@@ -72,33 +72,35 @@ export default function HomePage() {
           </div>
         </div>
         <div>
-          <div className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-xl sm:text-2xl px-5 py-4 mb-4">
-            Latest News
-          </div>
-          <div className="overflow-hidden min-h-[380px]">
-            {topLoading
-              ? [...Array(PER_PAGE)].map((_, i) => <TimelineCardSkeleton key={i} />)
-              : topStories.map(p => <TimelineCard key={p.id} post={p} />)}
-          </div>
-          {/* Prev / Next buttons */}
-          <div className="flex items-center justify-end gap-2 mt-3 pt-3 border-t border-border">
-            <button
-              onClick={() => setTopPage(p => Math.max(1, p - 1))}
-              disabled={topPage === 1}
-              aria-label="Previous"
-              className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setTopPage(p => p + 1)}
-              disabled={topStories.length < PER_PAGE}
-              aria-label="Next"
-              className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
+          <section className="border border-border rounded-md overflow-hidden h-fit">
+            <div className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-xl sm:text-2xl px-5 py-4">
+              Latest News
+            </div>
+            <div className="px-5 overflow-hidden min-h-[380px]">
+              {topLoading
+                ? [...Array(PER_PAGE)].map((_, i) => <TimelineCardSkeleton key={i} />)
+                : topStories.map(p => <TimelineCard key={p.id} post={p} />)}
+            </div>
+            {/* Prev / Next buttons */}
+            <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border">
+              <button
+                onClick={() => setTopPage(p => Math.max(1, p - 1))}
+                disabled={topPage === 1}
+                aria-label="Previous"
+                className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setTopPage(p => p + 1)}
+                disabled={topStories.length < PER_PAGE}
+                aria-label="Next"
+                className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </section>
 
           {/* Ad banner */}
           <div className="mt-6">
