@@ -51,7 +51,7 @@ function CarouselCardSkeleton() {
   )
 }
 
-/* ---------- Small list item — text left, image right ---------- */
+/* ---------- Small list item — image left, text right ---------- */
 function ViralListItem({ post }) {
   if (!post) return null
   const img = getThumbnail(post) || FALLBACK_IMAGE
@@ -60,6 +60,14 @@ function ViralListItem({ post }) {
   const isExclusive = tags.some(t => /exclusive/i.test(t.name))
   return (
     <Link to={`/article/${post.slug}`} className="group flex items-start gap-3">
+      <div className="w-20 h-16 sm:w-24 sm:h-20 shrink-0 overflow-hidden rounded bg-muted">
+        <img
+          src={img}
+          alt={getImageAlt(post)}
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+        />
+      </div>
       <div className="flex-1 min-w-0">
         {isExclusive && (
           <span className="inline-block bg-primary text-white text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-sm mb-1.5">
@@ -75,14 +83,6 @@ function ViralListItem({ post }) {
           </span>
         )}
       </div>
-      <div className="w-20 h-16 sm:w-24 sm:h-20 shrink-0 overflow-hidden rounded bg-muted">
-        <img
-          src={img}
-          alt={getImageAlt(post)}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-        />
-      </div>
     </Link>
   )
 }
@@ -90,12 +90,12 @@ function ViralListItem({ post }) {
 function ViralListItemSkeleton() {
   return (
     <div className="flex items-start gap-3">
+      <div className="w-20 h-16 sm:w-24 sm:h-20 shrink-0 rounded skeleton-shimmer" />
       <div className="flex-1 space-y-2">
         <div className="h-4 w-full skeleton-shimmer rounded" />
         <div className="h-4 w-2/3 skeleton-shimmer rounded" />
         <div className="h-3 w-14 skeleton-shimmer rounded" />
       </div>
-      <div className="w-20 h-16 sm:w-24 sm:h-20 shrink-0 rounded skeleton-shimmer" />
     </div>
   )
 }
@@ -109,9 +109,9 @@ export default function GoingViralBlock() {
   const loading = !posts || !Array.isArray(posts)
   const postsArr = asArray(posts)
 
-  // First 8 posts feed the auto-sliding carousel, the next 4 feed the list below.
+  // First 8 posts feed the auto-sliding carousel, the next 6 feed the list below (3-column grid).
   const carouselPosts = postsArr.slice(0, 8)
-  const listItems = postsArr.length > 4 ? postsArr.slice(4, 8) : postsArr.slice(0, 4)
+  const listItems = postsArr.length > 6 ? postsArr.slice(4, 10) : postsArr.slice(0, 6)
   const total = carouselPosts.length
 
   const [index, setIndex] = useState(0)
@@ -191,10 +191,10 @@ export default function GoingViralBlock() {
         )}
       </div>
 
-      {/* Small list grid below — text left, image right, 2 columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 mt-8">
+      {/* Small list grid below — image left, text right, 3 columns */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5 mt-8">
         {loading
-          ? [...Array(4)].map((_, i) => <ViralListItemSkeleton key={i} />)
+          ? [...Array(6)].map((_, i) => <ViralListItemSkeleton key={i} />)
           : listItems.map(p => <ViralListItem key={p.id} post={p} />)}
       </div>
     </section>
