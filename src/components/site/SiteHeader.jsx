@@ -11,7 +11,6 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Logo from './Logo'
-import BreakingBadge from './BreakingBadge'
 import SearchBar from './SearchBar'
 import SocialIcons from './SocialIcons'
 import WeatherClock from './WeatherClock'
@@ -86,11 +85,15 @@ function TopBarTicker() {
   const items = posts.length ? [...posts, ...posts] : []
 
   return (
-    <div className="flex items-stretch flex-1 min-w-0 overflow-hidden -my-0">
-      {/* Ribbon badge */}
-      <BreakingBadge className="h-10" />
+    <div className="flex items-stretch flex-1 min-w-0 overflow-hidden">
+      {/* Label */}
+      <div className="flex items-center gap-1.5 shrink-0 pr-3 mr-1">
+        <span className="text-[10px] font-black uppercase tracking-widest text-white leading-none">
+          NEWS<br />FEED
+        </span>
+      </div>
       {/* Scrolling ticker */}
-      <div className="flex-1 overflow-hidden hover-ticker relative flex items-center pl-1">
+      <div className="flex-1 overflow-hidden hover-ticker relative flex items-center">
         {items.length === 0 ? (
           <span className="text-xs text-white/60 px-2">Loading latest headlines…</span>
         ) : (
@@ -104,7 +107,7 @@ function TopBarTicker() {
                   className="text-xs px-5 hover:text-primary inline-flex items-center gap-2.5 text-white/90"
                 >
                   {cat && (
-                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-white bg-primary rounded px-1.5 py-0.5">
+                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-primary bg-white rounded px-1.5 py-0.5 shadow-sm">
                       {decodeHtml(cat)}
                     </span>
                   )}
@@ -569,29 +572,29 @@ export default function SiteHeader() {
             {/* Subscribe button */}
             <a
               href="/newsletter"
-              className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-primary hover:bg-primary/90 px-3.5 py-1.5 rounded-full text-white transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-primary hover:bg-primary/90 px-2.5 py-1 rounded text-white transition-colors whitespace-nowrap"
             >
               Subscribe
             </a>
 
             {/* Divider */}
-            <span className="w-px h-4 bg-white/20 mx-2" />
+            <span className="w-px h-4 bg-white/20 mx-1" />
 
             {/* Social icons */}
             <SocialIcons size="sm" />
 
             {/* Divider */}
-            <span className="w-px h-4 bg-white/20 mx-2" />
+            <span className="w-px h-4 bg-white/20 mx-1" />
 
-            {/* iPaper banner — "Read today's edition anytime, anywhere" */}
+            {/* iPaper button */}
             <a
               href={IPAPER_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Read iPaper — today's edition anytime, anywhere"
-              className="inline-flex items-stretch h-10 -my-0 rounded overflow-hidden hover:opacity-90 transition-opacity shrink-0"
+              aria-label="Read iPaper"
+              className="inline-flex items-center rounded overflow-hidden hover:opacity-80 transition-opacity"
             >
-              <img src={IPAPER_BANNER} alt="iPaper - Read today's edition anytime, anywhere" className="h-full w-auto object-cover" />
+              <img src={IPAPER_LOGO} alt="iPaper" className="h-7 w-auto" />
             </a>
           </div>
         </div>
