@@ -7,7 +7,7 @@ import {
   decodeHtml, timeAgo, FALLBACK_IMAGE, postsKey, categoryBySlugKey, asArray,
 } from '@/lib/wp'
 
-const PER_PAGE = 4
+const PER_PAGE = 5
 
 /* ---------- Large image card, numbered "01" overlaid at bottom ---------- */
 function SpotlightFeature({ post, rank }) {
@@ -118,15 +118,21 @@ export default function SpotlightBlock() {
         {loading ? (
           <>
             <div className="col-span-2 lg:col-span-1"><SpotlightFeatureSkeleton /></div>
-            {[...Array(3)].map((_, i) => <SpotlightItemSkeleton key={i} />)}
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className={i === 3 ? 'lg:hidden' : undefined}>
+                <SpotlightItemSkeleton />
+              </div>
+            ))}
           </>
         ) : (
           <>
             <div className="col-span-2 lg:col-span-1">
               <SpotlightFeature post={postsArr[0]} rank={(page - 1) * PER_PAGE + 1} />
             </div>
-            {postsArr.slice(1, 4).map((p, i) => (
-              <SpotlightItem key={p.id} post={p} rank={(page - 1) * PER_PAGE + i + 2} />
+            {postsArr.slice(1, 5).map((p, i) => (
+              <div key={p.id} className={i === 3 ? 'lg:hidden' : undefined}>
+                <SpotlightItem post={p} rank={(page - 1) * PER_PAGE + i + 2} />
+              </div>
             ))}
           </>
         )}
