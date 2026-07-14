@@ -26,14 +26,18 @@ export default function AdBanner() {
   }
 
   return (
-    <div className="relative rounded-md overflow-hidden border border-border bg-muted">
+    <div className="relative mx-auto max-w-md sm:max-w-full rounded-md overflow-hidden border border-border bg-muted">
       <a
         href={ad.href}
         target="_blank"
         rel="noopener noreferrer sponsored"
         className="block"
       >
-        <img src={ad.image} alt={ad.alt} className="w-full h-auto object-cover" />
+        <img
+          src={ad.image}
+          alt={ad.alt}
+          className="w-full aspect-[3/1] object-cover"
+        />
       </a>
 
       {hasMultiple && (
@@ -41,16 +45,16 @@ export default function AdBanner() {
           <button
             onClick={prev}
             aria-label="Previous ad"
-            className="absolute left-1 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-white/85 hover:bg-white text-foreground shadow transition-colors z-10"
+            className="absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-white/85 hover:bg-white text-foreground shadow transition-colors z-10"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={next}
             aria-label="Next ad"
-            className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-white/85 hover:bg-white text-foreground shadow transition-colors z-10"
+            className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-white/85 hover:bg-white text-foreground shadow transition-colors z-10"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-3.5 w-3.5" />
           </button>
         </>
       )}
