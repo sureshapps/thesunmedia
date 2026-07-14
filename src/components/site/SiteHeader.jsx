@@ -86,13 +86,12 @@ function TopBarTicker() {
 
   return (
     <div className="flex items-stretch flex-1 min-w-0 overflow-hidden">
-      {/* Red Newsfeed Badge (matches image) */}
-      <div className="flex items-center shrink-0 bg-[#D32F2F] px-5 py-0.5 mr-4 h-full shadow-sm z-10">
-        <span className="text-white font-black italic text-xl tracking-tight uppercase leading-none">
-          NEWSFEED
+      {/* Label */}
+      <div className="flex items-center gap-1.5 shrink-0 pr-3 mr-1">
+        <span className="text-[10px] font-black uppercase tracking-widest text-white leading-none">
+          NEWS<br />FEED
         </span>
       </div>
-      
       {/* Scrolling ticker */}
       <div className="flex-1 overflow-hidden hover-ticker relative flex items-center">
         {items.length === 0 ? (
@@ -100,13 +99,18 @@ function TopBarTicker() {
         ) : (
           <div className="ticker-track flex items-center whitespace-nowrap" style={{ width: 'max-content' }}>
             {items.map((p, i) => {
+              const cat = getCategoryName(p)
               return (
                 <Link
                   key={`${p.id}-${i}`}
                   to={`/article/${p.slug}`}
                   className="text-xs px-5 hover:text-primary inline-flex items-center gap-2.5 text-white/90"
                 >
-                  {/* Removed the category badge to match the clean image style */}
+                  {cat && (
+                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-primary bg-white rounded px-1.5 py-0.5 shadow-sm">
+                      {decodeHtml(cat)}
+                    </span>
+                  )}
                   {decodeHtml(p.title?.rendered || '')}
                 </Link>
               )
@@ -117,6 +121,7 @@ function TopBarTicker() {
     </div>
   )
 }
+
 
 // ---------- Animated World Cup nav item (desktop) ----------
 function WorldCupLink() {
