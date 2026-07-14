@@ -34,12 +34,16 @@ function WhatsAppSvg(props) {
   )
 }
 
+// Order matches the official site's top ticker bar:
+// Facebook, Instagram, Telegram, TikTok, X, WhatsApp, YouTube
 export const SOCIAL = [
   { name: 'Facebook',  href: 'https://www.facebook.com/thesundaily',     icon: Facebook   },
   { name: 'Instagram', href: 'https://www.instagram.com/thesundaily',    icon: Instagram  },
+  { name: 'Telegram',  href: 'https://t.me/thesundaily',                 icon: TelegramSvg },
+  { name: 'TikTok',    href: 'https://www.tiktok.com/@thesundaily',      icon: TikTokSvg  },
   { name: 'X',         href: 'https://x.com/thesundaily',                icon: XSvg       },
-  { name: 'YouTube',   href: 'https://www.youtube.com/@thesunmedia',     icon: Youtube    },
   { name: 'WhatsApp',  href: 'https://wa.me/thesunmalaysia',             icon: WhatsAppSvg },
+  { name: 'YouTube',   href: 'https://www.youtube.com/@thesunmedia',     icon: Youtube    },
 ]
 
 export default function SocialIcons({ size = 'md', className = '', dark = false }) {
