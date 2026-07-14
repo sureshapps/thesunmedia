@@ -62,7 +62,7 @@ export default function MostViewedBlock() {
   return (
     <section className="border border-border rounded-md overflow-hidden h-fit">
       <div className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-xl sm:text-2xl px-5 py-4">
-        Most Viewed News
+        Most Viewed Stories
       </div>
 
       <div className="px-5">
