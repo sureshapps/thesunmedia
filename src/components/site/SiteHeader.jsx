@@ -107,7 +107,7 @@ function TopBarTicker() {
                   className="text-xs px-5 hover:text-primary inline-flex items-center gap-2.5 text-white/90"
                 >
                   {cat && (
-                    <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-primary bg-white rounded px-1.5 py-0.5 shadow-sm">
+                    <span className="shrink-0 text-[7px] font-bold uppercase tracking-wider text-primary bg-white rounded px-1.3 py-0.5 shadow-sm">
                       {decodeHtml(cat)}
                     </span>
                   )}
