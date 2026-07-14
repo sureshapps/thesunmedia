@@ -7,7 +7,9 @@ import CategoryBlock from '@/components/site/CategoryBlock'
 import LifestyleBlock from '@/components/site/LifestyleBlock'
 import TrendingBlock from '@/components/site/TrendingBlock'
 import GoingViralBlock from '@/components/site/GoingViralBlock'
+import MostViewedBlock from '@/components/site/MostViewedBlock'
 import OpinionBlock from '@/components/site/OpinionBlock'
+import AdBanner from '@/components/site/AdBanner'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
@@ -97,12 +99,23 @@ export default function HomePage() {
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
+
+          {/* Ad banner */}
+          <div className="mt-6">
+            <AdBanner />
+          </div>
         </div>
       </section>
 
-      <section className="mb-6">
-        <GoingViralBlock />
-      </section>
+      {/* Going Viral (2/3) + Most Viewed News (1/3), side by side */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-10">
+        <div className="lg:col-span-2">
+          <GoingViralBlock />
+        </div>
+        <div>
+          <MostViewedBlock />
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
