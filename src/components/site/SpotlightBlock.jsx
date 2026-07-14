@@ -41,43 +41,36 @@ function SpotlightFeatureSkeleton() {
   return <div className="aspect-[4/3] sm:aspect-[3/4] rounded-md skeleton-shimmer" />
 }
 
-/* ---------- Small text card, numbered, category tag + byline ---------- */
+/* ---------- Small image card, same style as feature, numbered + title overlaid at bottom ---------- */
 function SpotlightItem({ post, rank }) {
   if (!post) return null
-  const cat = getPrimaryCategory(post)
-  const author = getAuthor(post)
+  const img = getFeaturedImage(post) || FALLBACK_IMAGE
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group flex flex-col h-full border border-border rounded-md p-4"
+      className="group relative block aspect-[4/3] sm:aspect-[3/4] rounded-md overflow-hidden bg-muted"
     >
-      <span className="font-serif-headline text-3xl font-extrabold text-muted-foreground/25 leading-none select-none">
-        {String(rank).padStart(2, '0')}
-      </span>
-      {cat && (
-        <span className="mt-2 inline-block w-fit bg-accent text-accent-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm">
-          {cat.name}
+      <img
+        src={img}
+        alt={getImageAlt(post)}
+        loading="lazy"
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 p-4">
+        <span className="font-serif-headline text-3xl font-extrabold text-white/70 leading-none select-none">
+          {String(rank).padStart(2, '0')}
         </span>
-      )}
-      <h4 className="mt-2 font-semibold text-sm leading-snug line-clamp-3 group-hover:text-primary transition-colors">
-        {decodeHtml(post.title?.rendered || '')}
-      </h4>
-      <div className="mt-auto pt-3 text-[11px] text-muted-foreground">
-        {author.name} · {timeAgo(post.date)}
+        <h3 className="mt-1 font-serif-headline font-bold text-white text-base leading-snug line-clamp-3">
+          {decodeHtml(post.title?.rendered || '')}
+        </h3>
       </div>
     </Link>
   )
 }
 
 function SpotlightItemSkeleton() {
-  return (
-    <div className="border border-border rounded-md p-4 space-y-2 h-full">
-      <div className="h-7 w-8 skeleton-shimmer rounded" />
-      <div className="h-4 w-full skeleton-shimmer rounded" />
-      <div className="h-4 w-2/3 skeleton-shimmer rounded" />
-      <div className="h-3 w-1/2 skeleton-shimmer rounded" />
-    </div>
-  )
+  return <div className="aspect-[4/3] sm:aspect-[3/4] rounded-md skeleton-shimmer" />
 }
 
 export default function SpotlightBlock() {
