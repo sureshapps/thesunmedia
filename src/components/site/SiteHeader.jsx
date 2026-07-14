@@ -88,10 +88,10 @@ function TopBarTicker() {
     <div className="flex items-stretch flex-1 min-w-0 overflow-hidden">
       {/* Label */}
       <div
-        className="flex items-center shrink-0 bg-primary pl-3 pr-5 py-1.5 mr-2"
-        style={{ clipPath: 'polygon(0 0, 100% 0, 78% 100%, 0 100%)' }}
+        className="flex items-center self-stretch shrink-0 bg-primary pl-4 pr-8 -ml-4"
+        style={{ clipPath: 'polygon(0 0, 100% 0, 60% 100%, 0 100%)' }}
       >
-        <span className="text-xs font-black italic uppercase tracking-tight text-white leading-none whitespace-nowrap">
+        <span className="text-sm font-black italic uppercase tracking-tight text-white leading-none whitespace-nowrap">
           NewsFeed
         </span>
       </div>
@@ -556,13 +556,13 @@ export default function SiteHeader() {
           to the top of the screen (behind the status bar/notch), while the ticker's actual
           content is pushed down below it — fixes the PWA "merged with status bar" look. */}
       <div className="bg-[#2d2d2d] text-white" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
-        <div className="container mx-auto px-4 flex items-center h-10 gap-3">
+        <div className="container mx-auto px-4 flex items-stretch h-10 gap-3">
 
           {/* Ticker */}
           <TopBarTicker />
 
           {/* Right-side controls — desktop only, mobile has its own row below */}
-          <div className="hidden lg:flex items-center gap-1 shrink-0 ml-2">
+          <div className="hidden lg:flex items-center gap-1 shrink-0 ml-2 self-center">
             {/* Search icon */}
             <button
               onClick={() => setSearchOpen(o => !o)}
