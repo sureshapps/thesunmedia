@@ -72,8 +72,8 @@ export default function HomePage() {
           </div>
         </div>
         <div>
-          <div className="border-b-2 border-primary pb-2 mb-4">
-            <h3 className="font-serif-headline text-xl font-bold">Latest News</h3>
+          <div className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-xl sm:text-2xl px-5 py-4 mb-4">
+            Latest News
           </div>
           <div className="overflow-hidden min-h-[380px]">
             {topLoading
