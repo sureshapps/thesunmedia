@@ -18,10 +18,14 @@ export function HeroCard({ post }) {
           loading="eager"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <span className="absolute top-4 left-4 z-10">
-<span className="relative inline-block bg-primary text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-sm shadow-[0_0_8px_2px_rgba(220,38,38,0.45),0_0_16px_4px_rgba(220,38,38,0.2)]">            Top Stories
+        <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+          <span className="inline-block bg-primary text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-sm">
+            Top Story
           </span>
-        </span>
+          <span className="inline-block border-2 border-primary text-primary bg-white text-xs sm:text-sm font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-sm">
+            Exclusive
+          </span>
+        </div>
       </Link>
 
       {/* Text panel */}
