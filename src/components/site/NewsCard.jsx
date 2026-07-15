@@ -27,11 +27,9 @@ export function HeroCard({ post }) {
       {/* Text panel */}
       <div className="flex-1 min-w-0">
         {cat && (
-          <div className="flex items-center gap-2 mb-2">
-            <span className="inline-flex items-center bg-red-600 text-white text-xs uppercase tracking-wide px-3 py-1.5 rounded-md">
-              <span className="font-category-header font-bold">{cat.name}</span>
-            </span>
-            <span className="text-muted-foreground text-xs font-medium">{timeAgo(post.date)}</span>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2">
+            <span className="text-primary">{cat.name}</span>
+            <span className="text-muted-foreground font-medium normal-case tracking-normal">{timeAgo(post.date)}</span>
           </div>
         )}
         <Link to={`/article/${post.slug}`} className="group block">
@@ -59,13 +57,9 @@ export function FeatureCard({ post, large = false }) {
       <div className="aspect-[16/10] overflow-hidden rounded-lg bg-muted">
         <img src={img} alt={getImageAlt(post)} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
-      <div className="flex items-center gap-2 mt-3">
-        {cat && (
-          <span className="inline-flex items-center bg-red-600 text-white text-[11px] uppercase tracking-wide px-2.5 py-1 rounded-md">
-            <span className="font-category-header font-bold">{cat.name}</span>
-          </span>
-        )}
-        <span className="text-muted-foreground text-xs font-medium">{timeAgo(post.date)}</span>
+      <div className="flex items-center gap-2 mt-3 text-xs font-bold uppercase tracking-wider">
+        {cat && <span className="text-primary">{cat.name}</span>}
+        <span className="text-muted-foreground font-medium normal-case tracking-normal">{timeAgo(post.date)}</span>
       </div>
       <h3 className={`font-serif-headline font-bold leading-tight mt-1.5 group-hover:text-primary transition-colors line-clamp-3 ${large ? 'text-xl sm:text-2xl' : 'text-lg'}`}>
         {decodeHtml(post.title?.rendered || '')}
@@ -94,11 +88,7 @@ export function HorizontalCard({ post }) {
         <img src={img} alt={getImageAlt(post)} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
       </div>
       <div className="flex-1 min-w-0">
-        {cat && (
-          <span className="inline-flex items-center bg-red-600 text-white text-[9px] uppercase tracking-wide px-2 py-0.5 rounded-md mb-1">
-            <span className="font-category-header font-bold">{cat.name}</span>
-          </span>
-        )}
+        {cat && <span className="text-[10px] font-bold uppercase tracking-wider text-primary">{cat.name}</span>}
         <h4 className="font-semibold text-sm sm:text-[15px] leading-snug line-clamp-3 group-hover:text-primary transition-colors">
           {decodeHtml(post.title?.rendered || '')}
         </h4>
@@ -146,8 +136,8 @@ export function TimelineCard({ post, isLast = false }) {
       {/* Content */}
       <div className="flex-1 pl-3 pb-5">
         {cat && (
-          <span className="inline-flex items-center bg-red-600 text-white text-[9px] uppercase tracking-wide px-2 py-0.5 rounded-md mb-1">
-            <span className="font-category-header font-bold">{cat.name}</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-primary block mb-1">
+            {cat.name}
           </span>
         )}
         <h4 className="font-semibold text-sm sm:text-[15px] leading-snug line-clamp-3 group-hover:text-primary transition-colors">
