@@ -10,6 +10,7 @@ import GoingViralBlock from '@/components/site/GoingViralBlock'
 import SpotlightBlock from '@/components/site/SpotlightBlock'
 import MostViewedBlock from '@/components/site/MostViewedBlock'
 import OpinionBlock from '@/components/site/OpinionBlock'
+import VideoBlock from '@/components/site/VideoBlock'
 import AdBanner from '@/components/site/AdBanner'
 import ipaperBanner from '@/assets/ipaper-banner.webp'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
@@ -155,6 +156,10 @@ export default function HomePage() {
 
       {/* Weekly Trending / Breaking News — full-width, auto-advancing, placed after Lifestyle */}
       <TrendingBlock />
+
+      {/* theSun Videos — full-width dark video hub card, pulling the channel's latest
+          uploads from the same YouTube Data API v3 source as the standalone Videos page */}
+      <VideoBlock />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
