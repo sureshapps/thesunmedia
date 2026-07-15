@@ -1,155 +1,187 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkeleton, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
-import CategoryBlock from '@/components/site/CategoryBlock'
-import LifestyleBlock from '@/components/site/LifestyleBlock'
-import TrendingBlock from '@/components/site/TrendingBlock'
-import GoingViralBlock from '@/components/site/GoingViralBlock'
-import SpotlightBlock from '@/components/site/SpotlightBlock'
-import MostViewedBlock from '@/components/site/MostViewedBlock'
-import OpinionBlock from '@/components/site/OpinionBlock'
-import AdBanner from '@/components/site/AdBanner'
-import { postsKey, buildUrl, asArray } from '@/lib/wp'
-import useSeo from '@/lib/useSeo'
 
-const FEATURED_CATEGORY_SLUGS = [
-  'malaysia-news',
-  'sports',
-  'entertainment',
-  'motoring',
-  'crime',
-  'people-issues',
-  'education',
-  'technology-social-media',
-  'corporate-news',
-]
+import { postsKey, categoryBySlugKey, getLargeImage, getFeaturedImage, getImageAlt, decodeHtml, asArray, FALLBACK_IMAGE } from '@/lib/wp'
 
-export default function HomePage() {
-  useSeo({
-    title: 'theSun - Malaysia Daily News, Latest Headlines & Breaking Stories',
-    description: 'Your trusted source for Malaysia news, business, lifestyle, sports, entertainment, world news and breaking stories.',
-    url: window.location.origin + '/',
-  })
+// Full-width "Lifestyle" section — big featured card on the left,
+// 2x2 grid of smaller cards on the right. Fetches up to 20 posts total,
+// scrolls 5 at a time (1 featured + 4 grid cards).
+const VISIBLE_COUNT = 5
+const MAX_ITEMS = 20
+const VIEW_MORE_URL = 'https://www.thesunit.my/category/lifestyle'
 
-  const PER_PAGE = 5
-  const [topPage, setTopPage] = useState(1)
+// Relative time like "1d ago", "3h ago", "2mo ago" — matches the reference design.
+function formatRelativeTime(dateStr) {
+  if (!dateStr) return ''
+  const diffMs = Date.now() - new Date(dateStr).getTime()
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHr = Math.floor(diffMin / 60)
+  const diffDay = Math.floor(diffHr / 24)
+  const diffMonth = Math.floor(diffDay / 30)
+  const diffYear = Math.floor(diffDay / 365)
 
-  // Page 1: fetch 16 posts (hero + editor picks + latest + first 5 top stories)
-  const { data: latest, isLoading } = useSWR(postsKey({ per_page: 16 }))
-  // Extra pages for top stories pagination (page 2+)
-  const topStoriesUrl = topPage > 1
-    ? buildUrl('/posts', { per_page: PER_PAGE, page: topPage, _embed: 1 })
-    : null
-  const { data: extraTopData, isLoading: extraLoading } = useSWR(topStoriesUrl, async (u) => {
-    const res = await fetch(u)
-    if (!res.ok) throw new Error('Failed')
-    return res.json()
-  })
+  if (diffMin < 1) return 'just now'
+  if (diffMin < 60) return `${diffMin}m ago`
+  if (diffHr < 24) return `${diffHr}h ago`
+  if (diffDay < 30) return `${diffDay}d ago`
+  if (diffMonth < 12) return `${diffMonth}mo ago`
+  return `${diffYear}y ago`
+}
 
-  const top = latest?.[0]
-  const latestArr = asArray(latest)
-  const heroBelowGrid = latestArr.slice(1, 5)
+export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' }) {
+  const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
+  const cats = asArray(catsRaw)
+  const cat = cats[0]
+  const { data: postsRaw } = useSWR(
+    cat ? postsKey({ categories: cat.id, per_page: MAX_ITEMS, _embed: 1 }) : null
+  )
 
-  // Top stories: page 1 uses slice from latest, page 2+ uses fetched data
-  const topStories = topPage === 1
-    ? latestArr.slice(9, 9 + PER_PAGE)
-    : asArray(extraTopData)
-  const topLoading = topPage === 1 ? isLoading : extraLoading
+  const [index, setIndex] = useState(0)
+
+  const loading = !postsRaw || !Array.isArray(postsRaw)
+  const posts = asArray(postsRaw).slice(0, MAX_ITEMS)
+  const maxIndex = Math.max(0, posts.length - VISIBLE_COUNT)
+  const pageCount = Math.max(1, Math.ceil(posts.length / VISIBLE_COUNT))
+  const currentPage = Math.floor(index / VISIBLE_COUNT)
+
+  // Auto-advance to the next 5 cards every 5 seconds, looping back to the start.
+  // This must stay above any early return so hook order never changes between renders.
+  useEffect(() => {
+    if (posts.length <= VISIBLE_COUNT) return
+    const timer = setInterval(() => {
+      setIndex(i => (i + VISIBLE_COUNT > maxIndex ? 0 : i + VISIBLE_COUNT))
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [maxIndex, posts.length])
+
+  if (!cat) return null
+  const displayName = decodeHtml(name || cat.name)
+  const visiblePosts = posts.slice(index, index + VISIBLE_COUNT)
+  const [featured, ...rest] = visiblePosts
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-        <div className="lg:col-span-2">
-          {top ? <HeroCard post={top} /> : <div className="aspect-[16/9] rounded-lg skeleton-shimmer" />}
+    <section className="py-6">
+      <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-5">
+        <h2 className="font-serif-headline text-2xl font-bold flex items-center gap-2">
+          <span className="w-1 h-7 bg-primary inline-block" />
+          {displayName}
+        </h2>
 
-          {/* Small news cards under the hero */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 mt-6">
-            {heroBelowGrid.length === 0
-              ? [...Array(4)].map((_, i) => <FeatureCardSkeleton key={i} />)
-              : heroBelowGrid.map(p => <FeatureCard key={p.id} post={p} />)}
+        <div className="flex items-center gap-3">
+          {/* Page dots */}
+          {pageCount > 1 && (
+            <div className="flex items-center gap-1.5">
+              {[...Array(pageCount)].map((_, i) => (
+                <span
+                  key={i}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === currentPage ? 'w-5 bg-red-600' : 'w-1.5 bg-border'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* View all */}
+          <a
+            href={VIEW_MORE_URL}
+            className="inline-flex items-center border-2 border-red-600 text-red-600 text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-sm hover:bg-red-600 hover:text-white transition-colors"
+          >
+            View All
+          </a>
+        </div>
+      </div>
+
+      {loading && (
+        <div className="flex flex-col sm:flex-row gap-5">
+          <div className="h-80 sm:flex-[2] rounded-2xl overflow-hidden bg-white border border-border skeleton-shimmer" />
+          <div className="sm:flex-[3] grid grid-cols-2 gap-5">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-36 sm:h-40 rounded-2xl overflow-hidden bg-white border border-border skeleton-shimmer" />
+            ))}
           </div>
         </div>
-        <div>
-          <section className="border border-border rounded-md overflow-hidden h-fit">
-            <div className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-xl sm:text-2xl px-5 py-4">
-              Latest News
-            </div>
-            <div className="px-5 pt-5 overflow-hidden min-h-[380px]">
-              {topLoading
-                ? [...Array(PER_PAGE)].map((_, i) => <TimelineCardSkeleton key={i} />)
-                : topStories.map((p, i) => (
-                    <TimelineCard key={p.id} post={p} isLast={i === topStories.length - 1} />
-                  ))}
-            </div>
-            {/* Prev / Next buttons */}
-            <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border">
-              <button
-                onClick={() => setTopPage(p => Math.max(1, p - 1))}
-                disabled={topPage === 1}
-                aria-label="Previous"
-                className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => setTopPage(p => p + 1)}
-                disabled={topStories.length < PER_PAGE}
-                aria-label="Next"
-                className="w-8 h-8 flex items-center justify-center border border-border rounded hover:border-primary hover:text-primary transition-colors disabled:opacity-30 disabled:pointer-events-none"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          </section>
+      )}
 
-          {/* Ad banner */}
-          <div className="mt-6">
-            <AdBanner />
+      {!loading && posts.length > 0 && (
+        <div className="flex flex-col sm:flex-row items-stretch gap-5">
+          {/* Featured card — height matches the 2x2 grid on the right */}
+          {featured && (
+            <div className="sm:flex-[2]">
+              <FeaturedCard post={featured} categoryName={displayName} />
+            </div>
+          )}
+
+          {/* 2x2 grid of smaller cards */}
+          <div className="sm:flex-[3] grid grid-cols-2 gap-5">
+            {rest.map(p => (
+              <SmallCard key={p.id} post={p} categoryName={displayName} />
+            ))}
           </div>
         </div>
-      </section>
+      )}
+    </section>
+  )
+}
 
-      {/* Spotlight — sits above Going Viral, full width */}
-      <div className="mb-10">
-        <SpotlightBlock />
+function FeaturedCard({ post, categoryName }) {
+  const img = getLargeImage(post) || getFeaturedImage(post) || FALLBACK_IMAGE
+
+  return (
+    <Link
+      to={`/article/${post.slug}`}
+      className="group relative flex h-64 sm:h-full min-h-[21rem] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300"
+    >
+      <img
+        src={img}
+        alt={getImageAlt(post)}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+      {/* Bottom gradient so the title stays legible */}
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+      {/* Category badge */}
+      <span className="relative m-4 self-start inline-flex items-center text-white text-[11px] font-bold uppercase tracking-wide bg-red-600 px-3 py-1 rounded-full">
+        {categoryName}
+      </span>
+
+      {/* Title, bottom-aligned */}
+      <h3 className="relative mt-auto p-4 pt-0 font-serif-headline text-lg sm:text-xl font-bold leading-snug text-white line-clamp-3">
+        {decodeHtml(post.title?.rendered || '')}
+      </h3>
+    </Link>
+  )
+}
+
+function SmallCard({ post, categoryName }) {
+  const img = getLargeImage(post) || getFeaturedImage(post) || FALLBACK_IMAGE
+
+  return (
+    <Link
+      to={`/article/${post.slug}`}
+      className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-border shadow-sm hover:shadow-lg transition-shadow duration-300"
+    >
+      <div className="relative h-24 sm:h-28 overflow-hidden">
+        <img
+          src={img}
+          alt={getImageAlt(post)}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        />
       </div>
-
-      {/* Going Viral (2/3) + Most Viewed News (1/3), side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-10">
-        <div className="lg:col-span-2">
-          <GoingViralBlock />
-        </div>
-        <div>
-          <MostViewedBlock />
-        </div>
+      <div className="p-3 flex-1 flex flex-col">
+        <span className="text-[10px] font-bold uppercase tracking-wide text-white bg-red-600 self-start px-2 py-0.5 rounded-full">
+          {categoryName}
+        </span>
+        <h3 className="mt-1.5 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors">
+          {decodeHtml(post.title?.rendered || '')}
+        </h3>
+        <span className="mt-1.5 text-[11px] text-muted-foreground">
+          {formatRelativeTime(post.date)}
+        </span>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="lg:col-span-2 space-y-10">
-          <CategoryBlock slug="business" />
-        </div>
-
-        <div className="space-y-8">
-          {/* Opinion block — sits at the top of the sidebar, next to the Business section */}
-          <OpinionBlock />
-        </div>
-      </div>
-
-      {/* Lifestyle — full-width purple section, placed right after Business */}
-      <LifestyleBlock />
-
-      {/* Weekly Trending — most-viewed posts this week, auto-advancing */}
-      <TrendingBlock />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="lg:col-span-2 space-y-10">
-          {FEATURED_CATEGORY_SLUGS.map(slug => (
-            <CategoryBlock key={slug} slug={slug} />
-          ))}
-        </div>
-      </div>
-    </div>
+    </Link>
   )
 }
