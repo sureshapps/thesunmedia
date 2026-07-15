@@ -145,26 +145,26 @@ function SmallCard({ post, categoryName }) {
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group flex flex-col rounded-2xl overflow-hidden bg-white border border-border shadow-sm hover:shadow-lg transition-shadow duration-300"
+      className="group relative flex flex-col justify-end h-36 sm:h-40 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
     >
-      <div className="relative h-24 sm:h-28 overflow-hidden">
-        <img
-          src={img}
-          alt={getImageAlt(post)}
-          loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        />
-        {/* Fade the image into the white content area instead of a hard cut */}
-        <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent pointer-events-none" />
-      </div>
-      <div className="p-3 flex-1 flex flex-col">
-        <span className="text-[10px] font-bold uppercase tracking-wide text-white bg-red-600 self-start px-2 py-0.5 rounded-full">
+      <img
+        src={img}
+        alt={getImageAlt(post)}
+        loading="lazy"
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+      />
+      {/* White fade so the text stays legible while the photo shows through up top */}
+      <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-white via-white/85 to-transparent" />
+
+      {/* Category + title + time, overlaid on the fade */}
+      <div className="relative z-10 p-3">
+        <span className="inline-block text-[10px] font-bold uppercase tracking-wide text-white bg-red-600 px-2 py-0.5 rounded-full mb-1.5">
           {categoryName}
         </span>
-        <h3 className="mt-1.5 font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors">
+        <h3 className="font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors">
           {decodeHtml(post.title?.rendered || '')}
         </h3>
-        <span className="mt-1.5 text-[11px] text-muted-foreground">
+        <span className="mt-1.5 block text-[11px] text-muted-foreground">
           {formatRelativeTime(post.date)}
         </span>
       </div>
