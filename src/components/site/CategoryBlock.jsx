@@ -20,9 +20,9 @@ export default function CategoryBlock({ slug, name }) {
   return (
     <section className="py-6">
       <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-5">
-        <h2 className="font-serif-headline text-2xl font-bold flex items-center gap-2">
+        <h2 className="text-2xl flex items-center gap-2">
           <span className="w-1 h-7 bg-primary inline-block" />
-          {displayName}
+          <span className="font-category-header font-bold">{displayName}</span>
         </h2>
         <Link to={`/category/${cat.slug}`} className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1">
           View all <ChevronRight className="h-4 w-4" />
