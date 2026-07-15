@@ -1,4 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&display=swap');
+
+/* Neo Sans Pro and Tech Headlines are not distributed via Google Fonts — they're
+   commercial/licensed families. Drop the licensed font files into /public/fonts
+   and these @font-face rules will pick them up. Until then, each falls back to a
+   close system stand-in so the site still renders correctly. */
+@font-face {
+  font-family: 'Neo Sans Pro';
+  src: url('/fonts/NeoSansPro-Bold.woff2') format('woff2'),
+       url('/fonts/NeoSansPro-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tech Headlines';
+  src: url('/fonts/TechHeadlines-Italic.woff2') format('woff2'),
+       url('/fonts/TechHeadlines-Italic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
@@ -32,11 +54,20 @@
 @layer base {
   * { @apply border-border; }
   body {
-    font-family: 'Merriweather', Georgia, serif;
+    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
     @apply bg-background text-foreground antialiased;
   }
-  h1, h2, h3, h4 { font-family: 'Merriweather', Georgia, serif; }
-  .font-serif-headline { font-family: 'Merriweather', Georgia, serif; }
+  /* Headlines: article/post titles, hero titles */
+  h1, h2, h3, h4, .font-serif-headline {
+    font-family: 'Neo Sans Pro', Arial, sans-serif;
+    font-weight: 700;
+  }
+  /* Category labels / section-column headers (e.g. "Lifestyle", category badges) */
+  .font-category-header {
+    font-family: 'Tech Headlines', Arial, sans-serif;
+    font-style: italic;
+    font-weight: 400;
+  }
 }
 
 @layer utilities {
