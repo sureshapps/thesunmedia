@@ -136,22 +136,24 @@ export default function HomePage() {
 
           {/* Ad banner */}
           <AdBanner />
-
-          {/* Most Viewed — continues the sidebar's flow under the ad */}
-          <MostViewedBlock />
         </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      {/* Business + Most Viewed Stories side by side, matching the reference layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-6">
         <div className="lg:col-span-2 space-y-10">
           <CategoryBlock slug="business" />
         </div>
+
+        <div className="space-y-6">
+          <MostViewedBlock />
+        </div>
       </div>
 
-      {/* Lifestyle — full-width purple section, placed right after Business */}
+      {/* Lifestyle — full-width section, placed right after Business, spanning both columns */}
       <LifestyleBlock />
 
-      {/* Weekly Trending — most-viewed posts this week, auto-advancing */}
+      {/* Weekly Trending / Breaking News — full-width, auto-advancing, placed after Lifestyle */}
       <TrendingBlock />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
