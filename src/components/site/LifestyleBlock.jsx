@@ -139,32 +139,36 @@ function FeaturedCard({ post, categoryName }) {
   )
 }
 
+// Now styled to match FeaturedCard: dark bottom gradient, white overlaid text,
+// category badge sitting on the image instead of the light bottom-fade treatment.
 function SmallCard({ post, categoryName }) {
   const img = getLargeImage(post) || getFeaturedImage(post) || FALLBACK_IMAGE
 
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group relative flex flex-col justify-end h-36 sm:h-40 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+      className="group relative flex flex-col h-36 sm:h-40 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300"
     >
       <img
         src={img}
         alt={getImageAlt(post)}
         loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       />
-      {/* White fade so the text stays legible while the photo shows through up top */}
-      <div className="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-white via-white/85 to-transparent" />
+      {/* Bottom gradient so the title stays legible, matching the featured card */}
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-      {/* Category + title + time, overlaid on the fade */}
-      <div className="relative z-10 p-3">
-        <span className="inline-block text-[10px] font-bold uppercase tracking-wide text-white bg-red-600 px-2 py-0.5 rounded-full mb-1.5">
-          {categoryName}
-        </span>
-        <h3 className="font-serif-headline text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-red-700 transition-colors">
+      {/* Category badge */}
+      <span className="relative m-3 self-start inline-flex items-center text-white text-[10px] font-bold uppercase tracking-wide bg-red-600 px-2.5 py-1 rounded-full">
+        {categoryName}
+      </span>
+
+      {/* Title + time, bottom-aligned */}
+      <div className="relative mt-auto p-3 pt-0">
+        <h3 className="font-serif-headline text-sm font-bold leading-snug text-white line-clamp-2">
           {decodeHtml(post.title?.rendered || '')}
         </h3>
-        <span className="mt-1.5 block text-[11px] text-muted-foreground">
+        <span className="mt-1 block text-[10px] text-white/70">
           {formatRelativeTime(post.date)}
         </span>
       </div>
