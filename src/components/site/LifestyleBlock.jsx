@@ -42,8 +42,6 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
   const loading = !postsRaw || !Array.isArray(postsRaw)
   const posts = asArray(postsRaw).slice(0, MAX_ITEMS)
   const maxIndex = Math.max(0, posts.length - VISIBLE_COUNT)
-  const pageCount = Math.max(1, Math.ceil(posts.length / VISIBLE_COUNT))
-  const currentPage = Math.floor(index / VISIBLE_COUNT)
 
   // Auto-advance to the next 5 cards every 5 seconds, looping back to the start.
   // This must stay above any early return so hook order never changes between renders.
@@ -69,24 +67,10 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
         </h2>
 
         <div className="flex items-center gap-3">
-          {/* Page dots */}
-          {pageCount > 1 && (
-            <div className="flex items-center gap-1.5">
-              {[...Array(pageCount)].map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-1.5 rounded-full transition-all ${
-                    i === currentPage ? 'w-5 bg-red-600' : 'w-1.5 bg-border'
-                  }`}
-                />
-              ))}
-            </div>
-          )}
-
           {/* View all */}
           <a
             href={VIEW_MORE_URL}
-            className="inline-flex items-center border-2 border-red-600 text-red-600 text-xs font-bold uppercase tracking-wide px-4 py-2 rounded-sm hover:bg-red-600 hover:text-white transition-colors"
+            className="inline-flex items-center border border-red-600 text-red-600 text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-sm hover:bg-red-600 hover:text-white transition-colors"
           >
             View All
           </a>
@@ -131,7 +115,7 @@ function FeaturedCard({ post, categoryName }) {
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group relative flex h-64 sm:h-full min-h-[21rem] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300"
+      className="group relative flex flex-col h-64 sm:h-full min-h-[21rem] rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300"
     >
       <img
         src={img}
@@ -170,6 +154,8 @@ function SmallCard({ post, categoryName }) {
           loading="lazy"
           className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
+        {/* Fade the image into the white content area instead of a hard cut */}
+        <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent pointer-events-none" />
       </div>
       <div className="p-3 flex-1 flex flex-col">
         <span className="text-[10px] font-bold uppercase tracking-wide text-white bg-red-600 self-start px-2 py-0.5 rounded-full">
