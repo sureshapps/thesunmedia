@@ -88,12 +88,18 @@ export default function SpotlightBlock() {
 
   return (
     <section>
-      {/* Header — red SPOTLIGHT tab + prev/next */}
-      <div className="flex items-center justify-between border-b border-border pb-3 mb-5">
-        <span className="inline-block bg-primary text-white font-extrabold italic uppercase tracking-wide text-base sm:text-lg px-4 py-1.5 rounded-sm">
+      {/* Header — red SPOTLIGHT tab + progress bar + prev/next */}
+      <div className="flex items-center gap-4 mb-5">
+        <span className="shrink-0 inline-block bg-primary text-white font-extrabold italic uppercase tracking-wide text-base sm:text-lg px-4 py-1.5 rounded-sm">
           Spotlight
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex-1 h-1 rounded-full bg-border overflow-hidden">
+          <div
+            className="h-full bg-primary rounded-full transition-all duration-300"
+            style={{ width: hasNext ? '35%' : '100%' }}
+          />
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={!hasPrev}
