@@ -61,9 +61,9 @@ export default function LifestyleBlock({ slug = 'lifestyle', name = 'Lifestyle' 
   return (
     <section className="py-6">
       <div className="flex items-center justify-between border-b-2 border-primary pb-2 mb-5">
-        <h2 className="font-category-header text-2xl flex items-center gap-2">
+        <h2 className="text-2xl flex items-center gap-2">
           <span className="w-1 h-7 bg-primary inline-block" />
-          {displayName}
+          <span className="font-category-header font-bold">{displayName}</span>
         </h2>
 
         <div className="flex items-center gap-3">
@@ -127,8 +127,8 @@ function FeaturedCard({ post, categoryName }) {
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
       {/* Category badge */}
-      <span className="font-category-header relative m-4 self-start inline-flex items-center text-white text-[11px] uppercase tracking-wide bg-red-600 px-3 py-1 rounded-full">
-        {categoryName}
+      <span className="relative m-4 self-start inline-flex items-center text-white text-sm uppercase tracking-wide bg-red-600 px-4 py-2 rounded-md">
+        <span className="font-category-header font-bold">{categoryName}</span>
       </span>
 
       {/* Title, bottom-aligned */}
@@ -159,8 +159,8 @@ function SmallCard({ post, categoryName }) {
       <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
       {/* Category badge */}
-      <span className="font-category-header relative m-3 self-start inline-flex items-center text-white text-[10px] uppercase tracking-wide bg-red-600 px-2.5 py-1 rounded-full">
-        {categoryName}
+      <span className="relative m-3 self-start inline-flex items-center text-white text-xs uppercase tracking-wide bg-red-600 px-3 py-1.5 rounded-md">
+        <span className="font-category-header font-bold">{categoryName}</span>
       </span>
 
       {/* Title + time, bottom-aligned */}
