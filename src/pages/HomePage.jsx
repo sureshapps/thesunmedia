@@ -76,12 +76,10 @@ export default function HomePage() {
             <div className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-xl sm:text-2xl px-5 py-4">
               Latest News
             </div>
-            <div className="px-5 pt-5 overflow-hidden min-h-[380px]">
+            <div className="px-5 overflow-hidden min-h-[380px]">
               {topLoading
                 ? [...Array(PER_PAGE)].map((_, i) => <TimelineCardSkeleton key={i} />)
-                : topStories.map((p, i) => (
-                    <TimelineCard key={p.id} post={p} isLast={i === topStories.length - 1} />
-                  ))}
+                : topStories.map(p => <TimelineCard key={p.id} post={p} />)}
             </div>
             {/* Prev / Next buttons */}
             <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border">

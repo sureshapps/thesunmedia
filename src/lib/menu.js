@@ -46,14 +46,14 @@ export const MAIN_MENU = [
       { label: 'Golf', slug: 'golf' },
     ],
   },
-  { label: 'Classifieds', slug: 'classifieds' },
+  { label: 'Motoring', slug: 'motoring' },
   { label: 'Education', slug: 'education' },
   { label: 'Videos', slug: 'videos' },
   {
     label: 'More',
     children: [
       { label: 'Property', slug: 'property' },
-      { label: 'Motoring', slug: 'motoring' },
+      { label: 'Classifieds', slug: 'classifieds' },
       { label: 'Most Views', to: '/latest' },
       { label: 'Latest News', to: '/latest' },
       { label: 'Top Stories', to: '/' },

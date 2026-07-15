@@ -116,7 +116,7 @@ export function ListItem({ post, index }) {
 }
 
 
-export function TimelineCard({ post, isLast = false }) {
+export function TimelineCard({ post }) {
   if (!post) return null
   const cat = getPrimaryCategory(post)
   return (
@@ -128,10 +128,7 @@ export function TimelineCard({ post, isLast = false }) {
       {/* Timeline line + dot */}
       <div className="flex flex-col items-center shrink-0">
         <div className="w-3 h-3 rounded-full bg-primary ring-4 ring-white mt-1 z-10" />
-        {/* No connector line after the last item — there's nothing below it to link to */}
-        {!isLast && (
-          <div className="w-px flex-1 bg-muted-foreground/20 mt-1" style={{ minHeight: '60px' }} />
-        )}
+        <div className="w-px flex-1 bg-muted-foreground/20 mt-1" style={{ minHeight: '60px' }} />
       </div>
       {/* Content */}
       <div className="flex-1 pl-3 pb-5">
