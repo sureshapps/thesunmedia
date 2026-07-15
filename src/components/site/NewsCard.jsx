@@ -6,11 +6,11 @@ export function HeroCard({ post }) {
   const img = getLargeImage(post) || FALLBACK_IMAGE
   const cat = getPrimaryCategory(post)
   return (
-    <div className="flex flex-col md:flex-row gap-5 md:gap-7">
-      {/* Image with TOP STORIES tag */}
+    <div className="flex flex-col md:flex-row gap-5 md:gap-6">
+      {/* Image card, with TOP STORY / EXCLUSIVE tags */}
       <Link
         to={`/article/${post.slug}`}
-        className="group relative block overflow-hidden rounded-lg bg-black w-full md:w-[58%] shrink-0 aspect-[16/10]"
+        className="group relative block overflow-hidden rounded-2xl bg-black w-full md:w-[58%] shrink-0 aspect-[16/10] shadow-md hover:shadow-xl transition-shadow duration-300"
       >
         <img
           src={img}
@@ -28,8 +28,8 @@ export function HeroCard({ post }) {
         </div>
       </Link>
 
-      {/* Text panel */}
-      <div className="flex-1 min-w-0">
+      {/* News card — same elevation language as the image card, so the pair reads as one unit */}
+      <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-border/60 p-5 sm:p-6 flex flex-col justify-center">
         {cat && (
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2">
             <span className="text-primary">{cat.name}</span>
@@ -57,27 +57,32 @@ export function FeatureCard({ post, large = false }) {
   const img = (large ? getLargeImage(post) : getFeaturedImage(post)) || FALLBACK_IMAGE
   const cat = getPrimaryCategory(post)
   return (
-    <Link to={`/article/${post.slug}`} className="group block">
-      <div className="aspect-[16/10] overflow-hidden rounded-lg bg-muted">
+    <Link
+      to={`/article/${post.slug}`}
+      className="group flex flex-col h-full bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-border/60 overflow-hidden"
+    >
+      <div className="aspect-[16/10] overflow-hidden bg-muted">
         <img src={img} alt={getImageAlt(post)} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
-      <div className="flex items-center gap-2 mt-3 text-xs font-bold uppercase tracking-wider">
-        {cat && <span className="text-primary">{cat.name}</span>}
-        <span className="text-muted-foreground font-medium normal-case tracking-normal">{timeAgo(post.date)}</span>
+      <div className="flex-1 flex flex-col p-4">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+          {cat && <span className="text-primary">{cat.name}</span>}
+          <span className="text-muted-foreground font-medium normal-case tracking-normal">{timeAgo(post.date)}</span>
+        </div>
+        <h3 className={`font-serif-headline font-bold leading-tight mt-1.5 group-hover:text-primary transition-colors line-clamp-3 ${large ? 'text-xl sm:text-2xl' : 'text-lg'}`}>
+          {decodeHtml(post.title?.rendered || '')}
+        </h3>
+        {large && (
+          <>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+              {stripHtml(post.excerpt?.rendered, 160)}
+            </p>
+            <span className="inline-block mt-2 text-sm font-semibold text-primary group-hover:underline">
+              read more...
+            </span>
+          </>
+        )}
       </div>
-      <h3 className={`font-serif-headline font-bold leading-tight mt-1.5 group-hover:text-primary transition-colors line-clamp-3 ${large ? 'text-xl sm:text-2xl' : 'text-lg'}`}>
-        {decodeHtml(post.title?.rendered || '')}
-      </h3>
-      {large && (
-        <>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
-            {stripHtml(post.excerpt?.rendered, 160)}
-          </p>
-          <span className="inline-block mt-2 text-sm font-semibold text-primary group-hover:underline">
-            read more...
-          </span>
-        </>
-      )}
     </Link>
   )
 }
@@ -173,11 +178,13 @@ export function TimelineCardSkeleton() {
 
 export function FeatureCardSkeleton() {
   return (
-    <div className="">
-      <div className="aspect-[16/10] rounded-lg skeleton-shimmer" />
-      <div className="h-3 mt-3 w-20 skeleton-shimmer rounded" />
-      <div className="h-5 mt-2 w-3/4 skeleton-shimmer rounded" />
-      <div className="h-3 mt-2 w-1/2 skeleton-shimmer rounded" />
+    <div className="bg-white rounded-2xl shadow-md border border-border/60 overflow-hidden">
+      <div className="aspect-[16/10] skeleton-shimmer" />
+      <div className="p-4 space-y-2">
+        <div className="h-3 w-20 skeleton-shimmer rounded" />
+        <div className="h-5 w-3/4 skeleton-shimmer rounded" />
+        <div className="h-3 w-1/2 skeleton-shimmer rounded" />
+      </div>
     </div>
   )
 }
