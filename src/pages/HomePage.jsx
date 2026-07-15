@@ -116,23 +116,8 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Ad banner */}
-          <AdBanner />
-
-          {/* Most Viewed — moved here so it continues the sidebar's flow under the ad,
-              instead of pairing with Going Viral further down the page */}
-          <MostViewedBlock />
-        </div>
-      </section>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        <div className="lg:col-span-2 space-y-10">
-          <CategoryBlock slug="business" />
-        </div>
-
-        <div className="space-y-6">
-          {/* theSun i-paper promo banner — sits directly above Opinion,
-              matching the reference layout (image, not a link-wrapped ad slot). */}
+          {/* theSun i-paper promo banner — moved up to sit directly under Latest News,
+              right after the Page 1 pagination, so it no longer leaves a gap below. */}
           <a
             href="https://www.thesunit.my/ipaper"
             target="_blank"
@@ -146,8 +131,20 @@ export default function HomePage() {
             />
           </a>
 
-          {/* Opinion block — sits at the top of the sidebar, next to the Business section */}
+          {/* Opinion — follows immediately after the banner in the same sidebar flow */}
           <OpinionBlock />
+
+          {/* Ad banner */}
+          <AdBanner />
+
+          {/* Most Viewed — continues the sidebar's flow under the ad */}
+          <MostViewedBlock />
+        </div>
+      </section>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="lg:col-span-2 space-y-10">
+          <CategoryBlock slug="business" />
         </div>
       </div>
 
