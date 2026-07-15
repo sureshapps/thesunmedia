@@ -11,6 +11,7 @@ import SpotlightBlock from '@/components/site/SpotlightBlock'
 import MostViewedBlock from '@/components/site/MostViewedBlock'
 import OpinionBlock from '@/components/site/OpinionBlock'
 import AdBanner from '@/components/site/AdBanner'
+import ipaperBanner from '@/assets/ipaper-banner.webp'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
@@ -129,7 +130,22 @@ export default function HomePage() {
           <CategoryBlock slug="business" />
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6">
+          {/* theSun i-paper promo banner — sits directly above Opinion,
+              matching the reference layout (image, not a link-wrapped ad slot). */}
+          <a
+            href="https://www.thesunit.my/ipaper"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-md overflow-hidden border border-border bg-white"
+          >
+            <img
+              src={ipaperBanner}
+              alt="theSun i-paper — Your Paper. Your Way. Anywhere, Anytime."
+              className="w-full h-auto object-contain"
+            />
+          </a>
+
           {/* Opinion block — sits at the top of the sidebar, next to the Business section */}
           <OpinionBlock />
         </div>
