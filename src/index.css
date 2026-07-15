@@ -46,8 +46,8 @@
     font-family: 'Boldonse', sans-serif;
     font-weight: 400;
     /* Boldonse only ships an upright weight — no italic exists to request,
-       so we skew the glyphs ourselves to fake the slant. */
-    font-style: normal;
+       so we skew the glyphs ourselves to fake the slant. Applied to a plain
+       inline text wrapper only, so it never distorts a pill/badge shape. */
     display: inline-block;
     transform: skewX(-10deg);
   }
