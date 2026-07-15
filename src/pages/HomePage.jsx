@@ -60,18 +60,29 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
+      {/* Main column (hero, 4-cards, Spotlight, Going Viral) and the sidebar
+          (Latest News, ad, Most Viewed) each flow independently top-to-bottom —
+          Spotlight starts right under the 4 cards regardless of how tall the
+          sidebar ends up being, instead of waiting for both columns to finish. */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-6">
           {top ? <HeroCard post={top} /> : <div className="aspect-[16/9] rounded-lg skeleton-shimmer" />}
 
           {/* Small news cards under the hero */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 mt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
             {heroBelowGrid.length === 0
               ? [...Array(4)].map((_, i) => <FeatureCardSkeleton key={i} />)
               : heroBelowGrid.map(p => <FeatureCard key={p.id} post={p} />)}
           </div>
+
+          {/* Spotlight — now directly under the 4 cards, not gated on the sidebar's height */}
+          <SpotlightBlock />
+
+          {/* Going Viral — full width of the main column */}
+          <GoingViralBlock />
         </div>
-        <div>
+
+        <div className="space-y-6">
           <section className="border border-border rounded-md overflow-hidden h-fit">
             <div className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-xl sm:text-2xl px-5 py-4">
               Latest News
@@ -105,26 +116,13 @@ export default function HomePage() {
           </section>
 
           {/* Ad banner */}
-          <div className="mt-6">
-            <AdBanner />
-          </div>
-        </div>
-      </section>
+          <AdBanner />
 
-      {/* Spotlight — sits above Going Viral, full width */}
-      <div className="mb-10">
-        <SpotlightBlock />
-      </div>
-
-      {/* Going Viral (2/3) + Most Viewed News (1/3), side by side */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-10">
-        <div className="lg:col-span-2">
-          <GoingViralBlock />
-        </div>
-        <div>
+          {/* Most Viewed — moved here so it continues the sidebar's flow under the ad,
+              instead of pairing with Going Viral further down the page */}
           <MostViewedBlock />
         </div>
-      </div>
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-10">
