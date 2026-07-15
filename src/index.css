@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Boldonse&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,400&display=swap');
-@import url('https://fonts.cdnfonts.com/css/neo-sans-pro?styles=71687');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -33,24 +32,11 @@
 @layer base {
   * { @apply border-border; }
   body {
-    font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     @apply bg-background text-foreground antialiased;
   }
-  /* Headlines: article/post titles, hero titles */
-  h1, h2, h3, h4, .font-serif-headline {
-    font-family: 'Neo Sans Pro', sans-serif;
-    font-weight: 700;
-  }
-  /* Category labels / section-column headers (e.g. "Lifestyle", category badges) */
-  .font-category-header {
-    font-family: 'Boldonse', sans-serif;
-    font-weight: 400;
-    /* Boldonse only ships an upright weight — no italic exists to request,
-       so we skew the glyphs ourselves to fake the slant. Applied to a plain
-       inline text wrapper only, so it never distorts a pill/badge shape. */
-    display: inline-block;
-    transform: skewX(-10deg);
-  }
+  h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; }
+  .font-serif-headline { font-family: 'Playfair Display', Georgia, serif; }
 }
 
 @layer utilities {
