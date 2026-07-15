@@ -22,7 +22,7 @@ export function HeroCard({ post }) {
           <span className="inline-block bg-primary text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-sm">
             Top Story
           </span>
-          <span className="inline-block border-2 border-primary text-primary bg-transparent text-xs sm:text-sm font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-sm">
+          <span className="inline-block border-2 border-primary text-primary bg-white/20 backdrop-blur-md text-[10px] sm:text-xs font-extrabold uppercase tracking-wider px-2 py-1 rounded-sm">
             Exclusive
           </span>
         </div>
