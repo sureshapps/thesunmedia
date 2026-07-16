@@ -11,14 +11,18 @@ import SpotlightBlock from '@/components/site/SpotlightBlock'
 import MostViewedBlock from '@/components/site/MostViewedBlock'
 import OpinionBlock from '@/components/site/OpinionBlock'
 import VideoBlock from '@/components/site/VideoBlock'
+import SportsBlock from '@/components/site/SportsBlock'
+import BreakingNewsSignup from '@/components/site/BreakingNewsSignup'
+import CategoriesGlassBlock from '@/components/site/CategoriesGlassBlock'
 import AdBanner from '@/components/site/AdBanner'
 import ipaperBanner from '@/assets/ipaper-banner.webp'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
+// 'sports' is rendered up top via the dedicated <SportsBlock /> now, so it's
+// excluded here to avoid showing the same category twice on the homepage.
 const FEATURED_CATEGORY_SLUGS = [
   'malaysia-news',
-  'sports',
   'entertainment',
   'motoring',
   'crime',
@@ -161,7 +165,19 @@ export default function HomePage() {
           uploads from the same YouTube Data API v3 source as the standalone Videos page */}
       <VideoBlock />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      {/* Sports spotlight (2/3) + Breaking News signup and glassmorphic Categories (1/3),
+          placed right below the video block, matching the reference layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
+        <div className="lg:col-span-2">
+          <SportsBlock />
+        </div>
+        <div className="space-y-6">
+          <BreakingNewsSignup />
+          <CategoriesGlassBlock />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-10">
         <div className="lg:col-span-2 space-y-10">
           {FEATURED_CATEGORY_SLUGS.map(slug => (
             <CategoryBlock key={slug} slug={slug} />
