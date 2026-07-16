@@ -167,7 +167,7 @@ export default function HomePage() {
 
       {/* Sports spotlight (2/3) + Breaking News signup and glassmorphic Categories (1/3),
           placed right below the video block, matching the reference layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-20">
         <div className="lg:col-span-2">
           <SportsBlock />
         </div>
