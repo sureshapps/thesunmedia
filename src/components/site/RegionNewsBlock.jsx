@@ -9,7 +9,7 @@ import {
 const REGIONS = [
   { slug: 'malaysia-news', label: 'Malaysia', emoji: '🇲🇾', badgeBg: 'bg-blue-50' },
   { slug: 'asia', label: 'Asia', Icon: Radar, badgeBg: 'bg-red-50', iconColor: 'text-red-600' },
-  { slug: 'world', label: 'World', Icon: Globe, badgeBg: 'bg-orange-50', iconColor: 'text-orange-500' },
+  { slug: 'world-news', label: 'World', Icon: Globe, badgeBg: 'bg-orange-50', iconColor: 'text-orange-500' },
 ]
 
 function RegionItem({ post }) {
