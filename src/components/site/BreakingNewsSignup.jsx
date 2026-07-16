@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import robotMascot from '@/assets/robot-mascot.webp'
 
 export default function BreakingNewsSignup() {
   const [email, setEmail] = useState('')
@@ -13,9 +14,15 @@ export default function BreakingNewsSignup() {
   }
 
   return (
-    <section className="relative bg-white rounded-2xl border border-border shadow-md overflow-hidden pt-8 pb-6 px-6 text-center">
-      {/* Top accent bar */}
-      <span className="absolute top-0 left-1/2 -translate-x-1/2 w-14 h-1.5 rounded-b-full bg-gradient-to-r from-orange-400 to-primary" />
+    <section className="relative bg-white rounded-2xl border border-border shadow-md overflow-hidden pt-3 pb-6 px-6 text-center">
+      {/* Top accent bar, peeking out behind the robot */}
+      <span className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-7 rounded-b-2xl bg-gradient-to-r from-orange-400 via-primary to-primary" />
+
+      <img
+        src={robotMascot}
+        alt="theSun assistant robot"
+        className="relative mx-auto w-32 sm:w-36 h-auto -mb-1"
+      />
 
       <h3 className="text-lg text-neutral-600">
         Sign up for{' '}
