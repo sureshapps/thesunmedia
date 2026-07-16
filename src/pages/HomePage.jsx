@@ -14,15 +14,16 @@ import VideoBlock from '@/components/site/VideoBlock'
 import SportsBlock from '@/components/site/SportsBlock'
 import BreakingNewsSignup from '@/components/site/BreakingNewsSignup'
 import CategoriesGlassBlock from '@/components/site/CategoriesGlassBlock'
+import AppPromoBanner from '@/components/site/AppPromoBanner'
+import RegionNewsBlock from '@/components/site/RegionNewsBlock'
 import AdBanner from '@/components/site/AdBanner'
 import ipaperBanner from '@/assets/ipaper-banner.webp'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
-// 'sports' is rendered up top via the dedicated <SportsBlock /> now, so it's
-// excluded here to avoid showing the same category twice on the homepage.
+// 'sports' and 'malaysia-news' are rendered up top via <SportsBlock /> and
+// <RegionNewsBlock /> now, so they're excluded here to avoid duplicates.
 const FEATURED_CATEGORY_SLUGS = [
-  'malaysia-news',
   'entertainment',
   'motoring',
   'crime',
@@ -175,6 +176,16 @@ export default function HomePage() {
           <BreakingNewsSignup />
           <CategoriesGlassBlock />
         </div>
+      </div>
+
+      {/* App promo banner — full width, spans the whole content area */}
+      <div className="mt-10">
+        <AppPromoBanner />
+      </div>
+
+      {/* Malaysia / Asia / World — 3-column responsive glass grid */}
+      <div className="mt-10">
+        <RegionNewsBlock />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-10">
