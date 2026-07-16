@@ -73,20 +73,20 @@ export default function CategoriesGlassBlock({ limit = 16 }) {
       <div className="pointer-events-none absolute -top-12 -right-8 w-56 h-56 rounded-full bg-primary/40 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-16 -left-10 w-48 h-48 rounded-full bg-primary/15 blur-3xl" />
 
-      <h3 className="relative flex items-center gap-2.5 text-primary font-extrabold text-base sm:text-lg uppercase tracking-wide mb-5">
+      <h3 className="relative flex items-center gap-2 text-primary font-extrabold text-sm sm:text-base uppercase tracking-wide mb-4">
         <span className="grid grid-cols-2 gap-[3px] shrink-0">
-          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary" />
-          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary" />
-          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary" />
-          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary" />
+          <span className="w-2 h-2 rounded-[2px] bg-primary" />
+          <span className="w-2 h-2 rounded-[2px] bg-primary" />
+          <span className="w-2 h-2 rounded-[2px] bg-primary" />
+          <span className="w-2 h-2 rounded-[2px] bg-primary" />
         </span>
         Browse Categories
       </h3>
 
-      <div className="relative grid grid-cols-2 gap-3">
+      <div className="relative grid grid-cols-2 gap-2.5">
         {cats.length === 0
           ? [...Array(limit)].map((_, i) => (
-              <div key={i} className="h-[70px] rounded-2xl bg-white/60 border border-red-100 animate-pulse" />
+              <div key={i} className="h-11 rounded-xl bg-white/60 border border-red-100 animate-pulse" />
             ))
           : cats.map((c) => {
               const Icon = resolveIcon(c)
@@ -94,20 +94,20 @@ export default function CategoriesGlassBlock({ limit = 16 }) {
                 <Link
                   key={c.id}
                   to={`/category/${c.slug}`}
-                  className="group flex items-center gap-3 rounded-2xl px-3 py-3 sm:px-3.5 sm:py-3.5
+                  className="group flex items-center gap-2 h-11 px-2.5 rounded-xl
                              bg-white/55 backdrop-blur-md border border-white/80
-                             shadow-[0_4px_16px_-8px_rgba(220,38,38,0.3)]
-                             hover:bg-white/80 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-8px_rgba(220,38,38,0.35)]
+                             shadow-[0_4px_14px_-8px_rgba(220,38,38,0.3)]
+                             hover:bg-white/80 hover:-translate-y-0.5 hover:shadow-[0_6px_16px_-8px_rgba(220,38,38,0.35)]
                              transition-all duration-200"
                 >
-                  <span className="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/80 border border-red-100 flex items-center justify-center group-hover:bg-white transition-colors">
-                    <Icon className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-primary" strokeWidth={2} />
+                  <span className="shrink-0 w-7 h-7 rounded-full bg-white/80 border border-red-100 flex items-center justify-center group-hover:bg-white transition-colors">
+                    <Icon className="w-3.5 h-3.5 text-primary" strokeWidth={2} />
                   </span>
-                  <span className="min-w-0 text-left leading-snug">
-                    <span className="font-bold text-primary text-sm sm:text-[15px] break-words">
+                  <span className="min-w-0 text-left truncate">
+                    <span className="font-bold text-primary text-xs sm:text-[13px]">
                       {decodeHtml(c.name)}
                     </span>{' '}
-                    <span className="text-primary/55 text-sm font-semibold whitespace-nowrap">
+                    <span className="text-primary/55 text-xs font-semibold">
                       ({c.count})
                     </span>
                   </span>
