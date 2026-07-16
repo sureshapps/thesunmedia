@@ -17,7 +17,7 @@ export const MAIN_MENU = [
     slug: 'business',
     children: [
       { label: 'Local', slug: 'local' },
-      { label: 'World', slug: 'global-business' },
+      { label: 'Global', slug: 'global-business' },
     ],
   },
   { label: 'Opinion', slug: 'opinion' },
