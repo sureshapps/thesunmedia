@@ -87,7 +87,7 @@ export default function VideoBlock() {
   if (!isLoading && !error && videos.length === 0) return null
 
   return (
-    <section className="relative w-full bg-[#1c1c1e] rounded-[2.5rem] border border-neutral-800 shadow-[0_20px_50px_rgba(0,0,0,0.35)] pt-16 pb-8 px-5 md:px-8 mt-16 mb-4">
+    <section className="relative w-full bg-[#1c1c1e] rounded-[2.5rem] border border-neutral-800 shadow-[0_20px_50px_rgba(0,0,0,0.35)] pt-16 pb-8 px-5 md:px-8 mt-16 mb-10">
 
       {/* Floating header pill */}
       <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-gradient-to-b from-primary to-primary/80 rounded-[2rem] px-8 py-3 shadow-[0_10px_30px_-6px] shadow-primary/40 flex items-center gap-1.5 z-20 border-b-4 border-black/20 whitespace-nowrap">
