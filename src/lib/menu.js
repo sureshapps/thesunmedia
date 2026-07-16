@@ -8,7 +8,7 @@ export const MAIN_MENU = [
     children: [
       { label: 'Malaysia', slug: 'malaysia-news' },
       { label: 'Asia', slug: 'asia' },
-      { label: 'World', slug: 'world' },
+      { label: 'World', slug: 'world-news' },
     ],
   },
   { label: 'Going Viral', slug: 'going-viral' },
