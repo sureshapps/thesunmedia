@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Mail, ChevronRight } from 'lucide-react'
 import robotMascot from '@/assets/robot-mascot.webp'
 
 export default function BreakingNewsSignup() {
@@ -14,25 +15,54 @@ export default function BreakingNewsSignup() {
   }
 
   return (
-    <section className="relative bg-white rounded-2xl border border-border shadow-md overflow-hidden pt-3 pb-6 px-6 text-center">
-      {/* Top accent bar, peeking out behind the robot */}
-      <span className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-7 rounded-b-2xl bg-gradient-to-r from-orange-400 via-primary to-primary" />
+    <section className="relative bg-white rounded-[1.75rem] border border-primary/50 shadow-md overflow-hidden pb-6 px-6 text-center">
 
-      <img
-        src={robotMascot}
-        alt="theSun assistant robot"
-        className="relative mx-auto w-32 sm:w-36 h-auto -mb-1"
-      />
+      {/* Scalloped red banner behind the robot */}
+      <div className="relative -mx-6 mb-1">
+        <svg
+          viewBox="0 0 100 30"
+          preserveAspectRatio="none"
+          className="block w-full h-[88px] sm:h-[100px] text-primary"
+        >
+          <path
+            fill="currentColor"
+            d="M0,0 L100,0 L100,12 C100,22 88,26 78,26 C68,26 62,10 50,10 C38,10 32,26 22,26 C12,26 0,22 0,12 Z"
+          />
+        </svg>
 
-      <h3 className="text-lg text-neutral-600">
-        Sign up for{' '}
-        <span className="font-serif-headline font-bold">
-          <span className="text-secondary italic">the</span>
-          <span className="text-primary">Sun</span>
+        {/* Decorative dot pattern, top-left corner, inside the solid part of the red area */}
+        <div
+          className="absolute top-3 left-3 w-14 h-10 opacity-40"
+          style={{
+            backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1.5px)',
+            backgroundSize: '7px 7px',
+          }}
+        />
+
+        <img
+          src={robotMascot}
+          alt="theSun assistant robot"
+          className="absolute left-1/2 -translate-x-1/2 top-1.5 w-24 sm:w-28 drop-shadow-sm"
+        />
+      </div>
+
+      {/* "Sign up for theSun" pill badge, overlapping the banner/body seam */}
+      <div className="relative z-10 inline-flex items-center bg-neutral-50 border border-border rounded-full px-4 py-1.5 -mt-2">
+        <span className="text-sm text-neutral-600 font-serif-headline">
+          Sign up for{' '}
+          <span className="font-bold">
+            <span className="text-secondary italic">the</span>
+            <span className="text-primary">Sun</span>
+          </span>
         </span>
+      </div>
+
+      <h3 className="text-2xl sm:text-[28px] font-extrabold text-foreground mt-3 tracking-tight">
+        Breaking News Alert
       </h3>
-      <p className="text-2xl font-extrabold text-foreground mt-0.5 tracking-tight">Breaking News Alert</p>
-      <p className="text-sm text-muted-foreground mt-3 leading-relaxed max-w-xs mx-auto">
+      <span className="block w-10 h-1 bg-primary rounded-full mx-auto mt-2 mb-4" />
+
+      <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
         Get real-time breaking news alerts and stay up-to-date with the most important headlines from around the globe.
       </p>
 
@@ -42,28 +72,34 @@ export default function BreakingNewsSignup() {
         </div>
       ) : (
         <form onSubmit={submit} className="mt-5 space-y-3">
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="E-mail address"
-            className="w-full rounded-full border border-border bg-white px-5 py-3 text-sm text-center placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
-          />
+          <div className="flex items-center gap-2.5 border border-primary/50 rounded-full pl-2 pr-4 py-2 focus-within:ring-2 focus-within:ring-primary/25 transition-shadow">
+            <span className="shrink-0 w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+              <Mail className="w-4 h-4 text-primary" strokeWidth={2} />
+            </span>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="E-mail address"
+              className="flex-1 bg-transparent text-sm placeholder:text-muted-foreground focus:outline-none py-1"
+            />
+          </div>
           <button
             type="submit"
-            className="w-full rounded-full bg-black hover:bg-black/85 text-white font-semibold py-3 text-sm transition-colors"
+            className="relative w-full rounded-full bg-gradient-to-r from-primary to-red-900 hover:from-red-600 hover:to-red-950 text-white font-bold py-3 text-sm transition-colors shadow-[0_12px_22px_-10px_rgba(180,20,25,0.6)]"
           >
             Subscribe
+            <ChevronRight className="w-4 h-4 absolute right-5 top-1/2 -translate-y-1/2" />
           </button>
         </form>
       )}
 
       <p className="text-xs text-muted-foreground mt-4">
         By signing up, you agree to our{' '}
-        <a href="/privacy-policy" className="underline font-semibold text-foreground hover:text-primary">
+        <a href="/privacy-policy" className="underline font-semibold text-primary hover:text-primary/80">
           Privacy Policy
-        </a>
+        </a>.
       </p>
     </section>
   )
