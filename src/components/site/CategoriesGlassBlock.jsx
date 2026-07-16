@@ -1,47 +1,119 @@
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { LayoutGrid } from 'lucide-react'
+import {
+  Flag, Newspaper, Globe, MapPin, Footprints, Briefcase, Building2, Users,
+  Heart, Flame, MessageCircle, CircleDot, Shield, Car, GraduationCap,
+  Clapperboard, Smartphone, Home, Plane, Tag,
+} from 'lucide-react'
 import { categoriesKey, decodeHtml, asArray } from '@/lib/wp'
+
+// slug -> icon, matched first; falls back to a keyword scan, then a generic tag icon
+const ICON_BY_SLUG = {
+  'malaysia-news': Flag,
+  malaysia: Flag,
+  news: Newspaper,
+  world: Globe,
+  tempatan: MapPin,
+  sports: Footprints,
+  business: Briefcase,
+  berita: Newspaper,
+  'corporate-news': Building2,
+  'people-issues': Users,
+  lifestyle: Heart,
+  'going-viral': Flame,
+  opinion: MessageCircle,
+  football: CircleDot,
+  crime: Shield,
+  local: MapPin,
+  motoring: Car,
+  education: GraduationCap,
+  entertainment: Clapperboard,
+  'technology-social-media': Smartphone,
+  technology: Smartphone,
+  property: Home,
+  travel: Plane,
+}
+
+const KEYWORD_ICONS = [
+  [/malaysia|flag/i, Flag],
+  [/world|global/i, Globe],
+  [/sport|football|soccer/i, Footprints],
+  [/business|corporate|econom/i, Briefcase],
+  [/people|issue|community/i, Users],
+  [/lifestyle|health|family/i, Heart],
+  [/viral|trend/i, Flame],
+  [/opinion|voice|column/i, MessageCircle],
+  [/crime|court|law/i, Shield],
+  [/motor|auto|car/i, Car],
+  [/educat|school|campus/i, GraduationCap],
+  [/entertain|movie|show/i, Clapperboard],
+  [/tech|digital|social/i, Smartphone],
+  [/propert|home|living/i, Home],
+  [/travel|leisure/i, Plane],
+  [/news|berita/i, Newspaper],
+  [/local|tempatan|region/i, MapPin],
+]
+
+function resolveIcon(cat) {
+  if (ICON_BY_SLUG[cat.slug]) return ICON_BY_SLUG[cat.slug]
+  const haystack = `${cat.slug} ${cat.name || ''}`
+  for (const [pattern, Icon] of KEYWORD_ICONS) {
+    if (pattern.test(haystack)) return Icon
+  }
+  return Tag
+}
 
 export default function CategoriesGlassBlock({ limit = 16 }) {
   const { data: catsRaw } = useSWR(categoriesKey({ per_page: limit, orderby: 'count', order: 'desc' }))
   const cats = asArray(catsRaw).filter((c) => c.slug !== 'uncategorized')
 
   return (
-    <section className="relative rounded-[2rem] p-5 sm:p-6 overflow-hidden bg-gradient-to-b from-[#e2272c] via-[#b81f24] to-[#530d11] shadow-[0_25px_55px_-15px_rgba(140,10,15,0.55)]">
-      {/* Soft blurred glass-colour blobs behind everything, red palette version of the
-          "sample background" reference — depth without needing a texture image */}
-      <div className="pointer-events-none absolute -top-16 -left-10 w-52 h-52 rounded-full bg-orange-300/30 blur-3xl" />
-      <div className="pointer-events-none absolute top-1/3 -right-14 w-56 h-56 rounded-full bg-rose-400/25 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 left-1/4 w-56 h-56 rounded-full bg-black/30 blur-3xl" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/10" />
+    <section className="relative rounded-[2rem] p-5 sm:p-6 overflow-hidden bg-gradient-to-br from-white via-rose-50 to-red-50 border border-red-100/80 shadow-[0_25px_55px_-22px_rgba(220,38,38,0.4)]">
+      {/* Soft red glow blobs — light glass background with colour, not a texture image */}
+      <div className="pointer-events-none absolute -top-12 -right-8 w-56 h-56 rounded-full bg-primary/40 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-16 -left-10 w-48 h-48 rounded-full bg-primary/15 blur-3xl" />
 
-      <h3 className="relative font-serif-headline text-white font-bold text-base sm:text-lg uppercase tracking-wider mb-4 flex items-center gap-2">
-        <LayoutGrid className="h-4 w-4 shrink-0" /> Browse Categories
+      <h3 className="relative flex items-center gap-2.5 text-primary font-extrabold text-base sm:text-lg uppercase tracking-wide mb-5">
+        <span className="grid grid-cols-2 gap-[3px] shrink-0">
+          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary" />
+          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary" />
+          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary" />
+          <span className="w-2.5 h-2.5 rounded-[3px] bg-primary" />
+        </span>
+        Browse Categories
       </h3>
 
       <div className="relative grid grid-cols-2 gap-3">
         {cats.length === 0
           ? [...Array(limit)].map((_, i) => (
-              <div key={i} className="h-[52px] rounded-xl bg-white/10 border border-white/10 animate-pulse" />
+              <div key={i} className="h-[70px] rounded-2xl bg-white/60 border border-red-100 animate-pulse" />
             ))
-          : cats.map((c) => (
-              <Link
-                key={c.id}
-                to={`/category/${c.slug}`}
-                className="group relative flex items-center justify-center gap-1.5 text-center px-3 py-3.5 rounded-xl overflow-hidden
-                           text-xs sm:text-[14px] font-bold text-white
-                           bg-gradient-to-b from-white/25 to-white/5 backdrop-blur-md border border-white/25
-                           shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_6px_14px_-6px_rgba(0,0,0,0.45)]
-                           hover:from-white/35 hover:to-white/10 hover:border-white/40 hover:-translate-y-0.5
-                           transition-all duration-200"
-              >
-                {/* glass sheen sweep on hover */}
-                <span className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-                <span className="relative truncate">{decodeHtml(c.name)}</span>
-                <span className="relative font-normal text-white/70 shrink-0">({c.count})</span>
-              </Link>
-            ))}
+          : cats.map((c) => {
+              const Icon = resolveIcon(c)
+              return (
+                <Link
+                  key={c.id}
+                  to={`/category/${c.slug}`}
+                  className="group flex items-center gap-3 rounded-2xl px-3 py-3 sm:px-3.5 sm:py-3.5
+                             bg-white/55 backdrop-blur-md border border-white/80
+                             shadow-[0_4px_16px_-8px_rgba(220,38,38,0.3)]
+                             hover:bg-white/80 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_-8px_rgba(220,38,38,0.35)]
+                             transition-all duration-200"
+                >
+                  <span className="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/80 border border-red-100 flex items-center justify-center group-hover:bg-white transition-colors">
+                    <Icon className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-primary" strokeWidth={2} />
+                  </span>
+                  <span className="min-w-0 text-left leading-snug">
+                    <span className="font-bold text-primary text-sm sm:text-[15px] break-words">
+                      {decodeHtml(c.name)}
+                    </span>{' '}
+                    <span className="text-primary/55 text-sm font-semibold whitespace-nowrap">
+                      ({c.count})
+                    </span>
+                  </span>
+                </Link>
+              )
+            })}
       </div>
     </section>
   )
