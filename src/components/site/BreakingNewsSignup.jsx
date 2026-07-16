@@ -17,16 +17,17 @@ export default function BreakingNewsSignup() {
   return (
     <section className="relative bg-white rounded-[1.75rem] border border-primary/50 shadow-md overflow-hidden pb-6 px-6 text-center">
 
-      {/* Scalloped red banner behind the robot */}
+      {/* Scalloped red banner behind the robot — one broad valley, red high at the
+          corners, dipping deep in the centre right where the robot's neck sits */}
       <div className="relative -mx-6 mb-1">
         <svg
-          viewBox="0 0 100 30"
+          viewBox="0 0 100 40"
           preserveAspectRatio="none"
-          className="block w-full h-[88px] sm:h-[100px] text-primary"
+          className="block w-full h-[104px] sm:h-[122px] text-primary"
         >
           <path
             fill="currentColor"
-            d="M0,0 L100,0 L100,12 C100,22 88,26 78,26 C68,26 62,10 50,10 C38,10 32,26 22,26 C12,26 0,22 0,12 Z"
+            d="M0,0 L100,0 L100,9 C88,9 80,22 74,28 C68,34 60,37 50,37 C40,37 32,34 26,28 C20,22 12,9 0,9 Z"
           />
         </svg>
 
@@ -42,7 +43,7 @@ export default function BreakingNewsSignup() {
         <img
           src={robotMascot}
           alt="theSun assistant robot"
-          className="absolute left-1/2 -translate-x-1/2 top-1.5 w-24 sm:w-28 drop-shadow-sm"
+          className="absolute left-1/2 -translate-x-1/2 top-1 w-28 sm:w-32 drop-shadow-sm"
         />
       </div>
 
