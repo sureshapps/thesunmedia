@@ -29,6 +29,8 @@ export const postsKey = (params = {}) => buildUrl('/posts', { _embed: 1, ...para
 export const postBySlugKey = (slug) => buildUrl('/posts', { slug, _embed: 1 })
 export const categoryBySlugKey = (slug) => buildUrl('/categories', { slug })
 export const categoriesKey = (params = {}) => buildUrl('/categories', params)
+// Real trending hashtags: WP tags sorted by how many posts use them.
+export const tagsKey = (params = {}) => buildUrl('/tags', { orderby: 'count', order: 'desc', hide_empty: 1, ...params })
 
 // Guards against WP REST occasionally returning a non-array truthy payload
 // (rate-limit / error JSON bodies, WAF challenge pages, etc.) instead of the
