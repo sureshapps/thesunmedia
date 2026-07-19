@@ -9,9 +9,9 @@ export function HeroCard({ post }) {
     <div className="flex flex-col md:flex-row gap-5 md:gap-6">
       {/* Image column — LIVE / TOP STORY bar sits above the image itself */}
       <div className="w-full md:w-[58%] shrink-0 flex flex-col">
-        {/* LIVE badge + TOP STORY block + diagonal marks, underlined by a thin red rule */}
-        <div className="mb-2 select-none">
-          <div className="flex items-stretch h-8 overflow-hidden">
+        {/* LIVE badge + TOP STORY block — rounded, with a shine sweep across the whole box */}
+        <div className="mb-2 select-none relative rounded-md overflow-hidden w-fit">
+          <div className="flex items-stretch h-8">
             <div className="flex items-center gap-1.5 bg-black px-3 shrink-0">
               <span className="w-2 h-2 rounded-full live-blink-dot" />
               <span className="text-white text-[11px] sm:text-xs font-extrabold uppercase italic tracking-wider">
@@ -22,10 +22,12 @@ export function HeroCard({ post }) {
               <span className="text-white text-xs sm:text-sm font-extrabold uppercase italic tracking-wider whitespace-nowrap">
                 Top Story
               </span>
-           
             </div>
           </div>
-          <div className="h-[2px] bg-primary w-full" />
+          {/* Shine sweep overlay */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="tag-shine" />
+          </div>
         </div>
 
         <Link
@@ -62,7 +64,7 @@ export function HeroCard({ post }) {
         </Link>
       </div>
 
-      {/* Blinking LIVE dot — alternates red / yellow */}
+      {/* Blinking LIVE dot — alternates red / yellow — and the shine sweep across the tag box */}
       <style>{`
         @keyframes liveBlinkDot {
           0%, 45% { background-color: #dc2626; }
@@ -71,6 +73,22 @@ export function HeroCard({ post }) {
         }
         .live-blink-dot {
           animation: liveBlinkDot 1s steps(1, end) infinite;
+        }
+
+        .tag-shine {
+          position: absolute;
+          top: 0;
+          left: -60%;
+          width: 35%;
+          height: 100%;
+          background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%);
+          transform: skewX(-20deg);
+          animation: tagShineMove 2.6s ease-in-out infinite;
+        }
+        @keyframes tagShineMove {
+          0% { left: -60%; }
+          45% { left: 130%; }
+          100% { left: 130%; }
         }
       `}</style>
     </div>
