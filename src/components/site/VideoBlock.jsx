@@ -90,7 +90,15 @@ export default function VideoBlock() {
     <section className="relative w-full bg-[#1c1c1e] rounded-[2.5rem] border border-neutral-800 shadow-[0_20px_50px_rgba(0,0,0,0.35)] pt-16 pb-8 px-5 md:px-8 mt-16 mb-10">
 
     
-
+{/* title */}
+      <div className="absolute top-6 left-6 hidden md:block">
+      <div className="bg-[#2c2c2e] hover:bg-primary text-white px-5 py-2.5 rounded-full flex items-center gap-2 text-sm font-semibold transition-all duration-300 shadow-md"
+        >
+          <Play className="w-4 h-4 fill-white" />
+          TheSun Videos
+        </div>
+      </div>
+      
       {/* Watch More */}
       <div className="absolute top-6 right-6 hidden md:block">
         <Link
