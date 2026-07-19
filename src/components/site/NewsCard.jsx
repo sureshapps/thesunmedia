@@ -7,29 +7,8 @@ export function HeroCard({ post }) {
   const cat = getPrimaryCategory(post)
   return (
     <div className="flex flex-col md:flex-row gap-5 md:gap-6">
-      {/* Image column — LIVE / TOP STORY bar sits above the image itself */}
+      {/* Image column */}
       <div className="w-full md:w-[58%] shrink-0 flex flex-col">
-        {/* LIVE badge + TOP STORY block — rounded, with a shine sweep across the whole box */}
-        <div className="mb-2 select-none relative rounded-md overflow-hidden w-fit">
-          <div className="flex items-stretch h-8">
-            <div className="flex items-center gap-1.5 bg-black px-3 shrink-0">
-              <span className="w-2 h-2 rounded-full live-blink-dot" />
-              <span className="text-white text-[11px] sm:text-xs font-extrabold uppercase italic tracking-wider">
-                Live
-              </span>
-            </div>
-            <div className="flex items-center gap-2 bg-primary pl-3 pr-4 shrink-0">
-              <span className="text-white text-xs sm:text-sm font-extrabold uppercase italic tracking-wider whitespace-nowrap">
-                Top Story
-              </span>
-            </div>
-          </div>
-          {/* Shine sweep overlay */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="tag-shine" />
-          </div>
-        </div>
-
         <Link
           to={`/article/${post.slug}`}
           className="group relative block overflow-hidden rounded-2xl bg-black w-full aspect-[16/10] shadow-md hover:shadow-xl transition-shadow duration-300"
@@ -63,34 +42,6 @@ export function HeroCard({ post }) {
           read more...
         </Link>
       </div>
-
-      {/* Blinking LIVE dot — alternates red / yellow — and the shine sweep across the tag box */}
-      <style>{`
-        @keyframes liveBlinkDot {
-          0%, 45% { background-color: #dc2626; }
-          50%, 95% { background-color: #facc15; }
-          100% { background-color: #dc2626; }
-        }
-        .live-blink-dot {
-          animation: liveBlinkDot 1s steps(1, end) infinite;
-        }
-
-        .tag-shine {
-          position: absolute;
-          top: 0;
-          left: -60%;
-          width: 35%;
-          height: 100%;
-          background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%);
-          transform: skewX(-20deg);
-          animation: tagShineMove 2.6s ease-in-out infinite;
-        }
-        @keyframes tagShineMove {
-          0% { left: -60%; }
-          45% { left: 130%; }
-          100% { left: 130%; }
-        }
-      `}</style>
     </div>
   )
 }
