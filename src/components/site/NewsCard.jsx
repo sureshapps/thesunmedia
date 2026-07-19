@@ -9,25 +9,26 @@ export function HeroCard({ post }) {
     <div className="flex flex-col md:flex-row gap-5 md:gap-6">
       {/* Image column — LIVE / TOP STORY bar sits above the image itself */}
       <div className="w-full md:w-[58%] shrink-0 flex flex-col">
-        {/* LIVE badge + TOP STORY block + diagonal stripe filler */}
-        <div className="flex items-stretch h-8 rounded-sm overflow-hidden mb-2 select-none">
-          <div className="flex items-center gap-1.5 bg-black px-3 shrink-0">
-            <span className="w-2 h-2 rounded-full live-blink-dot" />
-            <span className="text-white text-[11px] sm:text-xs font-extrabold uppercase italic tracking-wider">
-              Live
-            </span>
+        {/* LIVE badge + TOP STORY block + diagonal marks, underlined by a thin red rule */}
+        <div className="mb-2 select-none">
+          <div className="flex items-stretch h-8 overflow-hidden">
+            <div className="flex items-center gap-1.5 bg-black px-3 shrink-0">
+              <span className="w-2 h-2 rounded-full live-blink-dot" />
+              <span className="text-white text-[11px] sm:text-xs font-extrabold uppercase italic tracking-wider">
+                Live
+              </span>
+            </div>
+            <div className="flex items-center gap-2 bg-primary pl-3 pr-4 shrink-0">
+              <span className="text-white text-xs sm:text-sm font-extrabold uppercase italic tracking-wider whitespace-nowrap">
+                Top Story
+              </span>
+              <span className="flex items-center gap-[3px] h-full py-1.5">
+                <span className="w-[3px] h-full bg-white" style={{ transform: 'skewX(-20deg)' }} />
+                <span className="w-[3px] h-full bg-white" style={{ transform: 'skewX(-20deg)' }} />
+              </span>
+            </div>
           </div>
-          <div className="flex items-center bg-primary px-3 shrink-0">
-            <span className="text-white text-xs sm:text-sm font-extrabold uppercase italic tracking-wider whitespace-nowrap">
-              Top Story
-            </span>
-          </div>
-          <div className="flex-1 relative bg-white overflow-hidden">
-            <div
-              className="absolute inset-y-0 bg-primary"
-              style={{ left: '14px', width: '10px', transform: 'skewX(-20deg)' }}
-            />
-          </div>
+          <div className="h-[2px] bg-primary w-full" />
         </div>
 
         <Link
