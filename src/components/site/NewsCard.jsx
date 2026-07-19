@@ -22,10 +22,7 @@ export function HeroCard({ post }) {
               <span className="text-white text-xs sm:text-sm font-extrabold uppercase italic tracking-wider whitespace-nowrap">
                 Top Story
               </span>
-              <span className="flex items-center gap-[3px] h-full py-1.5">
-                <span className="w-[3px] h-full bg-white" style={{ transform: 'skewX(-20deg)' }} />
-                <span className="w-[3px] h-full bg-white" style={{ transform: 'skewX(-20deg)' }} />
-              </span>
+           
             </div>
           </div>
           <div className="h-[2px] bg-primary w-full" />
