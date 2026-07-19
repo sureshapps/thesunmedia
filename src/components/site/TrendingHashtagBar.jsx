@@ -9,10 +9,10 @@ const FALLBACK_HASHTAGS = [
   'HashtagOne', 'HashtagTwo', 'HashtagThree', 'HashtagFour',
 ]
 
-const ROTATE_MS = 2000
+const ROTATE_MS = 5000
 const MOBILE_GROUP_SIZE = 2
-const DESKTOP_GROUP_SIZE = 4
-const MOBILE_BREAKPOINT = 640 // matches Tailwind's `sm`
+const DESKTOP_GROUP_SIZE = 6
+const MOBILE_BREAKPOINT = 650 // matches Tailwind's `sm`
 
 function chunk(arr, size) {
   const out = []
