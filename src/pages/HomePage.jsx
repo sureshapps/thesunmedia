@@ -3,6 +3,7 @@ import useSWR from 'swr'
 import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { HeroCard, FeatureCard, HorizontalCard, TimelineCard, TimelineCardSkeleton, FeatureCardSkeleton, HorizontalCardSkeleton } from '@/components/site/NewsCard'
+import TrendingHashtagBar from '@/components/site/TrendingHashtagBar'
 import CategoryBlock from '@/components/site/CategoryBlock'
 import LifestyleBlock from '@/components/site/LifestyleBlock'
 import TrendingBlock from '@/components/site/TrendingBlock'
@@ -67,6 +68,8 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
+      <TrendingHashtagBar />
+
       {/* Main column (hero, 4-cards, Spotlight, Going Viral) and the sidebar
           (Latest News, ad, Most Viewed) each flow independently top-to-bottom —
           Spotlight starts right under the 4 cards regardless of how tall the
