@@ -9,7 +9,7 @@ const FALLBACK_HASHTAGS = [
   'HashtagOne', 'HashtagTwo', 'HashtagThree', 'HashtagFour',
 ]
 
-const ROTATE_MS = 3000
+const ROTATE_MS = 2000
 const MOBILE_GROUP_SIZE = 2
 const DESKTOP_GROUP_SIZE = 4
 const MOBILE_BREAKPOINT = 640 // matches Tailwind's `sm`
