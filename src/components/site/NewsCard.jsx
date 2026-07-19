@@ -22,13 +22,12 @@ export function HeroCard({ post }) {
               Top Story
             </span>
           </div>
-          <div
-            className="flex-1"
-            style={{
-              backgroundImage:
-                'repeating-linear-gradient(-45deg, hsl(var(--primary)) 0px, hsl(var(--primary)) 5px, transparent 5px, transparent 12px)',
-            }}
-          />
+          <div className="flex-1 relative bg-white overflow-hidden">
+            <div
+              className="absolute inset-y-0 bg-primary"
+              style={{ left: '14px', width: '10px', transform: 'skewX(-20deg)' }}
+            />
+          </div>
         </div>
 
         <Link
