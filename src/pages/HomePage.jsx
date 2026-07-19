@@ -68,14 +68,14 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <TrendingHashtagBar />
-
       {/* Main column (hero, 4-cards, Spotlight, Going Viral) and the sidebar
           (Latest News, ad, Most Viewed) each flow independently top-to-bottom —
           Spotlight starts right under the 4 cards regardless of how tall the
           sidebar ends up being, instead of waiting for both columns to finish. */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
         <div className="lg:col-span-2 space-y-6">
+          <TrendingHashtagBar />
+
           {top ? <HeroCard post={top} /> : <div className="aspect-[16/9] rounded-lg skeleton-shimmer" />}
 
           {/* Small news cards under the hero */}
