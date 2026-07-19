@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
+import { Link } from 'react-router-dom'
+import useSWR from 'swr'
 import { TrendingUp } from 'lucide-react'
+import { tagsKey, decodeHtml, asArray } from '@/lib/wp'
 
-// Fallback hashtags shown until real trending tags are wired in from the API.
-const DEFAULT_HASHTAGS = [
+// Shown only while the real tags are loading / if the request fails.
+const FALLBACK_HASHTAGS = [
   'HashtagOne', 'HashtagTwo', 'HashtagThree', 'HashtagFour',
-  'HashtagFive', 'HashtagSix', 'HashtagSeven', 'HashtagEight',
 ]
 
 const GROUP_SIZE = 4
@@ -18,14 +20,25 @@ function chunk(arr, size) {
 
 // Full-width row: LIVE / TOP STORY badge (left) + TRENDING badge with a
 // vertically-animated hashtag ticker (right) that swaps to the next set
-// of `GROUP_SIZE` hashtags every `ROTATE_MS`.
-export default function TrendingHashtagBar({ hashtags }) {
+// of `GROUP_SIZE` hashtags every `ROTATE_MS`. Hashtags are real WP tags,
+// pulled and ranked by post count (the same tag data already powering
+// tag pages / getTags() elsewhere on the site).
+export default function TrendingHashtagBar() {
+  const { data: tagsRaw, isLoading } = useSWR(tagsKey({ per_page: 12 }))
+  const tags = asArray(tagsRaw)
+
   const groups = useMemo(() => {
-    const source = hashtags && hashtags.length ? hashtags : DEFAULT_HASHTAGS
+    const source = tags.length
+      ? tags.map(t => ({ name: decodeHtml(t.name), slug: t.slug }))
+      : FALLBACK_HASHTAGS.map(name => ({ name, slug: null }))
     return chunk(source, GROUP_SIZE)
-  }, [hashtags])
+  }, [tags])
 
   const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    setIndex(0)
+  }, [groups.length])
 
   useEffect(() => {
     if (groups.length <= 1) return
@@ -34,6 +47,8 @@ export default function TrendingHashtagBar({ hashtags }) {
     }, ROTATE_MS)
     return () => clearInterval(id)
   }, [groups.length])
+
+  if (!isLoading && tags.length === 0) return null
 
   return (
     <div className="mb-6 select-none relative rounded-md overflow-hidden flex items-stretch shadow-sm">
@@ -71,9 +86,18 @@ export default function TrendingHashtagBar({ hashtags }) {
                 <div key={gi} className="flex items-center gap-2 h-5 shrink-0 overflow-hidden">
                   {group.map((tag, ti) => (
                     <span key={ti} className="inline-flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wide text-white border border-white/40 rounded px-2 py-0.5 whitespace-nowrap">
-                        #{tag}
-                      </span>
+                      {tag.slug ? (
+                        <Link
+                          to={`/tag/${tag.slug}`}
+                          className="text-[10px] sm:text-xs font-bold uppercase tracking-wide text-white border border-white/40 rounded px-2 py-0.5 whitespace-nowrap hover:border-primary hover:text-primary transition-colors"
+                        >
+                          #{tag.name}
+                        </Link>
+                      ) : (
+                        <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wide text-white border border-white/40 rounded px-2 py-0.5 whitespace-nowrap">
+                          #{tag.name}
+                        </span>
+                      )}
                       {ti < group.length - 1 && (
                         <span className="w-1 h-1 rounded-full bg-yellow-400 shrink-0" />
                       )}
