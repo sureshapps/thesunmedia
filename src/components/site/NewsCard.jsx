@@ -7,26 +7,42 @@ export function HeroCard({ post }) {
   const cat = getPrimaryCategory(post)
   return (
     <div className="flex flex-col md:flex-row gap-5 md:gap-6">
-      {/* Image card, with TOP STORY / EXCLUSIVE tags */}
-      <Link
-        to={`/article/${post.slug}`}
-        className="group relative block overflow-hidden rounded-2xl bg-black w-full md:w-[58%] shrink-0 aspect-[16/10] shadow-md hover:shadow-xl transition-shadow duration-300"
-      >
-        <img
-          src={img}
-          alt={getImageAlt(post)}
-          loading="eager"
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-          <span className="inline-block bg-primary text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-sm">
-            Top Story
-          </span>
-          <span className="inline-block border-2 border-primary text-primary bg-white/20 backdrop-blur-md text-[10px] sm:text-xs font-extrabold uppercase tracking-wider px-2 py-1 rounded-sm">
-            Exclusive
-          </span>
+      {/* Image column — LIVE / TOP STORY bar sits above the image itself */}
+      <div className="w-full md:w-[58%] shrink-0 flex flex-col">
+        {/* LIVE badge + TOP STORY block + diagonal stripe filler */}
+        <div className="flex items-stretch h-8 rounded-sm overflow-hidden mb-2 select-none">
+          <div className="flex items-center gap-1.5 bg-black px-3 shrink-0">
+            <span className="w-2 h-2 rounded-full live-blink-dot" />
+            <span className="text-white text-[11px] sm:text-xs font-extrabold uppercase italic tracking-wider">
+              Live
+            </span>
+          </div>
+          <div className="flex items-center bg-primary px-3 shrink-0">
+            <span className="text-white text-xs sm:text-sm font-extrabold uppercase italic tracking-wider whitespace-nowrap">
+              Top Story
+            </span>
+          </div>
+          <div
+            className="flex-1"
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(-45deg, hsl(var(--primary)) 0px, hsl(var(--primary)) 5px, transparent 5px, transparent 12px)',
+            }}
+          />
         </div>
-      </Link>
+
+        <Link
+          to={`/article/${post.slug}`}
+          className="group relative block overflow-hidden rounded-2xl bg-black w-full aspect-[16/10] shadow-md hover:shadow-xl transition-shadow duration-300"
+        >
+          <img
+            src={img}
+            alt={getImageAlt(post)}
+            loading="eager"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        </Link>
+      </div>
 
       {/* News card — same elevation language as the image card, so the pair reads as one unit */}
       <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-border/60 p-5 sm:p-6 flex flex-col justify-center">
@@ -48,6 +64,18 @@ export function HeroCard({ post }) {
           read more...
         </Link>
       </div>
+
+      {/* Blinking LIVE dot — alternates red / yellow */}
+      <style>{`
+        @keyframes liveBlinkDot {
+          0%, 45% { background-color: #dc2626; }
+          50%, 95% { background-color: #facc15; }
+          100% { background-color: #dc2626; }
+        }
+        .live-blink-dot {
+          animation: liveBlinkDot 1s steps(1, end) infinite;
+        }
+      `}</style>
     </div>
   )
 }
