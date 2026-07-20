@@ -6,12 +6,12 @@ import { tagsKey, decodeHtml, asArray } from '@/lib/wp'
 
 // Shown only while the real tags are loading / if the request fails.
 const FALLBACK_HASHTAGS = [
-  'HashtagOne', 'HashtagTwo', 'HashtagThree', 'HashtagFour',
+  'HashtagOne', 'HashtagTwo', 'HashtagThree', 'HashtagFour', 'HashtagFive',
 ]
 
 const ROTATE_MS = 5000
 const MOBILE_GROUP_SIZE = 2
-const DESKTOP_GROUP_SIZE = 6
+const DESKTOP_GROUP_SIZE = 4
 const MOBILE_BREAKPOINT = 650 // matches Tailwind's `sm`
 
 function chunk(arr, size) {
@@ -32,11 +32,11 @@ function useIsMobile() {
   return isMobile
 }
 
-// Full-width row: LIVE / TOP STORY badge (left) + TRENDING badge with a
-// vertically-animated hashtag ticker (right) that swaps to the next set
-// of hashtags every `ROTATE_MS` — 2 at a time on mobile, 4 at a time from
-// `sm` up. Hashtags are real WP tags, pulled and ranked by post count (the
-// same tag data already powering tag pages / getTags() elsewhere on the site).
+// Full-width row: LIVE / TOP STORY badge (left) + a glassmorphic TRENDING
+// pill (right) holding real hashtag chips. Every `ROTATE_MS` the visible
+// set of chips (4 on desktop, 2 on mobile) slides up and is replaced by the
+// next set — same real WP tags, ranked by post count, that power tag pages
+// / getTags() elsewhere on the site.
 export default function TrendingHashtagBar() {
   const { data: tagsRaw, isLoading } = useSWR(tagsKey({ per_page: 12 }))
   const tags = asArray(tagsRaw)
@@ -83,45 +83,49 @@ export default function TrendingHashtagBar() {
         </div>
       </div>
 
-      {/* TRENDING + animated hashtag ticker */}
-      <div className="flex items-stretch flex-1 min-w-0 h-9 rounded-md overflow-hidden shadow-sm">
-        {/* Yellow TRENDING badge with a shine sweep across it */}
-        <div className="relative flex items-center gap-1 sm:gap-1.5 bg-yellow-400 px-2 sm:px-3 shrink-0 overflow-hidden">
-          <span className="text-black text-[11px] sm:text-sm font-extrabold uppercase italic tracking-wider whitespace-nowrap relative z-10">
-            Trending
-          </span>
-          <TrendingUp className="h-3.5 w-3.5 text-black shrink-0 relative z-10" strokeWidth={3} />
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="trending-shine" />
-          </div>
+      {/* Glassmorphic TRENDING pill + rotating hashtag chips */}
+      <div className="relative flex-1 min-w-0 h-9 rounded-full overflow-hidden shadow-sm border border-white/60 bg-white/40 backdrop-blur-md">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-full">
+          <div className="trending-shine" />
         </div>
 
-        <div className="flex-1 min-w-0 bg-[#2d2d2d] flex items-center px-2.5 sm:px-4 overflow-hidden">
-          <div className="relative w-full overflow-hidden h-5">
+        <div className="relative z-10 flex items-center h-full pl-3 pr-2 sm:pl-4 sm:pr-3 gap-2 sm:gap-3">
+          {/* TRENDING label */}
+          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+            <span className="font-serif-headline text-slate-900 text-xs sm:text-base font-extrabold uppercase italic tracking-wide whitespace-nowrap">
+              Trending
+            </span>
+            <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-600 shrink-0" strokeWidth={3} />
+          </div>
+
+          {/* Divider */}
+          <span className="w-px h-4 bg-slate-400/40 shrink-0" />
+
+          {/* Rotating chip viewport */}
+          <div className="relative flex-1 min-w-0 overflow-hidden h-6">
             <div
               className="flex flex-col transition-transform duration-700 ease-in-out"
               style={{ transform: `translateY(-${index * 100}%)` }}
             >
               {groups.map((group, gi) => (
-                <div key={gi} className="flex items-center gap-2 h-5 shrink-0 overflow-hidden">
+                <div key={gi} className="flex items-center gap-1.5 sm:gap-2 h-6 shrink-0 overflow-hidden">
                   {group.map((tag, ti) => (
-                    <span key={ti} className="inline-flex items-center gap-2 shrink-0">
-                      {tag.slug ? (
-                        <Link
-                          to={`/tag/${tag.slug}`}
-                          className="text-[9px] sm:text-xs font-bold uppercase tracking-wide text-white border border-white/40 rounded px-1.5 sm:px-2 py-0.5 whitespace-nowrap hover:border-primary hover:text-primary transition-colors"
-                        >
-                          #{tag.name}
-                        </Link>
-                      ) : (
-                        <span className="text-[9px] sm:text-xs font-bold uppercase tracking-wide text-white border border-white/40 rounded px-1.5 sm:px-2 py-0.5 whitespace-nowrap">
-                          #{tag.name}
-                        </span>
-                      )}
-                      {ti < group.length - 1 && (
-                        <span className="w-1 h-1 rounded-full bg-yellow-400 shrink-0" />
-                      )}
-                    </span>
+                    tag.slug ? (
+                      <Link
+                        key={ti}
+                        to={`/tag/${tag.slug}`}
+                        className="inline-flex items-center shrink-0 rounded-full bg-white/70 hover:bg-primary border border-white/80 hover:border-primary shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 hover:text-white transition-colors whitespace-nowrap"
+                      >
+                        #{tag.name}
+                      </Link>
+                    ) : (
+                      <span
+                        key={ti}
+                        className="inline-flex items-center shrink-0 rounded-full bg-white/70 border border-white/80 shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 whitespace-nowrap"
+                      >
+                        #{tag.name}
+                      </span>
+                    )
                   ))}
                 </div>
               ))}
@@ -146,7 +150,7 @@ export default function TrendingHashtagBar() {
           left: -60%;
           width: 35%;
           height: 100%;
-          background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.75) 50%, transparent 100%);
+          background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
           transform: skewX(-20deg);
           animation: trendingShineMove 2.4s ease-in-out infinite;
         }
