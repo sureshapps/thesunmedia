@@ -25,15 +25,8 @@ import useSeo from '@/lib/useSeo'
 
 // 'sports' and 'malaysia-news' are rendered up top via <SportsBlock /> and
 // <RegionNewsBlock /> now, so they're excluded here to avoid duplicates.
-// 'education', 'motoring', and 'entertainment' now render earlier in the
-// dedicated 3-column row right before RegionNewsBlock, so they're excluded
-// here too to avoid showing the same category twice.
-const FEATURED_CATEGORY_SLUGS = [
-  'crime',
-  'people-issues',
-  'technology-social-media',
-  'corporate-news',
-]
+// 'education', 'motoring', and 'entertainment' render earlier in the
+// dedicated 3-column row right before RegionNewsBlock.
 
 export default function HomePage() {
   useSeo({
@@ -201,14 +194,6 @@ export default function HomePage() {
       {/* Malaysia / Asia / World — 3-column responsive glass grid */}
       <div className="mt-10">
         <RegionNewsBlock />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-10">
-        <div className="lg:col-span-2 space-y-10">
-          {FEATURED_CATEGORY_SLUGS.map(slug => (
-            <CategoryBlock key={slug} slug={slug} />
-          ))}
-        </div>
       </div>
     </div>
   )
