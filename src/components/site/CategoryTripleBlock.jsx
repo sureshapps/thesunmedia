@@ -71,17 +71,17 @@ function CategoryColumn({ slug, label }) {
 
   return (
     <div>
-      {/* Header: red label block, black rule filling the gap, "view more" at the end */}
+      {/* Header: rounded red label block, red rule filling the gap, outlined "view all" button */}
       <div className="flex items-center gap-3 mb-1">
-        <span className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-lg sm:text-xl px-5 py-2.5 shrink-0">
+        <span className="bg-primary text-white font-extrabold uppercase tracking-wide text-base sm:text-lg rounded-lg px-5 py-2.5 shrink-0">
           {label}
         </span>
-        <span className="flex-1 h-[3px] bg-foreground/90" />
+        <span className="flex-1 h-[2px] bg-primary" />
         <Link
           to={`/category/${slug}`}
-          className="shrink-0 text-primary font-bold text-sm hover:underline"
+          className="shrink-0 border border-primary text-primary font-bold text-xs sm:text-sm uppercase tracking-wide rounded-md px-3 py-1.5 hover:bg-primary hover:text-white transition-colors"
         >
-          view more
+          view all
         </Link>
       </div>
 
