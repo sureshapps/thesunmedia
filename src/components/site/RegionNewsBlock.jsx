@@ -1,30 +1,61 @@
 import useSWR from 'swr'
 import { Link } from 'react-router-dom'
-import { Radar, Globe, ChevronRight } from 'lucide-react'
 import {
   postsKey, categoryBySlugKey,
-  getThumbnail, getImageAlt, decodeHtml, timeAgo, asArray, FALLBACK_IMAGE,
+  getThumbnail, getLargeImage, getImageAlt, decodeHtml, stripHtml, timeAgo, asArray, FALLBACK_IMAGE,
 } from '@/lib/wp'
+import merdekaAdBanner from '@/assets/merdeka-ad-banner.png'
+import adsCornerBanner from '@/assets/ads-corner-banner.gif'
 
 const REGIONS = [
-  { slug: 'malaysia-news', label: 'Malaysia', emoji: '🇲🇾', badgeBg: 'bg-blue-50' },
-  { slug: 'asia', label: 'Asia', Icon: Radar, badgeBg: 'bg-red-50', iconColor: 'text-red-600' },
-  { slug: 'world-news', label: 'World', Icon: Globe, badgeBg: 'bg-orange-50', iconColor: 'text-orange-500' },
+  { slug: 'malaysia-news', label: 'Malaysia' },
+  { slug: 'asia', label: 'Asia' },
+  { slug: 'world-news', label: 'World' },
 ]
 
-function RegionItem({ post }) {
+const LIST_COUNT = 4 // items shown below the hero item
+
+function HeroItem({ post }) {
   return (
-    <Link
-      to={`/article/${post.slug}`}
-      className="group flex items-start gap-3 bg-white rounded-xl border border-border/60 p-3 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200"
-    >
-      <div className="min-w-0 flex-1">
-        <h4 className="font-semibold text-sm leading-snug line-clamp-3 text-foreground group-hover:text-primary transition-colors">
+    <Link to={`/article/${post.slug}`} className="block group">
+      <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted mb-3">
+        <img
+          src={getLargeImage(post) || getThumbnail(post) || FALLBACK_IMAGE}
+          alt={getImageAlt(post)}
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+      <div className="flex items-start justify-between gap-3 mb-1">
+        <h4 className="font-bold text-base leading-snug text-foreground group-hover:text-primary transition-colors">
           {decodeHtml(post.title?.rendered || '')}
         </h4>
-        <span className="block mt-1.5 text-xs text-muted-foreground">{timeAgo(post.date)}</span>
+        <span className="shrink-0 text-xs text-muted-foreground whitespace-nowrap pt-0.5">
+          {timeAgo(post.date)}
+        </span>
       </div>
-      <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] shrink-0 rounded-lg overflow-hidden bg-muted">
+      <p className="text-sm text-muted-foreground line-clamp-2">
+        {stripHtml(post.excerpt?.rendered || '', 140)}
+      </p>
+    </Link>
+  )
+}
+
+function HeroItemSkeleton() {
+  return (
+    <div>
+      <div className="aspect-[4/3] rounded-lg skeleton-shimmer mb-3" />
+      <div className="h-4 w-4/5 skeleton-shimmer rounded mb-2" />
+      <div className="h-3 w-full skeleton-shimmer rounded mb-1.5" />
+      <div className="h-3 w-2/3 skeleton-shimmer rounded" />
+    </div>
+  )
+}
+
+function ListItem({ post }) {
+  return (
+    <Link to={`/article/${post.slug}`} className="group flex gap-3">
+      <div className="w-20 h-16 sm:w-24 sm:h-[4.5rem] shrink-0 rounded-md overflow-hidden bg-muted">
         <img
           src={getThumbnail(post) || FALLBACK_IMAGE}
           alt={getImageAlt(post)}
@@ -32,75 +63,111 @@ function RegionItem({ post }) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
+      <div className="min-w-0 flex-1">
+        <h5 className="font-bold text-sm leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
+          {decodeHtml(post.title?.rendered || '')}
+        </h5>
+        <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+          {stripHtml(post.excerpt?.rendered || '', 90)}
+        </p>
+        <span className="block text-[11px] text-muted-foreground text-right mt-1">
+          {timeAgo(post.date)}
+        </span>
+      </div>
     </Link>
   )
 }
 
-function RegionItemSkeleton() {
+function ListItemSkeleton() {
   return (
-    <div className="flex items-start gap-3 bg-white rounded-xl border border-border/60 p-3">
-      <div className="flex-1 space-y-2">
-        <div className="h-3.5 w-full skeleton-shimmer rounded" />
-        <div className="h-3.5 w-2/3 skeleton-shimmer rounded" />
-        <div className="h-2.5 w-12 skeleton-shimmer rounded" />
+    <div className="flex gap-3">
+      <div className="w-20 h-16 sm:w-24 sm:h-[4.5rem] shrink-0 rounded-md skeleton-shimmer" />
+      <div className="min-w-0 flex-1 space-y-1.5 pt-1">
+        <div className="h-3 w-full skeleton-shimmer rounded" />
+        <div className="h-3 w-2/3 skeleton-shimmer rounded" />
+        <div className="h-2.5 w-10 ml-auto skeleton-shimmer rounded" />
       </div>
-      <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] shrink-0 rounded-lg skeleton-shimmer" />
     </div>
   )
 }
 
 function RegionColumn({ region }) {
-  const { slug, label, emoji, Icon, badgeBg, iconColor } = region
+  const { slug, label } = region
   const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
   const cats = asArray(catsRaw)
   const cat = cats[0]
-  const { data: postsRaw } = useSWR(cat ? postsKey({ categories: cat.id, per_page: 5 }) : null)
+  const { data: postsRaw } = useSWR(cat ? postsKey({ categories: cat.id, per_page: 1 + LIST_COUNT }) : null)
   const posts = asArray(postsRaw)
   const loading = !cat || !postsRaw
 
+  const hero = posts[0]
+  const list = posts.slice(1, 1 + LIST_COUNT)
+
   return (
-    <div className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/80 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.25)] p-4 sm:p-5">
-      <div className="flex items-center justify-between mb-2.5">
-        <div className="flex items-center gap-2.5">
-          <span className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full ${badgeBg} flex items-center justify-center shrink-0`}>
-            {emoji ? (
-              <span className="text-base sm:text-lg leading-none">{emoji}</span>
-            ) : (
-              <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${iconColor}`} strokeWidth={2} />
-            )}
-          </span>
-          <h3 className="font-bold text-base sm:text-lg text-foreground">{label}</h3>
-        </div>
+    <div className="rounded-2xl overflow-hidden border-2 border-primary bg-white flex flex-col">
+      <div className="flex items-center justify-between bg-primary px-5 py-3.5 shrink-0">
+        <h3 className="text-white font-extrabold text-lg sm:text-xl">{label}</h3>
         <Link
           to={`/category/${slug}`}
-          className="inline-flex items-center gap-0.5 text-xs font-semibold text-foreground/80 bg-muted/70 hover:bg-muted rounded-full px-3 py-1.5 transition-colors shrink-0"
+          className="shrink-0 border border-white text-white text-xs font-bold uppercase tracking-wide rounded-md px-3 py-1.5 hover:bg-white hover:text-primary transition-colors"
         >
-          view all <ChevronRight className="h-3 w-3 text-primary" />
+          view all
         </Link>
       </div>
 
-      <span className="block h-[3px] w-full rounded-full bg-gradient-to-r from-orange-400 via-pink-400 to-indigo-400 mb-4" />
+      <div className="p-4 sm:p-5 flex-1">
+        {loading ? <HeroItemSkeleton /> : hero ? <HeroItem post={hero} /> : null}
 
-      <div className="space-y-3">
-        {loading
-          ? [...Array(5)].map((_, i) => <RegionItemSkeleton key={i} />)
-          : posts.map((p) => <RegionItem key={p.id} post={p} />)}
+        <div className="h-px bg-border my-4" />
+
+        <div className="space-y-4">
+          {loading
+            ? [...Array(LIST_COUNT)].map((_, i) => <ListItemSkeleton key={i} />)
+            : list.map((p) => <ListItem key={p.id} post={p} />)}
+        </div>
       </div>
+    </div>
+  )
+}
+
+function AdsColumn() {
+  return (
+    <div className="flex flex-col gap-5 h-full">
+      <a
+        href="https://www.thesun.my"
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        className="block rounded-2xl overflow-hidden border border-border bg-white flex-1"
+      >
+        <img
+          src={merdekaAdBanner}
+          alt="Selamat Hari Merdeka — theSun"
+          className="w-full h-full object-cover"
+        />
+      </a>
+      <a
+        href="https://www.thesun.my/advertise"
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        className="block rounded-2xl overflow-hidden border border-border bg-white"
+      >
+        <img
+          src={adsCornerBanner}
+          alt="Digital advertisement — Ads Corner"
+          className="w-full h-auto object-cover"
+        />
+      </a>
     </div>
   )
 }
 
 export default function RegionNewsBlock() {
   return (
-    <section className="relative rounded-[2rem] p-5 sm:p-8 overflow-hidden bg-gradient-to-br from-rose-50/70 via-white to-orange-50/50 border border-rose-100/60 shadow-[0_25px_55px_-30px_rgba(220,38,38,0.35)]">
-      <div className="pointer-events-none absolute -top-16 -left-10 w-56 h-56 rounded-full bg-rose-200/30 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 -right-10 w-60 h-60 rounded-full bg-orange-200/30 blur-3xl" />
-
-      <div className="relative grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-        {REGIONS.map((region) => (
-          <RegionColumn key={region.slug} region={region} />
-        ))}
-      </div>
+    <section className="grid grid-cols-1 lg:grid-cols-4 gap-5 sm:gap-6 items-stretch">
+      {REGIONS.map((region) => (
+        <RegionColumn key={region.slug} region={region} />
+      ))}
+      <AdsColumn />
     </section>
   )
 }
