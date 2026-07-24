@@ -15,6 +15,7 @@ import VideoBlock from '@/components/site/VideoBlock'
 import SportsBlock from '@/components/site/SportsBlock'
 import BreakingNewsSignup from '@/components/site/BreakingNewsSignup'
 import CategoriesGlassBlock from '@/components/site/CategoriesGlassBlock'
+import CategoryTripleBlock from '@/components/site/CategoryTripleBlock'
 import AppPromoBanner from '@/components/site/AppPromoBanner'
 import RegionNewsBlock from '@/components/site/RegionNewsBlock'
 import AdBanner from '@/components/site/AdBanner'
@@ -24,11 +25,10 @@ import useSeo from '@/lib/useSeo'
 
 // 'sports' and 'malaysia-news' are rendered up top via <SportsBlock /> and
 // <RegionNewsBlock /> now, so they're excluded here to avoid duplicates.
-// 'education' and 'motoring' now render earlier in the dedicated 3-column
-// row (alongside 'property') right before RegionNewsBlock, so they're
-// excluded here too to avoid showing the same category twice.
+// 'education', 'motoring', and 'entertainment' now render earlier in the
+// dedicated 3-column row right before RegionNewsBlock, so they're excluded
+// here too to avoid showing the same category twice.
 const FEATURED_CATEGORY_SLUGS = [
-  'entertainment',
   'crime',
   'people-issues',
   'technology-social-media',
@@ -188,10 +188,14 @@ export default function HomePage() {
       {/* Education / Motoring / Property — 3-column row of mini category blocks,
           placed right after the Sports/Categories section and before the
           Malaysia / Asia / World region grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
-        <CategoryBlock slug="education" />
-        <CategoryBlock slug="motoring" />
-        <CategoryBlock slug="property" />
+      <div className="mt-10">
+        <CategoryTripleBlock
+          columns={[
+            { slug: 'education', label: 'Education' },
+            { slug: 'motoring', label: 'Motoring' },
+            { slug: 'entertainment', label: 'Entertainment' },
+          ]}
+        />
       </div>
 
       {/* Malaysia / Asia / World — 3-column responsive glass grid */}
