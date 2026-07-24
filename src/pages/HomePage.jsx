@@ -24,12 +24,13 @@ import useSeo from '@/lib/useSeo'
 
 // 'sports' and 'malaysia-news' are rendered up top via <SportsBlock /> and
 // <RegionNewsBlock /> now, so they're excluded here to avoid duplicates.
+// 'education' and 'motoring' now render earlier in the dedicated 3-column
+// row (alongside 'property') right before RegionNewsBlock, so they're
+// excluded here too to avoid showing the same category twice.
 const FEATURED_CATEGORY_SLUGS = [
   'entertainment',
-  'motoring',
   'crime',
   'people-issues',
-  'education',
   'technology-social-media',
   'corporate-news',
 ]
@@ -169,11 +170,14 @@ export default function HomePage() {
           uploads from the same YouTube Data API v3 source as the standalone Videos page */}
       <VideoBlock />
 
-      {/* Sports spotlight (2/3) + Breaking News signup and glassmorphic Categories (1/3),
-          placed right below the video block, matching the reference layout */}
+      {/* Sports spotlight (2/3, with the app promo banner directly beneath it so the
+          banner only spans the sports column's width) + Breaking News signup and
+          glassmorphic Categories (1/3), placed right below the video block, matching
+          the reference layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-20">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 space-y-6">
           <SportsBlock />
+          <AppPromoBanner />
         </div>
         <div className="space-y-6">
           <BreakingNewsSignup />
@@ -181,9 +185,13 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* App promo banner — full width, spans the whole content area */}
-      <div className="mt-10">
-        <AppPromoBanner />
+      {/* Education / Motoring / Property — 3-column row of mini category blocks,
+          placed right after the Sports/Categories section and before the
+          Malaysia / Asia / World region grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-10">
+        <CategoryBlock slug="education" />
+        <CategoryBlock slug="motoring" />
+        <CategoryBlock slug="property" />
       </div>
 
       {/* Malaysia / Asia / World — 3-column responsive glass grid */}
