@@ -18,6 +18,7 @@ export const MAIN_MENU = [
     children: [
       { label: 'Local', slug: 'local' },
       { label: 'Global', slug: 'global-business' },
+      { label: 'Corporate News', slug: 'corporate-news' },
     ],
   },
   { label: 'Opinion', slug: 'opinion' },
@@ -34,6 +35,7 @@ export const MAIN_MENU = [
       { label: 'Culture & Entertainment', slug: 'entertainment' },
     ],
   },
+  { label: 'Spotlight', slug: 'spotlight' },
   {
     label: 'Sports',
     slug: 'sports',
@@ -46,7 +48,6 @@ export const MAIN_MENU = [
       { label: 'Golf', slug: 'golf' },
     ],
   },
-  { label: 'Classifieds', slug: 'classifieds' },
   { label: 'Education', slug: 'education' },
   { label: 'Videos', slug: 'videos' },
   {
@@ -57,10 +58,11 @@ export const MAIN_MENU = [
       { label: 'Most Views', to: '/latest' },
       { label: 'Latest News', to: '/latest' },
       { label: 'Top Stories', to: '/' },
-      { label: 'Traveling', slug: 'travel' },
     ],
   },
-  { label: "World Cup '26", to: 'https://worldcup2026.thesun.my/', worldcup: true },
+  // Highlighted pill-style nav button (was the World Cup promo slot) — same
+  // treatment, just pointed at Classifieds and without the animated ball icon.
+  { label: 'Classifieds', to: 'https://sunmedia.my', highlight: true },
 ]
 
 // Resolve an item's href: prefer explicit `to`, then `slug` -> /category/:slug
