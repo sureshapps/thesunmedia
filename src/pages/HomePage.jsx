@@ -18,6 +18,7 @@ import CategoriesGlassBlock from '@/components/site/CategoriesGlassBlock'
 import CategoryTripleBlock from '@/components/site/CategoryTripleBlock'
 import AppPromoBanner from '@/components/site/AppPromoBanner'
 import RegionNewsBlock from '@/components/site/RegionNewsBlock'
+import NewsGridBlock from '@/components/site/NewsGridBlock'
 import AdBanner from '@/components/site/AdBanner'
 import ipaperBanner from '@/assets/ipaper-banner.webp'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
@@ -194,6 +195,11 @@ export default function HomePage() {
       {/* Malaysia / Asia / World — 3-column responsive glass grid */}
       <div className="mt-10">
         <RegionNewsBlock />
+      </div>
+
+      {/* News — 4x2 card grid for the 'news' category */}
+      <div className="mt-10">
+        <NewsGridBlock slug="news" label="News" />
       </div>
     </div>
   )
