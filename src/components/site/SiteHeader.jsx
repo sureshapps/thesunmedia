@@ -7,7 +7,8 @@ import {
   Tag, Mail,
   MapPin, Globe, Globe2, MapPinned, Smartphone, HeartPulse, Shirt,
   Plane, UtensilsCrossed, Drama, CircleDot, Feather, Disc3, Gauge,
-  Target, Flag, Landmark, ClipboardList, TrendingUp, Clock, Star, Compass,
+  Target, Flag, Landmark, ClipboardList, TrendingUp, Clock, Star,
+  Sparkles, Building2, BarChart3,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Logo from './Logo'
@@ -20,7 +21,6 @@ import useSWR from 'swr'
 
 const IPAPER_LOGO = 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/0tbdiob5_IPAPER.png'
 const IPAPER_BANNER = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/ipaper.png'
-const WORLD_CUP_BANNER = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/wcside.png'
 const IPAPER_URL = 'https://thesun-ipaper.cld.bz/'
 const ADS_BANNER_URL = 'https://via.placeholder.com/728x90/cccccc/666666?text=Advertisement'
 
@@ -33,11 +33,12 @@ const MOBILE_MENU_ICONS = {
   'Business': Briefcase,
   'Opinion': MessageSquare,
   'Lifestyle': Coffee,
+  'Spotlight': Sparkles,
   'Sports': Trophy,
-  'Motoring': Car,
   'Education': GraduationCap,
   'Videos': PlayCircle,
   'More': MoreHorizontal,
+  'Classifieds': ClipboardList,
 }
 function getMobileIcon(label) {
   return MOBILE_MENU_ICONS[label] || Tag
@@ -49,6 +50,8 @@ const SUBMENU_ICONS = {
   'Asia': Globe,
   'World': Globe2,
   'Local': MapPinned,
+  'Global': BarChart3,
+  'Corporate News': Building2,
   'Technology & Social Media': Smartphone,
   'Family & Health': HeartPulse,
   'Fashion & Beauty': Shirt,
@@ -63,11 +66,10 @@ const SUBMENU_ICONS = {
   'Cricket': Target,
   'Golf': Flag,
   'Property': Landmark,
-  'Classifieds': ClipboardList,
+  'Motoring': Car,
   'Most Views': TrendingUp,
   'Latest News': Clock,
   'Top Stories': Star,
-  'Traveling': Compass,
 }
 function getSubIcon(label) {
   return SUBMENU_ICONS[label] || null
@@ -123,24 +125,31 @@ function TopBarTicker() {
 }
 
 
-// ---------- Animated World Cup nav item (desktop) ----------
-function WorldCupLink() {
+// Shared classes for a highlighted pill-style nav button (e.g. Classifieds) —
+// same treatment the old World Cup nav item used, just without the ball icon.
+const HIGHLIGHT_LINK_CLASS = 'mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors'
+
+// ---------- Highlighted nav button (desktop) ----------
+function HighlightLink({ item }) {
+  const href = itemHref(item)
+  const isExternal = /^https?:\/\//.test(href)
+  if (isExternal) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={HIGHLIGHT_LINK_CLASS}>
+        {item.label}
+      </a>
+    )
+  }
   return (
-    <a
-      href="https://worldcup2026.thesun.my/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors"
-    >
-      World Cup '26
-      <span className="inline-block animate-bounce" style={{ animationDuration: '0.8s' }}>⚽</span>
-    </a>
+    <Link to={href} className={HIGHLIGHT_LINK_CLASS}>
+      {item.label}
+    </Link>
   )
 }
 
 // ---------- Desktop Dropdown ----------
 function Dropdown({ item }) {
-  if (item.worldcup) return <WorldCupLink />
+  if (item.highlight) return <HighlightLink item={item} />
   const [open, setOpen] = useState(false)
   const timer = useRef(null)
   const hasChildren = !!(item.children && item.children.length)
@@ -170,19 +179,6 @@ function Dropdown({ item }) {
   )
 
   if (!hasChildren) {
-    if (item.worldcup) {
-      return (
-        <a
-          href={item.to}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mx-1 my-1 px-3 py-2 text-sm font-extrabold uppercase tracking-wide whitespace-nowrap inline-flex items-center gap-1.5 bg-primary/85 hover:bg-primary/95 backdrop-blur-md border border-white/15 shadow-md shadow-primary/25 text-white rounded transition-colors"
-        >
-          World Cup '26
-          <span className="inline-block animate-bounce" style={{ animationDuration: '1.8s' }}>⚽</span>
-        </a>
-      )
-    }
     return (
       <Link to={itemHref(item)} className={`px-3 py-2 my-1 text-sm font-semibold uppercase tracking-wide hover:text-primary border hover:border-primary rounded transition-colors whitespace-nowrap ${activeCls}`}>
         {item.label}
@@ -231,23 +227,28 @@ function Dropdown({ item }) {
   )
 }
 
-// ---------- Mobile full-page menu: World Cup promo banner ----------
-function MobileWorldCupBanner({ item, onNavigate }) {
-  return (
-    <a
-      href={item.to}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={onNavigate}
-      className="block mt-2 rounded-xl overflow-hidden"
-    >
-      <img
-        src={WORLD_CUP_BANNER}
-        alt={item.label || "World Cup '26"}
-        className="w-full h-auto"
-        style={{ transform: 'scale(1.045)', transformOrigin: 'center' }}
-      />
+// ---------- Mobile full-page menu: highlighted button row (e.g. Classifieds) ----------
+function MobileHighlightButton({ item, onNavigate }) {
+  const Icon = getMobileIcon(item.label)
+  const href = itemHref(item)
+  const isExternal = /^https?:\/\//.test(href)
+  const className = 'flex items-center gap-3 rounded-xl bg-primary p-3.5 hover:bg-primary/90 transition-colors'
+  const content = (
+    <>
+      <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/15 text-white shrink-0">
+        <Icon className="h-4 w-4" strokeWidth={2.25} />
+      </span>
+      <span className="flex-1 font-bold text-[15px] text-white uppercase tracking-wide">{item.label}</span>
+    </>
+  )
+  return isExternal ? (
+    <a href={href} target="_blank" rel="noopener noreferrer" onClick={onNavigate} className={className}>
+      {content}
     </a>
+  ) : (
+    <Link to={href} onClick={onNavigate} className={className}>
+      {content}
+    </Link>
   )
 }
 
@@ -300,7 +301,7 @@ function DailyQuote() {
 
 // ---------- Mobile full-page menu: top-level row (icon badge + label + chevron) ----------
 function MobileMenuItem({ item, onNavigate }) {
-  if (item.worldcup) return <MobileWorldCupBanner item={item} onNavigate={onNavigate} />
+  if (item.highlight) return <MobileHighlightButton item={item} onNavigate={onNavigate} />
 
   const [open, setOpen] = useState(false)
   const hasChildren = !!(item.children && item.children.length)
