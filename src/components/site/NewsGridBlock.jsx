@@ -13,8 +13,11 @@ function NewsCard({ post }) {
   const commentCount = post.comment_count ?? post.comments_count ?? null
 
   return (
-    <Link to={`/article/${post.slug}`} className="group block">
-      <div className="aspect-[4/3] rounded-lg overflow-hidden bg-muted mb-3">
+    <Link
+      to={`/article/${post.slug}`}
+      className="group flex flex-col h-full bg-white rounded-xl overflow-hidden border border-border/60 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+    >
+      <div className="aspect-[4/3] overflow-hidden bg-muted">
         <img
           src={getThumbnail(post) || FALLBACK_IMAGE}
           alt={getImageAlt(post)}
@@ -22,28 +25,30 @@ function NewsCard({ post }) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
       </div>
-      <h3 className="font-bold text-base leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-1.5">
-        {decodeHtml(post.title?.rendered || '')}
-      </h3>
-      <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-        {stripHtml(post.excerpt?.rendered || '', 110)}
-      </p>
-      <div className="text-xs text-muted-foreground space-y-0.5">
-        {author?.name && (
-          <p className="font-semibold text-foreground/80">{author.name}</p>
-        )}
-        <p className="flex items-center gap-1.5">
-          <span>{timeAgo(post.date)}</span>
-          {commentCount !== null && (
-            <>
-              <span>·</span>
-              <span className="inline-flex items-center gap-1">
-                <MessageCircle className="w-3 h-3" />
-                {commentCount}
-              </span>
-            </>
-          )}
+      <div className="flex-1 flex flex-col p-4">
+        <h3 className="font-bold text-base leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-1.5">
+          {decodeHtml(post.title?.rendered || '')}
+        </h3>
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+          {stripHtml(post.excerpt?.rendered || '', 110)}
         </p>
+        <div className="text-xs text-muted-foreground space-y-0.5 mt-auto">
+          {author?.name && (
+            <p className="font-semibold text-foreground/80">{author.name}</p>
+          )}
+          <p className="flex items-center gap-1.5">
+            <span>{timeAgo(post.date)}</span>
+            {commentCount !== null && (
+              <>
+                <span>·</span>
+                <span className="inline-flex items-center gap-1">
+                  <MessageCircle className="w-3 h-3" />
+                  {commentCount}
+                </span>
+              </>
+            )}
+          </p>
+        </div>
       </div>
     </Link>
   )
@@ -51,14 +56,16 @@ function NewsCard({ post }) {
 
 function NewsCardSkeleton() {
   return (
-    <div>
-      <div className="aspect-[4/3] rounded-lg skeleton-shimmer mb-3" />
-      <div className="h-4 w-full skeleton-shimmer rounded mb-1.5" />
-      <div className="h-4 w-2/3 skeleton-shimmer rounded mb-2" />
-      <div className="h-3 w-full skeleton-shimmer rounded mb-1" />
-      <div className="h-3 w-3/4 skeleton-shimmer rounded mb-2" />
-      <div className="h-2.5 w-16 skeleton-shimmer rounded mb-1" />
-      <div className="h-2.5 w-20 skeleton-shimmer rounded" />
+    <div className="flex flex-col h-full bg-white rounded-xl overflow-hidden border border-border/60 shadow-sm">
+      <div className="aspect-[4/3] skeleton-shimmer" />
+      <div className="flex-1 p-4">
+        <div className="h-4 w-full skeleton-shimmer rounded mb-1.5" />
+        <div className="h-4 w-2/3 skeleton-shimmer rounded mb-3" />
+        <div className="h-3 w-full skeleton-shimmer rounded mb-1" />
+        <div className="h-3 w-3/4 skeleton-shimmer rounded mb-3" />
+        <div className="h-2.5 w-16 skeleton-shimmer rounded mb-1" />
+        <div className="h-2.5 w-20 skeleton-shimmer rounded" />
+      </div>
     </div>
   )
 }
@@ -87,7 +94,7 @@ export default function NewsGridBlock({ slug = 'news', label = 'News' }) {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6">
         {loading
           ? [...Array(ITEM_COUNT)].map((_, i) => <NewsCardSkeleton key={i} />)
           : posts.slice(0, ITEM_COUNT).map((p) => <NewsCard key={p.id} post={p} />)}
