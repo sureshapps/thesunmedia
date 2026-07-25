@@ -65,13 +65,14 @@ export default function GoingViralBlock() {
   return (
     <section>
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border pb-3 mb-5">
-        <span className="inline-block bg-primary text-white font-extrabold italic uppercase tracking-wide text-base sm:text-lg px-4 py-1.5 rounded-sm">
+      <div className="flex items-center gap-3 mb-5">
+        <span className="bg-primary text-white font-extrabold italic uppercase tracking-wide text-base sm:text-lg px-4 py-1.5 rounded-sm shrink-0">
           Going Viral
         </span>
+        <span className="flex-1 h-[2px] bg-primary" />
         <Link
           to={cat ? `/category/${cat.slug}` : '/category/going-viral'}
-          className="text-xs sm:text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
+          className="shrink-0 text-xs sm:text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
         >
           View All <ChevronRight className="h-4 w-4" />
         </Link>
