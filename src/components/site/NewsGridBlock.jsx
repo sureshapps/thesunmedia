@@ -33,7 +33,7 @@ function NewsCard({ post }) {
           {stripHtml(post.excerpt?.rendered || '', 110)}
         </p>
         <div className="text-xs text-muted-foreground space-y-0.5 mt-auto">
-          {author?.name && (
+          {author?.name && author.name !== 'theSun' && (
             <p className="font-semibold text-foreground/80">{author.name}</p>
           )}
           <p className="flex items-center gap-1.5">
