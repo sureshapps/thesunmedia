@@ -9,6 +9,7 @@ import {
 const REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000 // refresh once a day
 const OPINION_CATEGORY_SLUG = 'opinion'
 const ITEM_COUNT = 20
+const SCROLL_DURATION_S = 45 // increase = slower, decrease = faster
 
 function OpinionItem({ post }) {
   if (!post) return null
@@ -81,6 +82,13 @@ export default function OpinionBlock() {
       </div>
 
       <div className="hover-vertical-ticker h-[560px] overflow-hidden relative">
+        {canScroll && (
+          <style>{`
+            .opinion-ticker-track {
+              animation-duration: ${SCROLL_DURATION_S}s !important;
+            }
+          `}</style>
+        )}
         {loading && (
           <div>
             {[...Array(4)].map((_, i) => <OpinionItemSkeleton key={i} />)}
@@ -90,7 +98,7 @@ export default function OpinionBlock() {
           <div className="py-8 text-center text-sm text-muted-foreground px-4">No opinion pieces yet.</div>
         )}
         {!loading && posts.length > 0 && (
-          <div className={canScroll ? 'vertical-ticker-track' : ''}>
+          <div className={canScroll ? 'vertical-ticker-track opinion-ticker-track' : ''}>
             {(canScroll ? loopPosts : posts).map((p, i) => (
               <OpinionItem key={`${p.id}-${i}`} post={p} />
             ))}
