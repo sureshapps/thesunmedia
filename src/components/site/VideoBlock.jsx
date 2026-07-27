@@ -1,198 +1,132 @@
-import { useState } from 'react'
-import { Play, ArrowLeft, ArrowRight, Eye, ThumbsUp, Clock } from 'lucide-react'
-import { useLatestVideos, formatViews } from '@/lib/youtube'
+import useSWR from 'swr'
+import { Link } from 'react-router-dom'
+import { ChevronRight } from 'lucide-react'
+import {
+  postsKey, categoryBySlugKey,
+  getLargeImage, getFeaturedImage, getThumbnail, getImageAlt, getTags,
+  decodeHtml, stripHtml, asArray, FALLBACK_IMAGE,
+} from '@/lib/wp'
 
-const BATCH = 5 // 1 featured + 4 secondary per page
-const FETCH_COUNT = 13 // a few pages' worth so Prev/Next has room to move
-
-function VideoThumbSurface({ video, playing, onPlay, aspect, children }) {
-  if (playing) {
-    return (
-      <div className={`relative w-full ${aspect} bg-black rounded-lg overflow-hidden`}>
-        <iframe
-          className="w-full h-full"
-          src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0&modestbranding=1`}
-          title={video.title}
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
+function ListRow({ post }) {
+  const tag = getTags(post)[0]
+  return (
+    <Link to={`/article/${post.slug}`} className="group flex gap-3 items-start py-2.5 first:pt-0">
+      <div className="w-20 h-16 sm:w-24 sm:h-[4.5rem] shrink-0 overflow-hidden rounded-lg bg-muted">
+        <img src={getThumbnail(post) || FALLBACK_IMAGE} alt={getImageAlt(post)} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
       </div>
-    )
-  }
-  return (
-    <button
-      onClick={onPlay}
-      className={`group relative block w-full ${aspect} bg-neutral-900 rounded-lg overflow-hidden`}
-    >
-      <img src={video.thumb} alt="" loading="lazy" className="w-full h-full object-cover" />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <Play className="w-9 h-9 sm:w-11 sm:h-11 text-white/90 fill-white/90 drop-shadow-lg group-hover:scale-110 transition-transform" />
+      <div className="min-w-0">
+        {tag && (
+          <span className="inline-block bg-lime-400 text-black text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-sm mb-1">
+            {decodeHtml(tag.name)}
+          </span>
+        )}
+        <h4 className="font-semibold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+          {decodeHtml(post.title?.rendered || '')}
+        </h4>
       </div>
-      {children}
-    </button>
+    </Link>
   )
 }
 
-function StatBadge({ icon: Icon, children, className = '' }) {
+function ListRowSkeleton() {
   return (
-    <span className={`flex items-center gap-1 bg-black/70 text-white text-[11px] font-semibold px-1.5 py-1 rounded ${className}`}>
-      <Icon className="w-3 h-3" />
-      {children}
-    </span>
-  )
-}
-
-function FeaturedVideoCard({ video, playing, onPlay }) {
-  return (
-    <div>
-      <VideoThumbSurface video={video} playing={playing} onPlay={onPlay} aspect="aspect-[4/3]">
-        <div className="absolute bottom-2 left-2 flex items-center gap-2">
-          <StatBadge icon={Eye}>{formatViews(video.views)}</StatBadge>
-          <StatBadge icon={ThumbsUp}>{formatViews(video.likes ?? 0)}</StatBadge>
-        </div>
-        <div className="absolute bottom-2 right-2">
-          <StatBadge icon={Clock}>{video.duration}</StatBadge>
-        </div>
-      </VideoThumbSurface>
-      <h2 className="text-white text-xl sm:text-2xl font-bold leading-snug mt-4 mb-2">
-        {video.title}
-      </h2>
-      <p className="text-neutral-400 text-sm leading-relaxed line-clamp-2">
-        {video.description || `${formatViews(video.views)} views`}
-      </p>
-    </div>
-  )
-}
-
-function FeaturedVideoSkeleton() {
-  return (
-    <div>
-      <div className="w-full aspect-[4/3] rounded-lg bg-neutral-800 animate-pulse" />
-      <div className="mt-4 space-y-2.5">
-        <div className="h-5 w-4/5 bg-neutral-800 rounded animate-pulse" />
-        <div className="h-3.5 w-full bg-neutral-800 rounded animate-pulse" />
-        <div className="h-3.5 w-2/3 bg-neutral-800 rounded animate-pulse" />
+    <div className="flex gap-3 items-start py-2.5">
+      <div className="w-20 h-16 sm:w-24 sm:h-[4.5rem] shrink-0 rounded-lg skeleton-shimmer" />
+      <div className="flex-1 space-y-2 pt-1">
+        <div className="h-3 w-full skeleton-shimmer rounded" />
+        <div className="h-3 w-2/3 skeleton-shimmer rounded" />
       </div>
     </div>
   )
 }
 
-function SecondaryVideoCard({ video, playing, onPlay }) {
-  return (
-    <div>
-      <VideoThumbSurface video={video} playing={playing} onPlay={onPlay} aspect="aspect-video">
-        <div className="absolute top-2 left-2">
-          <StatBadge icon={Eye}>{formatViews(video.views)}</StatBadge>
-        </div>
-        <div className="absolute top-2 right-2">
-          <StatBadge icon={Clock}>{video.duration}</StatBadge>
-        </div>
-      </VideoThumbSurface>
-      <h3 className="text-white text-sm sm:text-base font-bold leading-snug mt-3 mb-1 line-clamp-2">
-        {video.title}
-      </h3>
-      <p className="text-neutral-500 text-xs leading-relaxed line-clamp-2">
-        {video.description || `${formatViews(video.views)} views`}
-      </p>
-    </div>
-  )
-}
+export default function SportsBlock({ slug = 'sports', name = 'Sports' }) {
+  const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
+  const cats = asArray(catsRaw)
+  const cat = cats[0]
+  const { data: postsRaw } = useSWR(cat ? postsKey({ categories: cat.id, per_page: 6 }) : null)
+  const posts = asArray(postsRaw)
+  const loading = !cat || !postsRaw
 
-function SecondaryVideoSkeleton() {
-  return (
-    <div>
-      <div className="w-full aspect-video rounded-lg bg-neutral-800 animate-pulse" />
-      <div className="mt-3 space-y-2">
-        <div className="h-3.5 w-full bg-neutral-800 rounded animate-pulse" />
-        <div className="h-3.5 w-3/4 bg-neutral-800 rounded animate-pulse" />
-      </div>
-    </div>
-  )
-}
+  if (!loading && posts.length === 0) return null
 
-export default function VideoBlock() {
-  const { videos, isLoading, error } = useLatestVideos(FETCH_COUNT)
-  const [startIndex, setStartIndex] = useState(0)
-  const [playingId, setPlayingId] = useState(null)
-
-  // Nothing to show and nothing wrong — just skip the section rather than showing an empty shell.
-  if (!isLoading && !error && videos.length === 0) return null
-
-  const maxStart = Math.max(0, videos.length - BATCH)
-  const visible = videos.slice(startIndex, startIndex + BATCH)
-  const featured = visible[0]
-  const secondary = visible.slice(1, BATCH)
-
-  function goPrev() {
-    setStartIndex((i) => Math.max(0, i - BATCH))
-  }
-  function goNext() {
-    setStartIndex((i) => Math.min(maxStart, i + BATCH))
-  }
+  const hero = posts[0]
+  const feature = posts[1]
+  const listItems = posts.slice(2, 6)
 
   return (
-    <section className="w-full bg-black mt-16 mb-10">
-      {/* Header: red VIDEOS label, red rule, Prev/Next controls */}
-      <div className="flex items-center gap-4 px-5 sm:px-8 pt-6 pb-6">
-        <span className="bg-primary text-white font-extrabold uppercase tracking-wide text-lg sm:text-xl rounded-md px-5 py-2.5 shrink-0">
-          Videos
-        </span>
-        <span className="flex-1 h-[2px] bg-primary" />
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={goPrev}
-            disabled={startIndex === 0}
-            className="flex items-center gap-1.5 border border-neutral-600 text-white text-xs sm:text-sm font-semibold rounded-md px-3 py-2 hover:border-white transition-colors disabled:opacity-30 disabled:pointer-events-none"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Prev
-          </button>
-          <button
-            onClick={goNext}
-            disabled={startIndex >= maxStart}
-            className="flex items-center gap-1.5 border border-neutral-600 text-white text-xs sm:text-sm font-semibold rounded-md px-3 py-2 hover:border-white transition-colors disabled:opacity-30 disabled:pointer-events-none"
-          >
-            Next
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+    <section>
+      {/* Hero banner with category label */}
+      <Link
+        to={cat ? `/category/${cat.slug}` : '#'}
+        className="group relative block w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden bg-neutral-200"
+      >
+        {loading ? (
+          <div className="absolute inset-0 skeleton-shimmer" />
+        ) : (
+          <img
+            src={getLargeImage(hero) || FALLBACK_IMAGE}
+            alt={getImageAlt(hero)}
+            loading="lazy"
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+        <div className="absolute bottom-16 sm:bottom-20 left-5 sm:left-7 flex items-center gap-3">
+          <span className="w-1.5 h-8 bg-orange-500 inline-block rounded-sm" />
+          <h2 className="text-white text-2xl sm:text-3xl font-bold font-serif-headline">{decodeHtml(name)}</h2>
         </div>
-      </div>
+      </Link>
 
-      {error ? (
-        <div className="text-center py-16 text-neutral-400 text-sm">
-          Unable to load videos right now.
-        </div>
-      ) : (
-        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 px-5 sm:px-8 pb-8">
-          {/* Featured video — left column */}
-          <div className="lg:w-[38%] shrink-0">
-            {isLoading || !featured ? (
-              <FeaturedVideoSkeleton />
+      {/* Overlapping content card */}
+      <div className="relative -mt-14 sm:-mt-16 mx-3 sm:mx-6 bg-white rounded-2xl shadow-xl border border-border/60 p-5 sm:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left — big feature story */}
+          <div>
+            {loading || !feature ? (
+              <div className="space-y-3">
+                <div className="aspect-[4/3] rounded-xl skeleton-shimmer" />
+                <div className="h-5 w-4/5 skeleton-shimmer rounded" />
+                <div className="h-3 w-full skeleton-shimmer rounded" />
+                <div className="h-3 w-2/3 skeleton-shimmer rounded" />
+              </div>
             ) : (
-              <FeaturedVideoCard
-                video={featured}
-                playing={playingId === featured.id}
-                onPlay={() => setPlayingId(featured.id)}
-              />
+              <Link to={`/article/${feature.slug}`} className="group block">
+                <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted mb-3">
+                  <img
+                    src={getFeaturedImage(feature) || FALLBACK_IMAGE}
+                    alt={getImageAlt(feature)}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+                <h3 className="font-serif-headline text-xl sm:text-2xl font-bold leading-tight group-hover:text-primary transition-colors line-clamp-3">
+                  {decodeHtml(feature.title?.rendered || '')}
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                  {stripHtml(feature.excerpt?.rendered, 160)}
+                </p>
+              </Link>
             )}
           </div>
 
-          {/* Secondary videos — 2x2 grid on the right */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-            {isLoading
-              ? [...Array(4)].map((_, i) => <SecondaryVideoSkeleton key={i} />)
-              : secondary.map((v) => (
-                  <SecondaryVideoCard
-                    key={v.id}
-                    video={v}
-                    playing={playingId === v.id}
-                    onPlay={() => setPlayingId(v.id)}
-                  />
-                ))}
+          {/* Right — headline list */}
+          <div className="divide-y divide-border md:border-l md:border-border md:pl-6">
+            {loading
+              ? [...Array(4)].map((_, i) => <ListRowSkeleton key={i} />)
+              : listItems.map((p) => <ListRow key={p.id} post={p} />)}
           </div>
         </div>
-      )}
+
+        <div className="flex justify-end mt-4 pt-4 border-t border-border">
+          <Link
+            to={cat ? `/category/${cat.slug}` : '#'}
+            className="text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1"
+          >
+            See full coverage <ChevronRight className="h-4 w-4" />
+          </Link>
+        </div>
+      </div>
     </section>
   )
 }
