@@ -27,11 +27,11 @@ export const MAIN_MENU = [
     slug: 'lifestyle',
     children: [
       { label: 'Boo! and Beyond', slug: 'boo-and-beyond' },
-      { label: 'Technology & Social Media', slug: 'technology' },
+      { label: 'Technology & Social Media', slug: 'technology-social-media' },
       { label: 'Family & Health', slug: 'family-parenting' },
       { label: 'Fashion & Beauty', slug: 'fashion-beauty' },
       { label: 'Home & Living', slug: 'home-living' },
-      { label: 'Travel & Leisure', slug: 'travel' },
+      { label: 'Travel & Leisure', slug: 'travel-leisure' },
       { label: 'Food & Beverage', slug: 'food-beverage' },
       { label: 'Culture & Entertainment', slug: 'entertainment' },
     ],
