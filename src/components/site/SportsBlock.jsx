@@ -40,7 +40,7 @@ function ListRowSkeleton() {
   )
 }
 
-export default function SportsBlock({ slug = 'sports', name = 'Sport' }) {
+export default function SportsBlock({ slug = 'sports', name = 'Sports' }) {
   const { data: catsRaw } = useSWR(categoryBySlugKey(slug))
   const cats = asArray(catsRaw)
   const cat = cats[0]
