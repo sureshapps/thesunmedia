@@ -8,7 +8,7 @@ import {
   MapPin, Globe, Globe2, MapPinned, Smartphone, HeartPulse, Shirt,
   Plane, UtensilsCrossed, Drama, CircleDot, Feather, Disc3, Gauge,
   Target, Flag, Landmark, ClipboardList, TrendingUp, Clock, Star,
-  Sparkles, Building2, BarChart3, Ghost, Dumbbell,
+  Sparkles, Building2, BarChart3, Ghost, Dumbbell, Users,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Logo from './Logo'
@@ -69,6 +69,7 @@ const SUBMENU_ICONS = {
   'Other Sports': Dumbbell,
   'Property': Landmark,
   'Motoring': Car,
+  'People & Issues': Users,
   'Most Views': TrendingUp,
   'Latest News': Clock,
   'Top Stories': Star,
