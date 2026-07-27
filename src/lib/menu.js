@@ -47,6 +47,7 @@ export const MAIN_MENU = [
       { label: 'F1', slug: 'f1' },
       { label: 'Cricket', slug: 'cricket' },
       { label: 'Golf', slug: 'golf' },
+      { label: 'Other Sports', slug: 'other-sports' },
     ],
   },
   { label: 'Education', slug: 'education' },
