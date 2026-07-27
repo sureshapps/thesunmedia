@@ -57,6 +57,7 @@ export const MAIN_MENU = [
     children: [
       { label: 'Property', slug: 'property' },
       { label: 'Motoring', slug: 'motoring' },
+      { label: 'People & Issues', slug: 'people-issues' },
       { label: 'Most Views', to: '/latest' },
       { label: 'Latest News', to: '/latest' },
       { label: 'Top Stories', to: '/' },
