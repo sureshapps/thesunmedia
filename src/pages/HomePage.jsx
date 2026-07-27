@@ -26,7 +26,7 @@ import useSeo from '@/lib/useSeo'
 
 // 'sports' and 'malaysia-news' are rendered up top via <SportsBlock /> and
 // <RegionNewsBlock /> now, so they're excluded here to avoid duplicates.
-// 'education', 'motoring', and 'entertainment' render earlier in the
+// 'education', 'motoring', and 'people-issues' render earlier in the
 // dedicated 3-column row right before RegionNewsBlock.
 
 export default function HomePage() {
@@ -187,7 +187,7 @@ export default function HomePage() {
           columns={[
             { slug: 'education', label: 'Education' },
             { slug: 'motoring', label: 'Motoring' },
-            { slug: 'entertainment', label: 'Entertainment' },
+            { slug: 'people-issues', label: 'People & Issues' },
           ]}
         />
       </div>
