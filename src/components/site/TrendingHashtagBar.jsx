@@ -78,7 +78,7 @@ export default function TrendingHashtagBar() {
         </div>
         <div className="flex items-center gap-2 bg-primary pl-2 pr-3 sm:pl-3 sm:pr-4 shrink-0">
           <span className="text-white text-[11px] sm:text-sm font-extrabold uppercase italic tracking-wider whitespace-nowrap">
-            Top Story
+            Top Stories
           </span>
         </div>
       </div>
