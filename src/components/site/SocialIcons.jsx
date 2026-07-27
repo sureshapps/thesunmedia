@@ -35,16 +35,18 @@ function WhatsAppSvg(props) {
 }
 
 export const SOCIAL = [
-  { name: 'Facebook',  href: 'https://www.facebook.com/thesundaily',     icon: Facebook   },
-  { name: 'Instagram', href: 'https://www.instagram.com/thesundaily',    icon: Instagram  },
-  { name: 'X',         href: 'https://x.com/thesundaily',                icon: XSvg       },
-  { name: 'YouTube',   href: 'https://www.youtube.com/@thesunmedia',     icon: Youtube    },
+  { name: 'Facebook',  href: 'https://www.facebook.com/thesundaily',     icon: Facebook    },
+  { name: 'Instagram', href: 'https://www.instagram.com/thesundaily',    icon: Instagram   },
+  { name: 'Telegram',  href: 'https://t.me/thesundaily',                 icon: TelegramSvg },
+  { name: 'TikTok',    href: 'https://www.tiktok.com/@thesundaily',      icon: TikTokSvg   },
+  { name: 'X',         href: 'https://x.com/thesundaily',                icon: XSvg        },
   { name: 'WhatsApp',  href: 'https://wa.me/thesunmalaysia',             icon: WhatsAppSvg },
+  { name: 'YouTube',   href: 'https://www.youtube.com/@thesunmedia',     icon: Youtube     },
 ]
 
 export default function SocialIcons({ size = 'md', className = '', dark = false }) {
-  const iconSize  = size === 'sm' ? 'w-3 h-3'   : 'w-3.5 h-3.5'
-  const wrapSize  = size === 'sm' ? 'w-5 h-5'   : 'w-6 h-6'
+  const iconSize  = size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'
+  const wrapSize  = size === 'sm' ? 'w-6 h-6'     : 'w-7 h-7'
   const colorCls  = dark ? 'text-primary/70 hover:text-primary' : 'text-white/70 hover:text-white'
 
   return (

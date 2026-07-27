@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import SocialIcons from './SocialIcons'
 
 // theSun app — single AppsFlyer OneLink smart link that routes the visitor
 // to the correct store (App Store / Play Store / AppGallery) automatically.
@@ -131,6 +132,12 @@ export default function SiteFooter() {
                 className="w-full h-auto"
               />
             </a>
+
+            {/* Follow us — social icons under the app download badges */}
+            <div className="mt-6">
+              <p className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-2.5">Follow Us</p>
+              <SocialIcons size="md" />
+            </div>
           </div>
         </div>
 
