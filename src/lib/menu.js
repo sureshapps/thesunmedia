@@ -26,6 +26,7 @@ export const MAIN_MENU = [
     label: 'Lifestyle',
     slug: 'lifestyle',
     children: [
+      { label: 'Boo! and Beyond', slug: 'boo-and-beyond' },
       { label: 'Technology & Social Media', slug: 'technology' },
       { label: 'Family & Health', slug: 'family-parenting' },
       { label: 'Fashion & Beauty', slug: 'fashion-beauty' },
