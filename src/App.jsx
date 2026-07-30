@@ -17,6 +17,7 @@ import DisclaimerPage from '@/pages/DisclaimerPage'
 import AdvertisePage from '@/pages/AdvertisePage'
 import TermsPage from '@/pages/TermsPage'
 import InstallPrompt from '@/components/site/InstallPrompt'
+import BackToTop from '@/components/site/BackToTop'
 
 function ScrollToTop() {
   const { pathname, search } = useLocation()
@@ -51,6 +52,7 @@ export default function App() {
       </main>
       <SiteFooter />
       <InstallPrompt />
+      <BackToTop />
     </div>
   )
 }
