@@ -90,7 +90,10 @@ export function ListenNewsPanel() {
       <div className="fixed top-0 right-0 z-[95] h-full w-full sm:w-[420px] bg-white shadow-2xl flex flex-col">
 
         {/* Player header */}
-        <div className="bg-primary text-white p-5 shrink-0">
+        <div
+          className="bg-primary text-white p-5 shrink-0"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1.25rem)' }}
+        >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-medium text-white/80">{todayLabel()}</span>
             <button onClick={close} aria-label="Close" className="p-1 rounded hover:bg-white/10 transition-colors">
