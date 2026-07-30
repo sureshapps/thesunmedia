@@ -9,7 +9,7 @@ const FALLBACK_HASHTAGS = [
   'HashtagOne', 'HashtagTwo', 'HashtagThree', 'HashtagFour', 'HashtagFive',
 ]
 
-const ROTATE_MS = 5000
+const ROTATE_MS = 6000 // "The Route: Cities" (Jitter) runs a 6s cycle — matched here
 const MOBILE_GROUP_SIZE = 2
 const DESKTOP_GROUP_SIZE = 4
 const MOBILE_BREAKPOINT = 650 // matches Tailwind's `sm`
@@ -51,15 +51,20 @@ export default function TrendingHashtagBar() {
   }, [tags, groupSize])
 
   const [index, setIndex] = useState(0)
+  // Bumped every rotation so the route-draw + chip-arrival animations replay
+  // (keying elements off this forces a remount, which restarts the CSS keyframes).
+  const [tick, setTick] = useState(0)
 
   useEffect(() => {
     setIndex(0)
+    setTick(t => t + 1)
   }, [groups.length])
 
   useEffect(() => {
     if (groups.length <= 1) return
     const id = setInterval(() => {
       setIndex(i => (i + 1) % groups.length)
+      setTick(t => t + 1)
     }, ROTATE_MS)
     return () => clearInterval(id)
   }, [groups.length])
@@ -98,36 +103,40 @@ export default function TrendingHashtagBar() {
             <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-600 shrink-0" strokeWidth={3} />
           </div>
 
-          {/* Divider */}
-          <span className="w-px h-4 bg-slate-400/40 shrink-0" />
+          {/* Mini "route" — a dashed path that draws itself with a travelling dot
+              each time the chips change stop, echoing Jitter's "The Route: Cities" */}
+          <div key={`route-${tick}`} className="relative w-6 h-4 shrink-0 hidden sm:block text-primary" aria-hidden="true">
+            <svg viewBox="0 0 24 16" className="w-full h-full overflow-visible">
+              <line
+                x1="1" y1="8" x2="23" y2="8"
+                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+                strokeDasharray="3 3" opacity="0.55"
+                className="route-line-draw"
+              />
+              <circle r="2.3" fill="currentColor" className="route-dot" />
+            </svg>
+          </div>
 
-          {/* Rotating chip viewport */}
+          {/* Rotating chip viewport — each group "arrives" like a new stop on the route */}
           <div className="relative flex-1 min-w-0 overflow-hidden h-6">
-            <div
-              className="flex flex-col transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateY(-${index * 100}%)` }}
-            >
-              {groups.map((group, gi) => (
-                <div key={gi} className="flex items-center gap-1.5 sm:gap-2 h-6 shrink-0 overflow-hidden">
-                  {group.map((tag, ti) => (
-                    tag.slug ? (
-                      <Link
-                        key={ti}
-                        to={`/tag/${tag.slug}`}
-                        className="inline-flex items-center shrink-0 rounded-full bg-white/70 hover:bg-primary border border-white/80 hover:border-primary shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 hover:text-white transition-colors whitespace-nowrap"
-                      >
-                        #{tag.name}
-                      </Link>
-                    ) : (
-                      <span
-                        key={ti}
-                        className="inline-flex items-center shrink-0 rounded-full bg-white/70 border border-white/80 shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 whitespace-nowrap"
-                      >
-                        #{tag.name}
-                      </span>
-                    )
-                  ))}
-                </div>
+            <div key={`group-${tick}`} className="flex items-center gap-1.5 sm:gap-2 h-6 shrink-0 overflow-hidden route-chip-group">
+              {(groups[index] || []).map((tag, ti) => (
+                tag.slug ? (
+                  <Link
+                    key={ti}
+                    to={`/tag/${tag.slug}`}
+                    className="inline-flex items-center shrink-0 rounded-full bg-white/70 hover:bg-primary border border-white/80 hover:border-primary shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 hover:text-white transition-colors whitespace-nowrap"
+                  >
+                    #{tag.name}
+                  </Link>
+                ) : (
+                  <span
+                    key={ti}
+                    className="inline-flex items-center shrink-0 rounded-full bg-white/70 border border-white/80 shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 whitespace-nowrap"
+                  >
+                    #{tag.name}
+                  </span>
+                )
               ))}
             </div>
           </div>
@@ -142,6 +151,42 @@ export default function TrendingHashtagBar() {
         }
         .live-blink-dot {
           animation: liveBlinkDot 1s steps(1, end) infinite;
+        }
+
+        /* Route line "draws" itself from left to right, like a path being plotted
+           between two stops — same idea as Jitter's "The Route: Cities". */
+        .route-line-draw {
+          stroke-dasharray: 26;
+          stroke-dashoffset: 26;
+          animation: routeLineDraw 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        @keyframes routeLineDraw {
+          to { stroke-dashoffset: 0; }
+        }
+
+        /* Dot travels along the line as it draws, arriving just as the new chip
+           group lands — the "you are here" marker moving city to city. */
+        .route-dot {
+          transform: translate(1px, 8px);
+          opacity: 0;
+          animation: routeDotTravel 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        @keyframes routeDotTravel {
+          0% { transform: translate(1px, 8px); opacity: 0; }
+          12% { opacity: 1; }
+          100% { transform: translate(23px, 8px); opacity: 1; }
+        }
+
+        /* New hashtag group arrives like a destination coming into view —
+           travels in, overshoots slightly, then settles. Total cycle is 6s
+           (ROTATE_MS), animation itself resolves well within that window. */
+        .route-chip-group {
+          animation: chipsArrive 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes chipsArrive {
+          0% { opacity: 0; transform: translateX(16px) translateY(3px) scale(0.85); }
+          60% { opacity: 1; transform: translateX(-3px) translateY(-1px) scale(1.04); }
+          100% { opacity: 1; transform: translateX(0) translateY(0) scale(1); }
         }
 
         .trending-shine {
