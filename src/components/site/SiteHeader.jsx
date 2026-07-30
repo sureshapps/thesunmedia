@@ -15,6 +15,7 @@ import Logo from './Logo'
 import SearchBar from './SearchBar'
 import SocialIcons from './SocialIcons'
 import WeatherClock from './WeatherClock'
+import { ListenNewsProvider, ListenNewsButton, ListenNewsPanel } from './ListenNews'
 import { MAIN_MENU, itemHref } from '@/lib/menu'
 import { postsKey, decodeHtml, asArray } from '@/lib/wp'
 import useSWR from 'swr'
@@ -546,11 +547,15 @@ export default function SiteHeader() {
   const closeMobile = () => setOpen(false)
 
   return (
+    <ListenNewsProvider>
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <style>{`@keyframes wcBounce { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-5px) rotate(20deg); } }`}</style>
 
       {/* Mobile full-page menu (trigger lives in the mobile logo row below) */}
       <MobileFullPageMenu open={open} onClose={closeMobile} />
+
+      {/* Listen News slide-out player — mounted once; both trigger buttons below just open it */}
+      <ListenNewsPanel />
 
       {/* ── ROW 1: Dark ticker bar ── */}
       {/* paddingTop uses the safe-area inset so the dark background still fills all the way
@@ -619,6 +624,7 @@ export default function SiteHeader() {
           <Logo size="sm" />
           <div className="flex items-center gap-1.5 shrink-0">
             <WeatherClock variant="compact" />
+            <ListenNewsButton compact />
             <button
               onClick={() => setMobileSearchOpen(o => !o)}
               aria-label="Search"
@@ -665,8 +671,11 @@ export default function SiteHeader() {
             </a>
           </div>
 
-          {/* Weather + date/time */}
-          <WeatherClock variant="full" className="hidden xl:flex" />
+          {/* Listen News + Weather/date-time — desktop only, same row */}
+          <div className="hidden xl:flex items-center gap-3">
+            <ListenNewsButton />
+            <WeatherClock variant="full" />
+          </div>
 
         </div>
       </div>
@@ -683,5 +692,6 @@ export default function SiteHeader() {
       </div>
 
     </header>
+    </ListenNewsProvider>
   )
 }
