@@ -1,17 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-// Rough average speaking rate for a browser TTS voice — used only to estimate
+// Rough average speaking rate for a browser TTS voice â€” used only to estimate
 // a duration/progress bar, not to control actual playback speed.
 const WORDS_PER_MINUTE = 165
 
-// Preferred voice config. Voices are supplied by the OS/browser, not by this
-// app, so this is a best-effort match by name — if the device doesn't have
-// a voice by this name installed, we fall back first by language, then to
-// the browser's default voice.
-const PREFERRED_VOICE_NAME = 'Microsoft Zira - English (United States)'
-const PREFERRED_LANG = 'en-US'
-const SPEECH_RATE = 0.9
-const SPEECH_PITCH = 1
+// Preferred voice name. Voices are supplied by the OS/browser, not by this
+// app, so this is a best-effort match by name â€” if the device doesn't have
+// a voice by this name installed, we silently fall back to the default.
+const PREFERRED_VOICE_NAME = 'Microsoft Mark - English (United States)'
 
 let cachedVoices = []
 let voicesReadyPromise = null
@@ -37,7 +33,7 @@ function loadVoices() {
     }
     window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged)
     // Some browsers never fire voiceschanged if voices are already loaded
-    // synchronously by the time we get here — fall back to a short timeout.
+    // synchronously by the time we get here â€” fall back to a short timeout.
     setTimeout(() => {
       const voices = window.speechSynthesis.getVoices()
       if (voices.length) {
@@ -55,10 +51,8 @@ function getPreferredVoice() {
   if (!voices.length) return null
   const exact = voices.find((v) => v.name.toLowerCase() === PREFERRED_VOICE_NAME.toLowerCase())
   if (exact) return exact
-  const byNameFragment = voices.find((v) => v.name.toLowerCase().includes('xiaoyu'))
-  if (byNameFragment) return byNameFragment
-  const byLang = voices.find((v) => v.lang.toLowerCase() === PREFERRED_LANG.toLowerCase())
-  return byLang || null
+  const partial = voices.find((v) => v.name.toLowerCase().includes('mark') && v.lang.toLowerCase().startsWith('en'))
+  return partial || null
 }
 
 export function estimateSeconds(text = '') {
@@ -83,7 +77,7 @@ export function formatClock(sec = 0) {
 
 /**
  * Drives browser text-to-speech (Web Speech API) over a queue of articles.
- * Each item is { id, slug, title, text }. Nothing is pre-recorded — every
+ * Each item is { id, slug, title, text }. Nothing is pre-recorded â€” every
  * headline's full text is synthesized live, on demand, which is what lets
  * this work for any article without a backend TTS service.
  */
@@ -130,17 +124,13 @@ export function useNewsReader(items) {
     const fullText = it.text || it.title
     const text = fullText.slice(charOffset) || it.title
     const utter = new SpeechSynthesisUtterance(text)
-    utter.rate = SPEECH_RATE
+    utter.rate = 1
     utter.pitch = 1
     utter.volume = mutedRef.current ? 0 : 1
     const voice = getPreferredVoice()
     if (voice) {
       utter.voice = voice
       utter.lang = voice.lang
-    } else {
-      // No matching voice object found — still hint the browser's own voice
-      // selection toward the preferred language.
-      utter.lang = PREFERRED_LANG
     }
 
     utter.onend = () => {
@@ -219,7 +209,7 @@ export function useNewsReader(items) {
       const nextMuted = !prevMuted
       mutedRef.current = nextMuted
       // Utterance volume can't change mid-speech, so re-speak from the
-      // current position with the new volume — imperceptible in practice.
+      // current position with the new volume â€” imperceptible in practice.
       const it = itemsRef.current[index]
       if (playing && it) {
         const fullText = it.text || it.title
