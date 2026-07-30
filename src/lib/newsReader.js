@@ -7,7 +7,7 @@ const WORDS_PER_MINUTE = 165
 // Preferred voice name. Voices are supplied by the OS/browser, not by this
 // app, so this is a best-effort match by name — if the device doesn't have
 // a voice by this name installed, we silently fall back to the default.
-const PREFERRED_VOICE_NAME = 'Seraphina Multilingual'
+const PREFERRED_VOICE_NAME = 'Osman'
 
 let cachedVoices = []
 let voicesReadyPromise = null
