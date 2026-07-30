@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Zap } from 'lucide-react'
 import { postsKey, decodeHtml, asArray } from '@/lib/wp'
 import SocialIcons from './SocialIcons'
+import ThemeToggle from './ThemeToggle'
 
 export default function BreakingTicker() {
   const { data: postsRaw } = useSWR(postsKey({ per_page: 8 }))
@@ -16,7 +17,8 @@ export default function BreakingTicker() {
             <span className="hidden sm:inline">Breaking</span>
           </div>
           <div className="flex-1 px-4 py-2 text-xs text-white/60">Loading latest headlines…</div>
-          <div className="hidden sm:flex items-center pl-3 pr-1 border-l border-white/10 shrink-0">
+          <div className="hidden sm:flex items-center gap-1 pl-3 pr-1 border-l border-white/10 shrink-0">
+            <ThemeToggle />
             <SocialIcons size="sm" />
           </div>
         </div>
@@ -41,7 +43,8 @@ export default function BreakingTicker() {
             ))}
           </div>
         </div>
-        <div className="hidden sm:flex items-center pl-3 pr-1 border-l border-white/10 shrink-0">
+        <div className="hidden sm:flex items-center gap-1 pl-3 pr-1 border-l border-white/10 shrink-0">
+          <ThemeToggle />
           <SocialIcons size="sm" />
         </div>
       </div>
