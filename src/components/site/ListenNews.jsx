@@ -63,7 +63,7 @@ export function ListenNewsButton({ compact = false }) {
     >
       {/* Pulsing rings — purely decorative, sits behind the button content */}
       <span className="absolute inset-0 rounded-xl bg-primary animate-ping opacity-75 pointer-events-none" aria-hidden="true" />
-      <span className="absolute inset-0 rounded-xl bg-primary/60 animate-pulse pointer-events-none" aria-hidden="true" />
+      <span className="absolute inset-0 rounded-xl bg-primary/120 animate-pulse pointer-events-none" aria-hidden="true" />
 
       <Headphones className="relative h-5 w-5" strokeWidth={2.25} />
       <span className="relative text-[10px] font-extrabold leading-none tracking-wide text-center">
