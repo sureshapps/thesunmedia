@@ -4,6 +4,57 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 // a duration/progress bar, not to control actual playback speed.
 const WORDS_PER_MINUTE = 165
 
+// Preferred voice name. Voices are supplied by the OS/browser, not by this
+// app, so this is a best-effort match by name — if the device doesn't have
+// a voice by this name installed, we silently fall back to the default.
+const PREFERRED_VOICE_NAME = 'Seraphina Multilingual'
+
+let cachedVoices = []
+let voicesReadyPromise = null
+
+function loadVoices() {
+  if (!('speechSynthesis' in window)) return Promise.resolve([])
+  if (voicesReadyPromise) return voicesReadyPromise
+
+  voicesReadyPromise = new Promise((resolve) => {
+    const existing = window.speechSynthesis.getVoices()
+    if (existing.length) {
+      cachedVoices = existing
+      resolve(existing)
+      return
+    }
+    const onVoicesChanged = () => {
+      const voices = window.speechSynthesis.getVoices()
+      if (voices.length) {
+        cachedVoices = voices
+        window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged)
+        resolve(voices)
+      }
+    }
+    window.speechSynthesis.addEventListener('voiceschanged', onVoicesChanged)
+    // Some browsers never fire voiceschanged if voices are already loaded
+    // synchronously by the time we get here — fall back to a short timeout.
+    setTimeout(() => {
+      const voices = window.speechSynthesis.getVoices()
+      if (voices.length) {
+        cachedVoices = voices
+        window.speechSynthesis.removeEventListener('voiceschanged', onVoicesChanged)
+        resolve(voices)
+      }
+    }, 300)
+  })
+  return voicesReadyPromise
+}
+
+function getPreferredVoice() {
+  const voices = cachedVoices.length ? cachedVoices : (typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis.getVoices() : [])
+  if (!voices.length) return null
+  const exact = voices.find((v) => v.name.toLowerCase() === PREFERRED_VOICE_NAME.toLowerCase())
+  if (exact) return exact
+  const partial = voices.find((v) => v.name.toLowerCase().includes('seraphina'))
+  return partial || null
+}
+
 export function estimateSeconds(text = '') {
   const words = text.trim().split(/\s+/).filter(Boolean).length
   return Math.max(5, Math.round((words / WORDS_PER_MINUTE) * 60))
@@ -32,6 +83,10 @@ export function formatClock(sec = 0) {
  */
 export function useNewsReader(items) {
   const supported = typeof window !== 'undefined' && 'speechSynthesis' in window
+
+  useEffect(() => {
+    if (supported) loadVoices()
+  }, [supported])
 
   const [index, setIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
@@ -72,6 +127,11 @@ export function useNewsReader(items) {
     utter.rate = 1
     utter.pitch = 1
     utter.volume = mutedRef.current ? 0 : 1
+    const voice = getPreferredVoice()
+    if (voice) {
+      utter.voice = voice
+      utter.lang = voice.lang
+    }
 
     utter.onend = () => {
       stopTicker()
