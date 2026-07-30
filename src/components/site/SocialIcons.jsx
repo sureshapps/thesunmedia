@@ -34,31 +34,34 @@ function WhatsAppSvg(props) {
   )
 }
 
+// Brand color shown on hover (icon tints to this + a soft matching glow).
+// Icons stay monochrome at rest; the brand color only appears on interaction.
 export const SOCIAL = [
-  { name: 'Facebook',  href: 'https://www.facebook.com/thesundaily',     icon: Facebook    },
-  { name: 'Instagram', href: 'https://www.instagram.com/thesundaily',    icon: Instagram   },
-  { name: 'Telegram',  href: 'https://t.me/thesundaily',                 icon: TelegramSvg },
-  { name: 'TikTok',    href: 'https://www.tiktok.com/@thesundaily',      icon: TikTokSvg   },
-  { name: 'X',         href: 'https://x.com/thesundaily',                icon: XSvg        },
-  { name: 'WhatsApp',  href: 'https://wa.me/thesunmalaysia',             icon: WhatsAppSvg },
-  { name: 'YouTube',   href: 'https://www.youtube.com/@thesunmedia',     icon: Youtube     },
+  { name: 'Facebook',  href: 'https://www.facebook.com/thesundaily',     icon: Facebook,    brand: '#1877F2' },
+  { name: 'Instagram', href: 'https://www.instagram.com/thesundaily',    icon: Instagram,   brand: '#E1306C' },
+  { name: 'Telegram',  href: 'https://t.me/thesundaily',                 icon: TelegramSvg, brand: '#29A9EB' },
+  { name: 'TikTok',    href: 'https://www.tiktok.com/@thesundaily',      icon: TikTokSvg,   brand: '#25F4EE' },
+  { name: 'X',         href: 'https://x.com/thesundaily',                icon: XSvg,        brand: '#1D9BF0' },
+  { name: 'WhatsApp',  href: 'https://wa.me/thesunmalaysia',             icon: WhatsAppSvg, brand: '#25D366' },
+  { name: 'YouTube',   href: 'https://www.youtube.com/@thesunmedia',     icon: Youtube,     brand: '#FF0000' },
 ]
 
 export default function SocialIcons({ size = 'md', className = '', dark = false }) {
   const iconSize  = size === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4'
   const wrapSize  = size === 'sm' ? 'w-6 h-6'     : 'w-7 h-7'
-  const colorCls  = dark ? 'text-primary/70 hover:text-primary' : 'text-white/70 hover:text-white'
+  const colorCls  = dark ? 'text-primary/70' : 'text-white/70'
 
   return (
     <div className={`flex items-center gap-1 ${className}`}>
-      {SOCIAL.map(({ name, href, icon: Icon }) => (
+      {SOCIAL.map(({ name, href, icon: Icon, brand }) => (
         <a
           key={name}
           href={href}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={name}
-          className={`${wrapSize} flex items-center justify-center rounded ${colorCls} transition-colors shrink-0`}
+          style={{ '--brand': brand }}
+          className={`${wrapSize} flex items-center justify-center rounded ${colorCls} hover:text-[var(--brand)] hover:drop-shadow-[0_0_5px_var(--brand)] hover:scale-110 transition-all duration-300 shrink-0`}
         >
           <Icon className={iconSize} />
         </a>
