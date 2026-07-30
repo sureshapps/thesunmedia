@@ -19,9 +19,10 @@ import { ListenNewsProvider, ListenNewsButton, ListenNewsPanel } from './ListenN
 import { MAIN_MENU, itemHref } from '@/lib/menu'
 import { postsKey, decodeHtml, asArray } from '@/lib/wp'
 import useSWR from 'swr'
-import { ipaperBanner as IPAPER_BANNER } from '@/assets/ipaperBanner'
+
 
 const IPAPER_LOGO = 'https://customer-assets.emergentagent.com/job_headless-newsroom/artifacts/0tbdiob5_IPAPER.png'
+const IPAPER_BANNER = 'https://pub-d47b202e5190468fa52e1340d54d71b4.r2.dev/ipaper.png'
 const IPAPER_URL = 'https://thesun-ipaper.cld.bz/'
 const ADS_BANNER_URL = 'https://via.placeholder.com/728x90/cccccc/666666?text=Advertisement'
 
