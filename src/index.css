@@ -27,48 +27,6 @@
     --ring: 0 80% 45%;
     --radius: 0.5rem;
   }
-
-  /* ------------------------------------------------------------------ */
-  /* Dark theme — same brand red/green pair as :root, re-tuned for a     */
-  /* near-black canvas: brighter primary/secondary for AA contrast,      */
-  /* warm-neutral (not pure black) surfaces so cards/borders still read  */
-  /* as distinct layers instead of flattening into the background.       */
-  /* Toggle by adding class="dark" to <html> (or a parent element).      */
-  /* ------------------------------------------------------------------ */
-  .dark {
-    --background: 0 0% 7%;
-    --foreground: 0 0% 95%;
-
-    --card: 0 0% 10%;
-    --card-foreground: 0 0% 95%;
-
-    --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 95%;
-
-    /* Brand red, lifted ~10% lightness so it still pops on a dark card
-       instead of muddying — same hue/saturation family as the light theme. */
-    --primary: 0 78% 58%;
-    --primary-foreground: 0 0% 100%;
-
-    /* Brand green, same treatment. */
-    --secondary: 145 45% 40%;
-    --secondary-foreground: 0 0% 100%;
-
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 63%;
-
-    --accent: 0 0% 17%;
-    --accent-foreground: 0 0% 96%;
-
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 0 78% 58%;
-
-    color-scheme: dark;
-  }
 }
 
 @layer base {
@@ -76,7 +34,6 @@
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     @apply bg-background text-foreground antialiased;
-    transition: background-color 0.2s ease, color 0.2s ease;
   }
   h1, h2, h3, h4 { font-family: 'Playfair Display', Georgia, serif; }
   .font-serif-headline { font-family: 'Playfair Display', Georgia, serif; }
@@ -111,10 +68,6 @@
     background-size: 200% 100%;
     animation: shimmer 1.4s infinite;
   }
-  .dark .skeleton-shimmer {
-    background: linear-gradient(90deg, hsl(0 0% 14%) 0%, hsl(0 0% 20%) 50%, hsl(0 0% 14%) 100%);
-    background-size: 200% 100%;
-  }
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
@@ -139,31 +92,3 @@
 .article-content ol { list-style: decimal; }
 .article-content li { margin-bottom: 0.4rem; }
 .article-content iframe { max-width: 100%; margin: 1.25rem 0; }
-
-/* Slight dim + border on article images/iframes in dark mode so bright
-   photos don't glare against the near-black canvas, and embeds read as
-   framed content rather than floating rectangles. */
-.dark .article-content img { opacity: 0.92; }
-.dark .article-content iframe { border-radius: 0.5rem; border: 1px solid hsl(var(--border)); }
-
-/* Text selection tinted with brand red instead of the browser default blue,
-   in both themes. */
-::selection {
-  background: hsl(var(--primary) / 0.25);
-  color: hsl(var(--foreground));
-}
-
-/* Slim, theme-aware scrollbar (WebKit) so dark mode doesn't keep the
-   OS's light scrollbar chrome. Firefox gets the thin/color fallback below. */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: hsl(var(--border)) transparent;
-}
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 999px;
-  border: 2px solid hsl(var(--background));
-}
-::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.5); }
