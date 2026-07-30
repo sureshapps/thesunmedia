@@ -7,7 +7,7 @@ const WORDS_PER_MINUTE = 165
 // Preferred voice name. Voices are supplied by the OS/browser, not by this
 // app, so this is a best-effort match by name — if the device doesn't have
 // a voice by this name installed, we silently fall back to the default.
-const PREFERRED_VOICE_NAME = 'Seraphina Multilingual'
+const PREFERRED_VOICE_NAME = 'Microsoft Mark - English (United States)'
 
 let cachedVoices = []
 let voicesReadyPromise = null
@@ -51,7 +51,7 @@ function getPreferredVoice() {
   if (!voices.length) return null
   const exact = voices.find((v) => v.name.toLowerCase() === PREFERRED_VOICE_NAME.toLowerCase())
   if (exact) return exact
-  const partial = voices.find((v) => v.name.toLowerCase().includes('seraphina'))
+  const partial = voices.find((v) => v.name.toLowerCase().includes('mark') && v.lang.toLowerCase().startsWith('en'))
   return partial || null
 }
 
