@@ -105,7 +105,7 @@ export default function SiteFooter() {
                 ))}
               </ul>
 
-              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-white/85 lg:border-l lg:border-white/15 lg:pl-6">
+              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-white/85 lg:border-0 lg:border-white/15 lg:pl-6">
                 {LINK_COLUMNS[1].map((item) => (
                   <li key={item.slug}>
                     <Link to={`/category/${item.slug}`} className="hover:text-primary transition-colors">
