@@ -55,10 +55,10 @@ function FeaturedVideoCard({ video, playing, onPlay }) {
           <StatBadge icon={Clock}>{video.duration}</StatBadge>
         </div>
       </VideoThumbSurface>
-      <h2 className="text-white text-xl sm:text-2xl font-bold leading-snug mt-4 mb-2">
+      <h2 className="text-neutral-900 text-xl sm:text-2xl font-bold leading-snug mt-4 mb-2">
         {video.title}
       </h2>
-      <p className="text-neutral-400 text-sm leading-relaxed line-clamp-2">
+      <p className="text-neutral-600 text-sm leading-relaxed line-clamp-2">
         {video.description || `${formatViews(video.views)} views`}
       </p>
     </div>
@@ -68,11 +68,11 @@ function FeaturedVideoCard({ video, playing, onPlay }) {
 function FeaturedVideoSkeleton() {
   return (
     <div>
-      <div className="w-full aspect-[4/3] rounded-lg bg-neutral-800 animate-pulse" />
+      <div className="w-full aspect-[4/3] rounded-lg bg-neutral-300 animate-pulse" />
       <div className="mt-4 space-y-2.5">
-        <div className="h-5 w-4/5 bg-neutral-800 rounded animate-pulse" />
-        <div className="h-3.5 w-full bg-neutral-800 rounded animate-pulse" />
-        <div className="h-3.5 w-2/3 bg-neutral-800 rounded animate-pulse" />
+        <div className="h-5 w-4/5 bg-neutral-300 rounded animate-pulse" />
+        <div className="h-3.5 w-full bg-neutral-300 rounded animate-pulse" />
+        <div className="h-3.5 w-2/3 bg-neutral-300 rounded animate-pulse" />
       </div>
     </div>
   )
@@ -89,10 +89,10 @@ function SecondaryVideoCard({ video, playing, onPlay }) {
           <StatBadge icon={Clock}>{video.duration}</StatBadge>
         </div>
       </VideoThumbSurface>
-      <h3 className="text-white text-sm sm:text-base font-bold leading-snug mt-3 mb-1 line-clamp-2">
+      <h3 className="text-neutral-900 text-sm sm:text-base font-bold leading-snug mt-3 mb-1 line-clamp-2">
         {video.title}
       </h3>
-      <p className="text-neutral-500 text-xs leading-relaxed line-clamp-2">
+      <p className="text-neutral-600 text-xs leading-relaxed line-clamp-2">
         {video.description || `${formatViews(video.views)} views`}
       </p>
     </div>
@@ -102,10 +102,10 @@ function SecondaryVideoCard({ video, playing, onPlay }) {
 function SecondaryVideoSkeleton() {
   return (
     <div>
-      <div className="w-full aspect-video rounded-lg bg-neutral-800 animate-pulse" />
+      <div className="w-full aspect-video rounded-lg bg-neutral-300 animate-pulse" />
       <div className="mt-3 space-y-2">
-        <div className="h-3.5 w-full bg-neutral-800 rounded animate-pulse" />
-        <div className="h-3.5 w-3/4 bg-neutral-800 rounded animate-pulse" />
+        <div className="h-3.5 w-full bg-neutral-300 rounded animate-pulse" />
+        <div className="h-3.5 w-3/4 bg-neutral-300 rounded animate-pulse" />
       </div>
     </div>
   )
@@ -132,7 +132,7 @@ export default function VideoBlock() {
   }
 
   return (
-    <section className="w-full bg-black mt-16 mb-10">
+    <section className="w-full bg-[#DBDBDB] mt-16 mb-10">
       {/* Header: red VIDEOS label, red rule, Prev/Next controls */}
       <div className="flex items-center gap-4 px-5 sm:px-8 pt-6 pb-6">
         <span className="bg-primary text-white font-extrabold uppercase tracking-wide text-lg sm:text-xl rounded-md px-5 py-2.5 shrink-0">
@@ -143,7 +143,7 @@ export default function VideoBlock() {
           <button
             onClick={goPrev}
             disabled={startIndex === 0}
-            className="flex items-center gap-1.5 border border-neutral-600 text-white text-xs sm:text-sm font-semibold rounded-md px-3 py-2 hover:border-white transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            className="flex items-center gap-1.5 border border-neutral-400 text-neutral-900 text-xs sm:text-sm font-semibold rounded-md px-3 py-2 hover:border-neutral-900 transition-colors disabled:opacity-30 disabled:pointer-events-none"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Prev
@@ -151,7 +151,7 @@ export default function VideoBlock() {
           <button
             onClick={goNext}
             disabled={startIndex >= maxStart}
-            className="flex items-center gap-1.5 border border-neutral-600 text-white text-xs sm:text-sm font-semibold rounded-md px-3 py-2 hover:border-white transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            className="flex items-center gap-1.5 border border-neutral-400 text-neutral-900 text-xs sm:text-sm font-semibold rounded-md px-3 py-2 hover:border-neutral-900 transition-colors disabled:opacity-30 disabled:pointer-events-none"
           >
             Next
             <ArrowRight className="w-3.5 h-3.5" />
@@ -160,7 +160,7 @@ export default function VideoBlock() {
       </div>
 
       {error ? (
-        <div className="text-center py-16 text-neutral-400 text-sm">
+        <div className="text-center py-16 text-neutral-600 text-sm">
           Unable to load videos right now.
         </div>
       ) : (
