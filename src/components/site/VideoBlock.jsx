@@ -8,7 +8,7 @@ const FETCH_COUNT = 13 // a few pages' worth so Prev/Next has room to move
 function VideoThumbSurface({ video, playing, onPlay, aspect, children }) {
   if (playing) {
     return (
-      <div className={`relative w-full ${aspect} bg-black rounded-lg overflow-hidden`}>
+      <div className={`relative w-full ${aspect} bg-black rounded-xl overflow-hidden`}>
         <iframe
           className="w-full h-full"
           src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0&modestbranding=1`}
@@ -23,7 +23,7 @@ function VideoThumbSurface({ video, playing, onPlay, aspect, children }) {
   return (
     <button
       onClick={onPlay}
-      className={`group relative block w-full ${aspect} bg-neutral-900 rounded-lg overflow-hidden`}
+      className={`group relative block w-full ${aspect} bg-neutral-900 rounded-xl overflow-hidden`}
     >
       <img src={video.thumb} alt="" loading="lazy" className="w-full h-full object-cover" />
       <div className="absolute inset-0 flex items-center justify-center">
@@ -55,10 +55,10 @@ function FeaturedVideoCard({ video, playing, onPlay }) {
           <StatBadge icon={Clock}>{video.duration}</StatBadge>
         </div>
       </VideoThumbSurface>
-      <h2 className="text-neutral-900 text-xl sm:text-2xl font-bold leading-snug mt-4 mb-2">
+      <h2 className="text-neutral-900 text-xl sm:text-2xl lg:text-3xl font-bold leading-snug mt-4 mb-2">
         {video.title}
       </h2>
-      <p className="text-neutral-600 text-sm leading-relaxed line-clamp-2">
+      <p className="text-neutral-600 text-sm leading-relaxed line-clamp-2 lg:line-clamp-none">
         {video.description || `${formatViews(video.views)} views`}
       </p>
     </div>
@@ -132,7 +132,7 @@ export default function VideoBlock() {
   }
 
   return (
-    <section className="w-full bg-[#DBDBDB] mt-16 mb-10 rounded-[1%] overflow-hidden">
+    <section className="w-full bg-[#DBDBDB] mt-16 mb-10 rounded-2xl overflow-hidden">
       {/* Header: red VIDEOS label, red rule, Prev/Next controls */}
       <div className="flex items-center gap-4 px-5 sm:px-8 pt-6 pb-6">
         <span className="bg-primary text-white font-extrabold uppercase tracking-wide text-lg sm:text-xl rounded-md px-5 py-2.5 shrink-0">
