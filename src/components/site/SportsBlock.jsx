@@ -73,7 +73,7 @@ export default function SportsBlock({ slug = 'sports', name = 'Sports' }) {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
         <div className="absolute bottom-16 sm:bottom-20 left-5 sm:left-7 flex items-center gap-3">
-          <span className="w-1.5 h-8 bg-orange-500 inline-block rounded-sm" />
+          <span className="w-1.5 h-8 bg-red-500 inline-block rounded-sm" />
           <h2 className="text-white text-2xl sm:text-3xl font-bold font-serif-headline">{decodeHtml(name)}</h2>
         </div>
       </Link>
