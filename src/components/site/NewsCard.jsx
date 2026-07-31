@@ -55,7 +55,7 @@ export function FeatureCard({ post, large = false }) {
       to={`/article/${post.slug}`}
       className="group flex flex-col h-full bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-border/60 overflow-hidden"
     >
-      <div className="aspect-[16/10] overflow-hidden bg-muted">
+      <div className={`overflow-hidden bg-muted ${large ? 'h-40 sm:h-48 lg:h-56' : 'aspect-[16/10]'}`}>
         <img src={img} alt={getImageAlt(post)} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </div>
       <div className="flex-1 flex flex-col p-4">
@@ -68,7 +68,7 @@ export function FeatureCard({ post, large = false }) {
         </h3>
         {large && (
           <>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
               {stripHtml(post.excerpt?.rendered, 160)}
             </p>
             <span className="inline-block mt-2 text-sm font-semibold text-primary group-hover:underline">
