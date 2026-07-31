@@ -165,7 +165,7 @@ export default function VideoBlock() {
         </div>
       ) : (
         <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 px-5 sm:px-8 pb-8">
-          {/* Featured video — left column */}
+          {/* Featured video — full width on mobile, left column on desktop */}
           <div className="lg:w-[38%] shrink-0">
             {isLoading || !featured ? (
               <FeaturedVideoSkeleton />
@@ -178,8 +178,8 @@ export default function VideoBlock() {
             )}
           </div>
 
-          {/* Secondary videos — 2x2 grid on the right */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+          {/* Secondary videos — 2-column grid on mobile too (1-2-2 layout), right side on desktop */}
+          <div className="flex-1 grid grid-cols-2 gap-3 sm:gap-6">
             {isLoading
               ? [...Array(4)].map((_, i) => <SecondaryVideoSkeleton key={i} />)
               : secondary.map((v) => (
