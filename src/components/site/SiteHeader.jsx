@@ -685,9 +685,16 @@ export default function SiteHeader() {
       <div className="hidden lg:block bg-white border-b border-border">
         <div className="container mx-auto px-4">
           <nav className="hidden lg:flex items-center gap-0">
-            {MAIN_MENU.map((item) => (
-              <Dropdown key={item.label} item={item} />
-            ))}
+            {MAIN_MENU.map((item) => {
+              if (item.label === 'Home' && scrolled) {
+                return (
+                  <Link key="home-logo" to="/" aria-label="theSun - Home" className="mr-3 my-1 flex items-center">
+                    <Logo size="sm" />
+                  </Link>
+                )
+              }
+              return <Dropdown key={item.label} item={item} />
+            })}
           </nav>
         </div>
       </div>
