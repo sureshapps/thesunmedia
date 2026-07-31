@@ -93,7 +93,7 @@ export default function SiteFooter() {
           {/* Link cluster — 4 narrow columns side-by-side even on mobile.
               Shown FIRST on mobile, but sits on the RIGHT on desktop, separated
               from the logo block by a vertical divider. */}
-          <div className="order-1 lg:order-2 lg:col-span-7 lg:border-l lg:border-white/15 lg:pl-8">
+          <div className="order-1 lg:order-2 lg:col-span-7 lg:border-0 lg:border-white/15 lg:pl-8">
             <div className="grid grid-cols-4 gap-2 sm:gap-4 lg:gap-x-0">
               <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-white/85">
                 {LINK_COLUMNS[0].map((item) => (
@@ -115,7 +115,7 @@ export default function SiteFooter() {
                 ))}
               </ul>
 
-              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-primary lg:border-l lg:border-white/15 lg:pl-6">
+              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-primary lg:border-0 lg:border-white/15 lg:pl-6">
                 {COMPANY_LINKS.map((item) => (
                   <li key={item.to}>
                     <Link to={item.to} className="hover:text-white transition-colors">
@@ -125,7 +125,7 @@ export default function SiteFooter() {
                 ))}
               </ul>
 
-              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-primary lg:border-l lg:border-white/15 lg:pl-6">
+              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-primary lg:border-0 lg:border-white/15 lg:pl-6">
                 {ADVERTISE_LINKS.map((item) => (
                   <li key={item.label}>
                     {item.href ? (
