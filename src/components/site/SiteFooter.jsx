@@ -199,7 +199,7 @@ export default function SiteFooter() {
             <img
               src="/footer/sister-sites-mobile.png"
               alt="theSun Sports, theSun LYFE, theSun Classifieds, theSun Biz & Finance"
-              className="w-40 sm:w-48 md:w-auto md:h-8 lg:h-12 h-auto opacity-80 select-none"
+              className="w-40 sm:w-48 md:w-auto md:h-7 lg:h-14 h-auto opacity-80 select-none"
             />
           </picture>
         </div>
