@@ -132,7 +132,7 @@ export default function VideoBlock() {
   }
 
   return (
-    <section className="w-full bg-[#DBDBDB] mt-16 mb-10">
+    <section className="w-full bg-[#DBDBDB] mt-16 mb-10 rounded-[10%] overflow-hidden">
       {/* Header: red VIDEOS label, red rule, Prev/Next controls */}
       <div className="flex items-center gap-4 px-5 sm:px-8 pt-6 pb-6">
         <span className="bg-primary text-white font-extrabold uppercase tracking-wide text-lg sm:text-xl rounded-md px-5 py-2.5 shrink-0">
