@@ -63,7 +63,7 @@ function resolveIcon(cat) {
   return Tag
 }
 
-export default function CategoriesGlassBlock({ limit = 16 }) {
+export default function CategoriesGlassBlock({ limit = 12 }) {
   const { data: catsRaw } = useSWR(categoriesKey({ per_page: limit, orderby: 'count', order: 'desc' }))
   const cats = asArray(catsRaw).filter((c) => c.slug !== 'uncategorized')
 
