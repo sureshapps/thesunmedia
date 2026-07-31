@@ -56,10 +56,11 @@ export default function SportsBlock({ slug = 'sports', name = 'Sports' }) {
 
   return (
     <section>
-      {/* Hero banner with category label */}
+      {/* Hero banner with category label — fixed, shorter height instead of a wide aspect
+          ratio box, so it no longer towers over the sidebar's Breaking News + Categories stack */}
       <Link
         to={cat ? `/category/${cat.slug}` : '#'}
-        className="group relative block w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden bg-neutral-200"
+        className="group relative block w-full h-48 sm:h-56 lg:h-64 rounded-2xl overflow-hidden bg-neutral-200"
       >
         {loading ? (
           <div className="absolute inset-0 skeleton-shimmer" />
