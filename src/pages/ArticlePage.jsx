@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { Clock, User, Tag as TagIcon, Facebook, Linkedin, Mail, ChevronRight } from 'lucide-react'
 import Sidebar from '@/components/site/Sidebar'
 import { FeatureCard, FeatureCardSkeleton } from '@/components/site/NewsCard'
+import StayCurrentBanner from '@/components/site/StayCurrentBanner'
 import useSeo from '@/lib/useSeo'
 import {
   postBySlugKey, postsKey, getFeaturedImage, getLargeImage, getImageAlt,
@@ -125,6 +126,8 @@ export default function ArticlePage() {
           </div>
 
           <div className="article-content" dangerouslySetInnerHTML={{ __html: post.content?.rendered || '' }} />
+
+          <StayCurrentBanner />
 
           {tags.length > 0 && (
             <div className="mt-8 pt-6 border-t border-border">
