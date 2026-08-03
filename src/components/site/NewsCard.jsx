@@ -6,24 +6,22 @@ export function HeroCard({ post }) {
   const img = getLargeImage(post) || FALLBACK_IMAGE
   const cat = getPrimaryCategory(post)
   return (
-    <div className="flex flex-col md:flex-row gap-5 md:gap-6">
+    <div className="flex flex-col md:flex-row bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border-2 border-border overflow-hidden">
       {/* Image column */}
-      <div className="w-full md:w-[58%] shrink-0 flex flex-col">
-        <Link
-          to={`/article/${post.slug}`}
-          className="group relative block overflow-hidden rounded-2xl bg-black w-full aspect-[16/10] shadow-lg hover:shadow-2xl transition-shadow duration-300"
-        >
-          <img
-            src={img}
-            alt={getImageAlt(post)}
-            loading="eager"
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-        </Link>
-      </div>
+      <Link
+        to={`/article/${post.slug}`}
+        className="group relative block overflow-hidden bg-black w-full md:w-[58%] shrink-0 aspect-[16/10] md:aspect-auto"
+      >
+        <img
+          src={img}
+          alt={getImageAlt(post)}
+          loading="eager"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+      </Link>
 
-      {/* News card — same elevation language as the image card, so the pair reads as one unit */}
-      <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border-2 border-border p-5 sm:p-6 flex flex-col justify-center">
+      {/* Text column — lives inside the same card as the image, no gap/border between them */}
+      <div className="flex-1 min-w-0 p-5 sm:p-6 flex flex-col justify-center">
         {cat && (
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2">
             <span className="text-primary">{cat.name}</span>
