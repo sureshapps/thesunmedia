@@ -11,7 +11,7 @@ export function HeroCard({ post }) {
       <div className="w-full md:w-[58%] shrink-0 flex flex-col">
         <Link
           to={`/article/${post.slug}`}
-          className="group relative block overflow-hidden rounded-2xl bg-black w-full aspect-[16/10] shadow-md hover:shadow-xl transition-shadow duration-300"
+          className="group relative block overflow-hidden rounded-2xl bg-black w-full aspect-[16/10] shadow-lg hover:shadow-2xl transition-shadow duration-300"
         >
           <img
             src={img}
@@ -23,7 +23,7 @@ export function HeroCard({ post }) {
       </div>
 
       {/* News card — same elevation language as the image card, so the pair reads as one unit */}
-      <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 border border-border/60 p-5 sm:p-6 flex flex-col justify-center">
+      <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 border-2 border-border p-5 sm:p-6 flex flex-col justify-center">
         {cat && (
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider mb-2">
             <span className="text-primary">{cat.name}</span>
