@@ -70,22 +70,31 @@ function NewsCardSkeleton() {
   )
 }
 
-// One label + rule + "view all" unit, reused for both NEWS and BERITA in the
-// shared header row.
-function SectionHeaderPiece({ slug, label }) {
+// One label + rule + "view all" header, plus its own 2x2 grid of posts —
+// used for both the News column (left half) and Berita column (right half).
+function CategoryColumn({ slug, label }) {
+  const { posts, loading } = useCategoryPosts(slug)
   return (
-    <>
-      <span className="bg-primary text-white font-extrabold uppercase tracking-wide text-lg sm:text-xl rounded-lg px-5 py-2.5 shrink-0">
-        {label}
-      </span>
-      <span className="flex-1 h-[2px] bg-primary min-w-[24px]" />
-      <Link
-        to={`/category/${slug}`}
-        className="shrink-0 border border-primary text-primary font-bold text-xs sm:text-sm uppercase tracking-wide rounded-md px-3 py-1.5 hover:bg-primary hover:text-white transition-colors"
-      >
-        view all
-      </Link>
-    </>
+    <div>
+      <div className="flex items-center gap-3 mb-5">
+        <span className="bg-primary text-white font-extrabold uppercase tracking-wide text-lg sm:text-xl rounded-lg px-5 py-2.5 shrink-0">
+          {label}
+        </span>
+        <span className="flex-1 h-[2px] bg-primary min-w-[24px]" />
+        <Link
+          to={`/category/${slug}`}
+          className="shrink-0 border border-primary text-primary font-bold text-xs sm:text-sm uppercase tracking-wide rounded-md px-3 py-1.5 hover:bg-primary hover:text-white transition-colors"
+        >
+          view all
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 gap-5 sm:gap-6">
+        {loading
+          ? [...Array(ITEM_COUNT)].map((_, i) => <NewsCardSkeleton key={i} />)
+          : posts.slice(0, ITEM_COUNT).map((p) => <NewsCard key={p.id} post={p} />)}
+      </div>
+    </div>
   )
 }
 
@@ -99,30 +108,12 @@ function useCategoryPosts(slug) {
   return { posts, loading }
 }
 
-// Two sections — News and Berita — sharing one header row (each with its own
-// label + rule + "view all"), followed by their own 4-card row each.
+// News (left) and Berita (right) side by side, each its own header + 2x2 grid.
 export default function NewsBeritaBlock() {
-  const news = useCategoryPosts('news')
-  const berita = useCategoryPosts('berita')
-
   return (
-    <section>
-      <div className="flex items-center gap-3 mb-5 flex-wrap">
-        <SectionHeaderPiece slug="news" label="News" />
-        <SectionHeaderPiece slug="berita" label="Berita" />
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6 mb-5 sm:mb-6">
-        {news.loading
-          ? [...Array(ITEM_COUNT)].map((_, i) => <NewsCardSkeleton key={i} />)
-          : news.posts.slice(0, ITEM_COUNT).map((p) => <NewsCard key={p.id} post={p} />)}
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 sm:gap-6">
-        {berita.loading
-          ? [...Array(ITEM_COUNT)].map((_, i) => <NewsCardSkeleton key={i} />)
-          : berita.posts.slice(0, ITEM_COUNT).map((p) => <NewsCard key={p.id} post={p} />)}
-      </div>
+    <section className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
+      <CategoryColumn slug="news" label="News" />
+      <CategoryColumn slug="berita" label="Berita" />
     </section>
   )
 }
