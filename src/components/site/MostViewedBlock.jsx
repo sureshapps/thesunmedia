@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { postsKey, getFeaturedImage, getImageAlt, getPrimaryCategory, decodeHtml, FALLBACK_IMAGE, asArray } from '@/lib/wp'
 
-const PER_PAGE = 5
+const PER_PAGE = 4
 
 function MostViewedItem({ post, rank }) {
   if (!post) return null
