@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import {
   postsKey, categoryBySlugKey,
-  getLargeImage, getFeaturedImage, getThumbnail, getImageAlt, getTags,
+  getFeaturedImage, getThumbnail, getImageAlt, getTags,
   decodeHtml, stripHtml, asArray, FALLBACK_IMAGE,
 } from '@/lib/wp'
+import sportsBanner from '@/assets/sports-banner.png'
 
 function ListRow({ post }) {
   const tag = getTags(post)[0]
@@ -50,33 +51,21 @@ export default function SportsBlock({ slug = 'sports', name = 'Sports' }) {
 
   if (!loading && posts.length === 0) return null
 
-  const hero = posts[0]
-  const feature = posts[1]
-  const listItems = posts.slice(2, 6)
+  const feature = posts[0]
+  const listItems = posts.slice(1, 5)
 
   return (
     <section>
-      {/* Hero banner with category label — fixed, shorter height instead of a wide aspect
-          ratio box, so it no longer towers over the sidebar's Breaking News + Categories stack */}
+      {/* Static "theSun Sports News" banner — fixed artwork, no longer pulls a post image or title */}
       <Link
         to={cat ? `/category/${cat.slug}` : '#'}
-        className="group relative block w-full h-48 sm:h-56 lg:h-64 rounded-2xl overflow-hidden bg-neutral-200"
+        className="group relative block w-full h-48 sm:h-56 lg:h-64 rounded-2xl overflow-hidden bg-neutral-900"
       >
-        {loading ? (
-          <div className="absolute inset-0 skeleton-shimmer" />
-        ) : (
-          <img
-            src={getLargeImage(hero) || FALLBACK_IMAGE}
-            alt={getImageAlt(hero)}
-            loading="lazy"
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
-        <div className="absolute bottom-16 sm:bottom-20 left-5 sm:left-7 flex items-center gap-3">
-          <span className="w-1.5 h-8 bg-red-500 inline-block rounded-sm" />
-          <h2 className="text-white text-2xl sm:text-3xl font-bold font-serif-headline">{decodeHtml(name)}</h2>
-        </div>
+        <img
+          src={sportsBanner}
+          alt="theSun Sports News — Latest Scores, Breaking News, Live Updates"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
       </Link>
 
       {/* Overlapping content card */}
