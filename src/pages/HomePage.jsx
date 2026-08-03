@@ -18,7 +18,7 @@ import CategoriesGlassBlock from '@/components/site/CategoriesGlassBlock'
 import CategoryTripleBlock from '@/components/site/CategoryTripleBlock'
 import AppPromoBanner from '@/components/site/AppPromoBanner'
 import RegionNewsBlock from '@/components/site/RegionNewsBlock'
-import NewsGridBlock from '@/components/site/NewsGridBlock'
+import NewsBeritaBlock from '@/components/site/NewsBeritaBlock'
 import AdBanner from '@/components/site/AdBanner'
 import ipaperBanner from '@/assets/ipaper-banner.webp'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
@@ -197,9 +197,9 @@ export default function HomePage() {
         <RegionNewsBlock />
       </div>
 
-      {/* News — 4x2 card grid for the 'news' category */}
+      {/* News + Berita — two 4-card rows sharing one header, side by side labels */}
       <div className="mt-10">
-        <NewsGridBlock slug="news" label="News" />
+        <NewsBeritaBlock />
       </div>
     </div>
   )
