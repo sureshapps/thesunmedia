@@ -125,14 +125,14 @@ export default function TrendingHashtagBar() {
                   <Link
                     key={ti}
                     to={`/tag/${tag.slug}`}
-                    className="inline-flex items-center shrink-0 rounded-full bg-white/70 hover:bg-primary border border-white/80 hover:border-primary shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 hover:text-white transition-colors whitespace-nowrap"
+                    className="inline-flex items-center shrink-0 rounded-md bg-white/70 hover:bg-primary border border-slate-400/70 hover:border-primary shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 hover:text-white transition-colors whitespace-nowrap"
                   >
                     #{tag.name}
                   </Link>
                 ) : (
                   <span
                     key={ti}
-                    className="inline-flex items-center shrink-0 rounded-full bg-white/70 border border-white/80 shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 whitespace-nowrap"
+                    className="inline-flex items-center shrink-0 rounded-md bg-white/70 border border-slate-400/70 shadow-sm px-2 sm:px-3 py-1 text-[9px] sm:text-xs font-bold uppercase tracking-wide text-slate-800 whitespace-nowrap"
                   >
                     #{tag.name}
                   </span>
