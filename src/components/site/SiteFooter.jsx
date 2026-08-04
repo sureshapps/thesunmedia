@@ -298,12 +298,15 @@ export default function SiteFooter() {
                 <LinkColumn key={col.heading} heading={col.heading} items={col.items} />
               ))}
             </div>
-          </div>
-        </div>
 
-        {/* Sunbot mascot — floats gently, speech bubble types itself out. */}
-        <div className="mt-4">
-          <SunbotMascot />
+            {/* Sunbot mascot — floats gently, speech bubble types itself out.
+                Sits under the link columns, filling the space left below them
+                now that this column no longer stretches to match the taller
+                logo/partner-logos column. */}
+            <div className="mt-8">
+              <SunbotMascot />
+            </div>
+          </div>
         </div>
 
         {/* Copyright — separated by a top border, stacked/centered on mobile,
