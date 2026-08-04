@@ -138,7 +138,7 @@ function SunbotMascot() {
       <div className="sunbot-float flex items-end">
         {/* Speech box — bordered rectangle with oversized red quote marks,
             replacing the old box-bubble.png artwork. */}
-        <div className="relative max-w-[260px] sm:max-w-[340px] rounded-md border border-white/25 px-6 py-5">
+        <div className="relative max-w-[360px] sm:max-w-[440px] rounded-md border border-white/25 px-6 py-5">
           <span
             className="absolute -top-3 left-3 text-3xl sm:text-4xl font-serif leading-none text-primary select-none"
             aria-hidden="true"
@@ -151,7 +151,7 @@ function SunbotMascot() {
           >
             &rdquo;
           </span>
-          <p className="text-[10px] sm:text-xs leading-relaxed text-white/80 whitespace-pre-line">
+          <p className="text-[10px] sm:text-s leading-relaxed text-white/80 whitespace-pre-line">
             {typedMain}
             <span className="text-primary font-bold">{typedHighlight}</span>
             {!done && (
