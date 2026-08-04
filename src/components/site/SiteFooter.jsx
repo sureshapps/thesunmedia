@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom'
 import { Apple, PlayCircle, Smartphone } from 'lucide-react'
 import SocialIcons from './SocialIcons'
