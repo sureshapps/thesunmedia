@@ -1,63 +1,125 @@
+
 import { Link } from 'react-router-dom'
+import { Apple, PlayCircle, Smartphone } from 'lucide-react'
 import SocialIcons from './SocialIcons'
 
 // theSun app — single AppsFlyer OneLink smart link that routes the visitor
 // to the correct store (App Store / Play Store / AppGallery) automatically.
 const APP_LINK = 'https://onelink.to/k5mbcg'
 
-// Footer background follows the KL skyline artwork. There are now TWO
-// versions of that art — a mobile crop (skyline-mobile.png) and a wider
-// desktop crop (skyline-desktop.png) — swapped at the same `md` breakpoint
-// used elsewhere below. Each art file's silhouette bleeds into a solid
-// black panel at a very slightly different near-black tone, so each has
-// its own seam color to guarantee a perfectly seamless join into the
-// footer body regardless of which asset is showing.
+// Footer background follows the KL skyline artwork. There are TWO versions
+// of that art — a mobile crop (skyline-mobile.png) and a wider desktop crop
+// (skyline-desktop.png) — swapped at the same `md` breakpoint used elsewhere
+// below. Each art file's silhouette bleeds into a solid black panel at a
+// very slightly different near-black tone, so each has its own seam color
+// to guarantee a perfectly seamless join into the footer body regardless of
+// which asset is showing.
 const FOOTER_BG = '#030307'
 const FOOTER_BG_SEAM_DESKTOP = '#030307'
 const FOOTER_BG_SEAM_MOBILE = '#0c0c11'
 
-// Two side-by-side nav columns (white text) — unchanged.
+// Three store badges rendered as individual bordered buttons (was one
+// combined store-badges.png image before). Icons are generic lucide glyphs
+// standing in for each store, not the stores' own brand marks.
+const APP_STORES = [
+  { eyebrow: 'Download it from', store: 'App Store', icon: Apple },
+  { eyebrow: 'Get it on', store: 'Play Store', icon: PlayCircle },
+  { eyebrow: 'Explore it', store: 'AppGallery', icon: Smartphone },
+]
+
+// 4 link columns, each with its own "Links" heading + red underline, matching
+// the new mockup. Same underlying destinations as before, just grouped under
+// explicit column headings instead of two plain nav lists + Company + Advertise.
 const LINK_COLUMNS = [
-  [
-    { label: 'Malaysia', slug: 'malaysia-news' },
-    { label: 'Asia', slug: 'asia' },
-    { label: 'World', slug: 'world' },
-    { label: 'Going Viral', slug: 'going-viral' },
-    { label: 'Business', slug: 'business' },
-    { label: 'Opinion', slug: 'opinion' },
-  ],
-  [
-    { label: 'Lifestyle', slug: 'lifestyle' },
-    { label: 'Spotlight', slug: 'spotlight' },
-    { label: 'Sports', slug: 'sports' },
-    { label: 'Education', slug: 'education' },
-    { label: 'Property', slug: 'property' },
-    { label: 'Motoring', slug: 'motoring' },
-  ],
+  {
+    heading: 'News',
+    items: [
+      { label: 'Malaysia', slug: 'malaysia-news' },
+      { label: 'Asia', slug: 'asia' },
+      { label: 'World', slug: 'world' },
+      { label: 'Going Viral', slug: 'going-viral' },
+      { label: 'Business', slug: 'business' },
+      { label: 'Opinion', slug: 'opinion' },
+    ],
+  },
+  {
+    heading: 'More',
+    items: [
+      { label: 'Lifestyle', slug: 'lifestyle' },
+      { label: 'Spotlight', slug: 'spotlight' },
+      { label: 'Sports', slug: 'sports' },
+      { label: 'Education', slug: 'education' },
+      { label: 'Property', slug: 'property' },
+      { label: 'Motoring', slug: 'motoring' },
+    ],
+  },
+  {
+    heading: 'Company',
+    items: [
+      { label: 'About Us', to: '/about' },
+      { label: 'Contact', to: '/contact' },
+      { label: 'Advertise', to: '/advertise' },
+      { label: 'Privacy Policy', to: '/privacy-policy' },
+      { label: 'Terms of Use', to: '/terms' },
+    ],
+  },
+  {
+    heading: 'Subscriptions',
+    items: [
+      { label: 'Advertise (Print Media)', to: '/advertise' },
+      { label: 'Advertise (Digital Media)', to: '/advertise' },
+      { label: 'Newsletter Subscriptions', to: '/' }, // TODO: point at the real newsletter signup
+      { label: 'iPaper Subscriptions', href: 'https://www.thesunit.my/ipaper' },
+      { label: 'Classifieds', href: 'https://www.thesunit.my/classifieds' }, // TODO: confirm real classifieds URL
+    ],
+  },
 ]
 
-// Company column — 3rd column in the mockups, now rendered in the brand
-// red (text-primary) instead of the old dimmed/muted white.
-const COMPANY_LINKS = [
-  { label: 'About Us', to: '/about' },
-  { label: 'Contact', to: '/contact' },
-  { label: 'Advertise', to: '/advertise' },
-  { label: 'Privacy Policy', to: '/privacy-policy' },
-  { label: 'Terms of Use', to: '/terms' },
+// Partner / sister-site logo grid (the 6 "sample logo" boxes in the mockup).
+// Placeholders until real logo images are supplied — swap `label` for an
+// <img> per entry once assets exist.
+const PARTNER_LOGOS = [
+  { label: 'sample logo' },
+  { label: 'sample logo' },
+  { label: 'sample logo' },
+  { label: 'sample logo' },
+  { label: 'sample logo' },
+  { label: 'sample logo' },
 ]
 
-// Advertise / subscriptions column — new 4th column from the mockups,
-// also rendered in brand red. Only "Advertise" has a real route today
-// (AdvertisePage in App.jsx), so both Advertise entries point there for
-// now; the rest are placeholders — swap `href`/`to` for the real
-// destinations once those pages/links exist.
-const ADVERTISE_LINKS = [
-  { label: 'Advertise (Print Media)', to: '/advertise' },
-  { label: 'Advertise (Digital Media)', to: '/advertise' },
-  { label: 'Newsletter Subscriptions', to: '/' }, // TODO: point at the real newsletter signup
-  { label: 'iPaper Subscriptions', href: 'https://www.thesunit.my/ipaper' },
-  { label: 'Classifieds', href: 'https://www.thesunit.my/classifieds' }, // TODO: confirm real classifieds URL
-]
+function LinkColumn({ heading, items }) {
+  return (
+    <div>
+      <h3 className="text-sm sm:text-base font-extrabold text-white uppercase tracking-wide pb-1.5 border-b-2 border-primary inline-block">
+        {heading}
+      </h3>
+      <ul className="mt-3 space-y-2 sm:space-y-2.5 text-[11px] sm:text-sm leading-snug text-primary">
+        {items.map((item) => (
+          <li key={item.label}>
+            {item.href ? (
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                {item.label}
+              </a>
+            ) : item.slug ? (
+              <Link to={`/category/${item.slug}`} className="hover:text-white transition-colors">
+                {item.label}
+              </Link>
+            ) : (
+              <Link to={item.to} className="hover:text-white transition-colors">
+                {item.label}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 export default function SiteFooter() {
   return (
@@ -87,69 +149,12 @@ export default function SiteFooter() {
         />
       </div>
 
-      <div className="container mx-auto px-4 pt-8 pb-8">
+      <div className="container mx-auto px-4 pt-10 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 lg:gap-x-8">
 
-          {/* Link cluster — 4 narrow columns side-by-side even on mobile.
-              Shown FIRST on mobile, but sits on the RIGHT on desktop, separated
-              from the logo block by a vertical divider. */}
-          <div className="order-1 lg:order-2 lg:col-span-7 lg:border-0 lg:border-white/15 lg:pl-8">
-            <div className="grid grid-cols-4 gap-2 sm:gap-4 lg:gap-x-0">
-              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-white/85">
-                {LINK_COLUMNS[0].map((item) => (
-                  <li key={item.slug}>
-                    <Link to={`/category/${item.slug}`} className="hover:text-primary transition-colors">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-white/85 lg:border-0 lg:border-white/15 lg:pl-6">
-                {LINK_COLUMNS[1].map((item) => (
-                  <li key={item.slug}>
-                    <Link to={`/category/${item.slug}`} className="hover:text-primary transition-colors">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-primary lg:border-0 lg:border-white/15 lg:pl-6">
-                {COMPANY_LINKS.map((item) => (
-                  <li key={item.to}>
-                    <Link to={item.to} className="hover:text-white transition-colors">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-
-              <ul className="space-y-2 sm:space-y-2.5 lg:space-y-3 text-[11px] sm:text-sm lg:text-[15px] leading-snug text-primary lg:border-0 lg:border-white/15 lg:pl-6">
-                {ADVERTISE_LINKS.map((item) => (
-                  <li key={item.label}>
-                    {item.href ? (
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:text-white transition-colors"
-                      >
-                        {item.label}
-                      </a>
-                    ) : (
-                      <Link to={item.to} className="hover:text-white transition-colors">
-                        {item.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Logo + tagline + app promo — shown SECOND on mobile, LEFT on desktop. */}
-          <div className="order-2 lg:order-1 lg:col-span-5">
+          {/* Logo + tagline + app promo + Follow Us + partner logos —
+              centered on mobile, left-aligned on desktop. */}
+          <div className="lg:col-span-5 flex flex-col items-center text-center lg:items-start lg:text-left">
             <Link to="/" aria-label="theSun - Home" className="inline-block">
               <img src="/footer/logo-color.png" alt="theSun" className="h-14 sm:h-16 w-auto" />
             </Link>
@@ -167,45 +172,56 @@ export default function SiteFooter() {
               </p>
             </div>
 
-            <a
-              href={APP_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Get theSun app on the App Store, Play Store or AppGallery"
-              className="mt-3 flex flex-wrap gap-2 max-w-[420px] transition-opacity hover:opacity-90"
-            >
-              <img
-                src="/footer/store-badges.png"
-                alt="Download it from App Store, Get it on Play Store, Explore it AppGallery"
-                className="w-full h-auto"
-              />
-            </a>
+            <div className="mt-3 flex flex-wrap justify-center lg:justify-start gap-2">
+              {APP_STORES.map(({ eyebrow, store, icon: Icon }) => (
+                <a
+                  key={store}
+                  href={APP_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${eyebrow} ${store}`}
+                  className="flex items-center gap-2 rounded-md border border-white/25 px-3 py-2 hover:border-primary hover:bg-white/5 transition-colors"
+                >
+                  <Icon className="h-5 w-5 shrink-0" />
+                  <span className="leading-tight text-left">
+                    <span className="block text-[9px] text-white/60">{eyebrow}</span>
+                    <span className="block text-xs font-bold">{store}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+
+            <div className="mt-6">
+              <p className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-2.5">Follow Us</p>
+              <SocialIcons size="md" />
+            </div>
+
+            {/* Partner / sister-site logo grid */}
+            <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3 w-full max-w-[480px]">
+              {PARTNER_LOGOS.map((logo, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-center h-14 sm:h-16 rounded-md border border-white/25 text-white/40 text-[11px] sm:text-xs italic font-semibold text-center px-2"
+                >
+                  {logo.label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Link columns — 4 across, each with its own heading + red underline. */}
+          <div className="lg:col-span-7">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-6">
+              {LINK_COLUMNS.map((col) => (
+                <LinkColumn key={col.heading} heading={col.heading} items={col.items} />
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Follow Us (left) + sister-site mastheads (right) — new full-width
-            row from the mockups, sitting under the main grid and above the
-            copyright line. Stacks on narrow phones, sits side-by-side from
-            `sm` up. Mobile gets the 2x2 sister-sites art, desktop gets the
-            single-row version. */}
-        <div className="mt-8 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-          <div>
-            <p className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-2.5">Follow Us</p>
-            <SocialIcons size="md" />
-          </div>
-
-          <picture>
-            <source media="(min-width: 768px)" srcSet="/footer/sister-sites-desktop.png" />
-            <img
-              src="/footer/sister-sites-mobile.png"
-              alt="theSun Sports, theSun LYFE, theSun Classifieds, theSun Biz & Finance"
-              className="w-40 sm:w-48 md:w-auto md:h-7 lg:h-14 h-auto opacity-80 select-none"
-            />
-          </picture>
-        </div>
-
-        {/* Copyright */}
-        <div className="mt-10 text-xs text-white/50 text-left">
+        {/* Copyright — separated by a top border, stacked/centered on mobile,
+            split left/right on desktop. */}
+        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-white/50 text-center sm:text-left">
           <p>© 1993-2026 All Rights Reserved.</p>
           <p>The Sun Malaysia is proudly owned by Sun Media Corporation Sdn Bhd. (221220-K)</p>
         </div>
