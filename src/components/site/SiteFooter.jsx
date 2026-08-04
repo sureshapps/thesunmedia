@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Apple, PlayCircle, Smartphone } from 'lucide-react'
 import SocialIcons from './SocialIcons'
@@ -56,8 +57,8 @@ const LINK_COLUMNS = [
     heading: 'Company',
     items: [
       { label: 'About Us', to: '/about' },
-      { label: 'Contact Us', to: '/contact' },
-      { label: 'Branding', to: '/branding' },
+      { label: 'Contact', to: '/contact' },
+      { label: 'Advertise', to: '/advertise' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
       { label: 'Terms of Use', to: '/terms' },
     ],
@@ -65,11 +66,11 @@ const LINK_COLUMNS = [
   {
     heading: 'Subscriptions',
     items: [
-            { label: 'iPaper', href: 'https://thesun.my/ipaper/' },
-       { label: 'Newsletter', to: '/' }, // TODO: point at the real newsletter signup
-      { label: 'Print Advertise', to: '/advertise' },
-      { label: 'Digital Advertise', to: '/advertise' },    
-      { label: 'Classifieds', href: 'https://www.sunmedia.my' }, // TODO: confirm real classifieds URL
+      { label: 'Advertise (Print Media)', to: '/advertise' },
+      { label: 'Advertise (Digital Media)', to: '/advertise' },
+      { label: 'Newsletter Subscriptions', to: '/' }, // TODO: point at the real newsletter signup
+      { label: 'iPaper Subscriptions', href: 'https://www.thesunit.my/ipaper' },
+      { label: 'Classifieds', href: 'https://www.thesunit.my/classifieds' }, // TODO: confirm real classifieds URL
     ],
   },
 ]
@@ -86,13 +87,77 @@ const PARTNER_LOGOS = [
   { label: 'sample logo' },
 ]
 
+// Sunbot mascot + speech bubble that floats above the copyright bar.
+// box-bubble.png is the speech-bubble artwork (tail pointing at the bot);
+// the message is typed out on top of it once the footer mounts.
+const SUNBOT_MESSAGE =
+  "It's amazing that the amount of news that happens in the world every day always just exactly fits the newspaper.\n\nour support makes independent reporting possible. Welcome aboard!"
+
+function SunbotMascot() {
+  const [typed, setTyped] = useState('')
+  const [done, setDone] = useState(false)
+
+  useEffect(() => {
+    let i = 0
+    const timer = setInterval(() => {
+      i += 1
+      setTyped(SUNBOT_MESSAGE.slice(0, i))
+      if (i >= SUNBOT_MESSAGE.length) {
+        clearInterval(timer)
+        setDone(true)
+      }
+    }, 25)
+    return () => clearInterval(timer)
+  }, [])
+
+  return (
+    <div className="flex justify-center lg:justify-end">
+      {/* Keyframes for the gentle float + typewriter cursor blink. */}
+      <style>{`
+        @keyframes sunbot-float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-14px); }
+        }
+        @keyframes sunbot-blink {
+          0%, 49% { opacity: 1; }
+          50%, 100% { opacity: 0; }
+        }
+        .sunbot-float { animation: sunbot-float 4.5s ease-in-out infinite; }
+        .sunbot-cursor { animation: sunbot-blink 0.9s steps(1) infinite; }
+      `}</style>
+
+      <div className="sunbot-float flex items-end">
+        <div className="relative w-[220px] sm:w-[280px]">
+          <img
+            src="/footer/box-bubble.png"
+            alt=""
+            aria-hidden="true"
+            className="w-full h-auto select-none pointer-events-none"
+          />
+          <p className="absolute top-[14%] left-[7%] right-[16%] text-[10px] sm:text-xs leading-relaxed text-white/80 whitespace-pre-line">
+            {typed}
+            {!done && (
+              <span className="sunbot-cursor inline-block w-[2px] h-[1em] -mb-[2px] bg-white/70 ml-0.5" aria-hidden="true" />
+            )}
+          </p>
+        </div>
+        <img
+          src="/footer/sunbot.png"
+          alt="theSun mascot"
+          className="w-20 sm:w-28 h-auto -ml-2 sm:-ml-3 select-none pointer-events-none"
+        />
+      </div>
+    </div>
+  )
+}
+
 function LinkColumn({ heading, items }) {
   return (
     <div className="text-center sm:text-left">
       <h3 className="text-sm sm:text-base font-extrabold text-white uppercase tracking-wide pb-1.5 border-b-2 border-primary inline-block">
         {heading}
       </h3>
-      <ul className="mt-3 space-y-2 sm:space-y-2.5 text-[9px] sm:text-sm leading-snug text-[#898989]">
+      <ul className="mt-3 space-y-2 sm:space-y-2.5 text-[11px] sm:text-sm leading-snug text-[#898989]">
         {items.map((item) => (
           <li key={item.label}>
             {item.href ? (
@@ -216,6 +281,11 @@ export default function SiteFooter() {
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Sunbot mascot — floats gently, speech bubble types itself out. */}
+        <div className="mt-10 lg:mt-6">
+          <SunbotMascot />
         </div>
 
         {/* Copyright — separated by a top border, stacked/centered on mobile,
