@@ -68,7 +68,7 @@ export default function HomePage() {
           (Latest News, ad, Most Viewed) each flow independently top-to-bottom —
           Spotlight starts right under the 4 cards regardless of how tall the
           sidebar ends up being, instead of waiting for both columns to finish. */}
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10 items-start">
         <div className="lg:col-span-2 space-y-6">
           <TrendingHashtagBar />
 
