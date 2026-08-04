@@ -56,8 +56,8 @@ const LINK_COLUMNS = [
     heading: 'Company',
     items: [
       { label: 'About Us', to: '/about' },
-      { label: 'Contact', to: '/contact' },
-      { label: 'Advertise', to: '/advertise' },
+      { label: 'Contact Us', to: '/contact' },
+      { label: 'Branding', to: '/branding' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
       { label: 'Terms of Use', to: '/terms' },
     ],
@@ -65,11 +65,11 @@ const LINK_COLUMNS = [
   {
     heading: 'Subscriptions',
     items: [
-      { label: 'Advertise (Print Media)', to: '/advertise' },
-      { label: 'Advertise (Digital Media)', to: '/advertise' },
-      { label: 'Newsletter Subscriptions', to: '/' }, // TODO: point at the real newsletter signup
-      { label: 'iPaper Subscriptions', href: 'https://www.thesunit.my/ipaper' },
-      { label: 'Classifieds', href: 'https://www.thesunit.my/classifieds' }, // TODO: confirm real classifieds URL
+            { label: 'iPaper', href: 'https://thesun.my/ipaper/' },
+       { label: 'Newsletter', to: '/' }, // TODO: point at the real newsletter signup
+      { label: 'Print Advertise', to: '/advertise' },
+      { label: 'Digital Advertise', to: '/advertise' },    
+      { label: 'Classifieds', href: 'https://www.sunmedia.my' }, // TODO: confirm real classifieds URL
     ],
   },
 ]
@@ -92,7 +92,7 @@ function LinkColumn({ heading, items }) {
       <h3 className="text-sm sm:text-base font-extrabold text-white uppercase tracking-wide pb-1.5 border-b-2 border-primary inline-block">
         {heading}
       </h3>
-      <ul className="mt-3 space-y-2 sm:space-y-2.5 text-[11px] sm:text-sm leading-snug text-[#898989]">
+      <ul className="mt-3 space-y-2 sm:space-y-2.5 text-[9px] sm:text-sm leading-snug text-[#898989]">
         {items.map((item) => (
           <li key={item.label}>
             {item.href ? (
