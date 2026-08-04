@@ -302,13 +302,13 @@ export default function SiteFooter() {
         </div>
 
         {/* Sunbot mascot — floats gently, speech bubble types itself out. */}
-        <div className="mt-10 lg:mt-6">
+        <div className="mt-4">
           <SunbotMascot />
         </div>
 
         {/* Copyright — separated by a top border, stacked/centered on mobile,
             split left/right on desktop. */}
-        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-white/50 text-center sm:text-left">
+        <div className="mt-4 pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-white/50 text-center sm:text-left">
           <p>© 1993-2026 All Rights Reserved.</p>
           <p>The Sun Malaysia is proudly owned by Sun Media Corporation Sdn Bhd. (221220-K)</p>
         </div>
