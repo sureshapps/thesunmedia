@@ -21,6 +21,7 @@ import RegionNewsBlock from '@/components/site/RegionNewsBlock'
 import NewsBeritaBlock from '@/components/site/NewsBeritaBlock'
 import AdBanner from '@/components/site/AdBanner'
 import ipaperBanner from '@/assets/ipaper-banner.webp'
+import instagramBanner from '@/assets/instagram-banner.png'
 import { postsKey, buildUrl, asArray } from '@/lib/wp'
 import useSeo from '@/lib/useSeo'
 
@@ -150,6 +151,19 @@ export default function HomePage() {
         </div>
 
         <div className="space-y-6">
+          <a
+            href="https://www.instagram.com/thesundaily/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded-md overflow-hidden border border-border bg-white"
+          >
+            <img
+              src={instagramBanner}
+              alt="Follow theSun on Instagram @thesundaily"
+              className="w-full h-auto object-contain"
+            />
+          </a>
+
           <MostViewedBlock />
         </div>
       </div>
