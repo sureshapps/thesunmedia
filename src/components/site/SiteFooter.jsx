@@ -151,7 +151,7 @@ function SunbotMascot() {
           >
             &rdquo;
           </span>
-          <p className="text-[15px] sm:text-xs leading-relaxed text-white/80 whitespace-pre-line">
+          <p className="text-[20px] sm:text-xs leading-relaxed text-white/80 whitespace-pre-line">
             {typedMain}
             <span className="text-primary font-bold">{typedHighlight}</span>
             {!done && (
