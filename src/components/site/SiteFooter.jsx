@@ -151,7 +151,7 @@ function SunbotMascot() {
           >
             &rdquo;
           </span>
-          <p className="text-[20px] sm:text-xs leading-relaxed text-white/80 whitespace-pre-line">
+          <p className="text-[25px] sm:text-xs leading-relaxed text-white/80 whitespace-pre-line">
             {typedMain}
             <span className="text-primary font-bold">{typedHighlight}</span>
             {!done && (
@@ -162,7 +162,7 @@ function SunbotMascot() {
         <img
   src="/footer/Sunbt.svg"
   alt="theSun mascot"
-  className="w-20 sm:w-28 h-auto -ml-2 sm:-ml-3 select-none pointer-events-none"
+  className="w-20 sm:w-48 h-auto -ml-2 sm:-ml-3 select-none pointer-events-none"
 />
       </div>
     </div>
