@@ -64,10 +64,11 @@ export default function HomePage() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      {/* Main column (hero, 4-cards, Spotlight, Going Viral) and the sidebar
-          (Latest News, ad, Most Viewed) each flow independently top-to-bottom —
-          Spotlight starts right under the 4 cards regardless of how tall the
-          sidebar ends up being, instead of waiting for both columns to finish. */}
+      {/* Main column (hero, 4-cards, Spotlight, Going Viral, Business) and the
+          sidebar (Latest News, ipaper, Opinion, Ad, Instagram, Most Viewed)
+          each flow independently top-to-bottom in ONE shared grid — items-start
+          stops either column from stretching to match the other, so the
+          sidebar never waits on the (usually taller) main column. */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10 items-start">
         <div className="lg:col-span-2 space-y-6">
           <TrendingHashtagBar />
@@ -86,6 +87,9 @@ export default function HomePage() {
 
           {/* Going Viral — full width of the main column */}
           <GoingViralBlock />
+
+          {/* Business — continues the main column's independent flow */}
+          <CategoryBlock slug="business" />
         </div>
 
         <div className="space-y-6">
@@ -141,16 +145,8 @@ export default function HomePage() {
 
           {/* Ad banner */}
           <AdBanner />
-        </div>
-      </section>
 
-      {/* Business + Most Viewed Stories side by side, matching the reference layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-6">
-        <div className="lg:col-span-2 space-y-10">
-          <CategoryBlock slug="business" />
-        </div>
-
-        <div className="space-y-6">
+          {/* Instagram promo banner */}
           <a
             href="https://www.instagram.com/thesundaily/"
             target="_blank"
@@ -164,9 +160,10 @@ export default function HomePage() {
             />
           </a>
 
+          {/* Most Viewed Stories — continues the sidebar's independent flow */}
           <MostViewedBlock />
         </div>
-      </div>
+      </section>
 
       {/* Lifestyle — full-width section, placed right after Business, spanning both columns */}
       <LifestyleBlock />
