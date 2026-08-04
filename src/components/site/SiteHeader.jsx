@@ -15,6 +15,7 @@ import Logo from './Logo'
 import SearchBar from './SearchBar'
 import SocialIcons from './SocialIcons'
 import WeatherClock from './WeatherClock'
+import AppDownloadBar from './AppDownloadBar'
 import { ListenNewsProvider, ListenNewsButton, ListenNewsPanel } from './ListenNews'
 import { MAIN_MENU, itemHref } from '@/lib/menu'
 import { postsKey, decodeHtml, asArray } from '@/lib/wp'
@@ -549,6 +550,7 @@ export default function SiteHeader() {
 
   return (
     <ListenNewsProvider>
+    <AppDownloadBar />
     <header className="sticky top-0 z-50 bg-white shadow-sm">
       <style>{`@keyframes wcBounce { from { transform: translateY(0) rotate(0deg); } to { transform: translateY(-5px) rotate(20deg); } }`}</style>
 
