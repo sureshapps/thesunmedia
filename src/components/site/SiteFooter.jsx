@@ -58,7 +58,7 @@ const LINK_COLUMNS = [
     items: [
       { label: 'About Us', to: '/about' },
       { label: 'Contact', to: '/contact' },
-      { label: 'Advertise', to: '/advertise' },
+      { label: 'Branding', to: '/branding' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
       { label: 'Terms of Use', to: '/terms' },
     ],
@@ -66,11 +66,11 @@ const LINK_COLUMNS = [
   {
     heading: 'Subscriptions',
     items: [
-      { label: 'Advertise (Print Media)', to: '/advertise' },
-      { label: 'Advertise (Digital Media)', to: '/advertise' },
-      { label: 'Newsletter Subscriptions', to: '/' }, // TODO: point at the real newsletter signup
-      { label: 'iPaper Subscriptions', href: 'https://www.thesunit.my/ipaper' },
-      { label: 'Classifieds', href: 'https://www.thesunit.my/classifieds' }, // TODO: confirm real classifieds URL
+      { label: 'iPaper', href: 'https://www.thesunit.my/ipaper' },
+      { label: 'Newsletter', to: '/' }, // TODO: point at the real newsletter signup
+      { label: 'Print Media', to: '/advertise' },
+      { label: 'Digital Media', to: '/advertise' },
+      { label: 'Classifieds', href: 'https://www.sunmedia.my' }, // TODO: confirm real classifieds URL
     ],
   },
 ]
@@ -88,10 +88,14 @@ const PARTNER_LOGOS = [
 ]
 
 // Sunbot mascot + speech bubble that floats above the copyright bar.
-// box-bubble.png is the speech-bubble artwork (tail pointing at the bot);
-// the message is typed out on top of it once the footer mounts.
-const SUNBOT_MESSAGE =
-  "It's amazing that the amount of news that happens in the world every day always just exactly fits the newspaper.\n\nour support makes independent reporting possible. Welcome aboard!"
+// The bubble is now a plain bordered box with big red curly quote marks
+// (no more box-bubble.png tail graphic) — matches the new mockup. The
+// message types itself out, and "Welcome aboard!" always renders in the
+// brand's orange/accent color once it appears.
+const SUNBOT_MESSAGE_MAIN =
+  "It's amazing that the amount of news that happens in the world every day always just exactly fits the newspaper.\n\nYour support makes independent reporting possible. "
+const SUNBOT_MESSAGE_HIGHLIGHT = 'Welcome aboard!'
+const SUNBOT_MESSAGE_FULL = SUNBOT_MESSAGE_MAIN + SUNBOT_MESSAGE_HIGHLIGHT
 
 function SunbotMascot() {
   const [typed, setTyped] = useState('')
@@ -101,14 +105,19 @@ function SunbotMascot() {
     let i = 0
     const timer = setInterval(() => {
       i += 1
-      setTyped(SUNBOT_MESSAGE.slice(0, i))
-      if (i >= SUNBOT_MESSAGE.length) {
+      setTyped(SUNBOT_MESSAGE_FULL.slice(0, i))
+      if (i >= SUNBOT_MESSAGE_FULL.length) {
         clearInterval(timer)
         setDone(true)
       }
     }, 25)
     return () => clearInterval(timer)
   }, [])
+
+  // Split what's been typed so far into the plain part and the highlighted
+  // "Welcome aboard!" part, which only starts appearing once typing reaches it.
+  const typedMain = typed.slice(0, SUNBOT_MESSAGE_MAIN.length)
+  const typedHighlight = typed.slice(SUNBOT_MESSAGE_MAIN.length)
 
   return (
     <div className="flex justify-center lg:justify-end">
@@ -127,15 +136,24 @@ function SunbotMascot() {
       `}</style>
 
       <div className="sunbot-float flex items-end">
-        <div className="relative w-[220px] sm:w-[280px]">
-          <img
-            src="/footer/box-bubble.png"
-            alt=""
+        {/* Speech box — bordered rectangle with oversized red quote marks,
+            replacing the old box-bubble.png artwork. */}
+        <div className="relative max-w-[260px] sm:max-w-[340px] rounded-md border border-white/25 px-6 py-5">
+          <span
+            className="absolute -top-3 left-3 text-3xl sm:text-4xl font-serif leading-none text-primary select-none"
             aria-hidden="true"
-            className="w-full h-auto select-none pointer-events-none"
-          />
-          <p className="absolute top-[14%] left-[7%] right-[16%] text-[10px] sm:text-xs leading-relaxed text-white/80 whitespace-pre-line">
-            {typed}
+          >
+            &ldquo;
+          </span>
+          <span
+            className="absolute -bottom-5 right-3 text-3xl sm:text-4xl font-serif leading-none text-primary select-none"
+            aria-hidden="true"
+          >
+            &rdquo;
+          </span>
+          <p className="text-[10px] sm:text-xs leading-relaxed text-white/80 whitespace-pre-line">
+            {typedMain}
+            <span className="text-primary font-bold">{typedHighlight}</span>
             {!done && (
               <span className="sunbot-cursor inline-block w-[2px] h-[1em] -mb-[2px] bg-white/70 ml-0.5" aria-hidden="true" />
             )}
