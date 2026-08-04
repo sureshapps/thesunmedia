@@ -8,7 +8,7 @@ import {
   MapPin, Globe, Globe2, MapPinned, Smartphone, HeartPulse, Shirt,
   Plane, UtensilsCrossed, Drama, CircleDot, Feather, Disc3, Gauge,
   Target, Flag, Landmark, ClipboardList, TrendingUp, Clock, Star,
-  Sparkles, Building2, BarChart3, Ghost, Dumbbell, Users,
+  Sparkles, Building2, BarChart3, Ghost, Dumbbell, Users, Rss,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Logo from './Logo'
@@ -697,6 +697,17 @@ export default function SiteHeader() {
               }
               return <Dropdown key={item.label} item={item} />
             })}
+
+            {/* RSS feed badge — pinned to the end of the nav row */}
+            <a
+              href="https://thesun.my/feed/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="RSS Feed"
+              className="ml-auto my-1 flex items-center justify-center w-8 h-8 rounded text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors shrink-0"
+            >
+              <Rss className="h-4 w-4" />
+            </a>
           </nav>
         </div>
       </div>
