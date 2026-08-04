@@ -162,7 +162,7 @@ function SunbotMascot() {
         <img
           src="/footer/sunbot.png"
           alt="theSun mascot"
-          className="w-50 sm:w-28 h-auto -ml-2 sm:-ml-3 select-none pointer-events-none"
+          className="w-20 sm:w-28 h-auto -ml-2 sm:-ml-3 select-none pointer-events-none"
         />
       </div>
     </div>
