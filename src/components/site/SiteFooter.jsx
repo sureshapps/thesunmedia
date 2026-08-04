@@ -120,7 +120,7 @@ function SunbotMascot() {
   const typedHighlight = typed.slice(SUNBOT_MESSAGE_MAIN.length)
 
   return (
-    <div className="flex justify-center lg:justify-end">
+    <div className="flex justify-center lg:justify-start">
       {/* Keyframes for the gentle float + typewriter cursor blink. */}
       <style>{`
         @keyframes sunbot-float {
@@ -232,7 +232,7 @@ export default function SiteFooter() {
       </div>
 
       <div className="container mx-auto px-4 pt-10 pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 lg:gap-x-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 lg:gap-x-8 items-start">
 
           {/* Logo + tagline + app promo + Follow Us + partner logos —
               centered on mobile, left-aligned on desktop. */}
