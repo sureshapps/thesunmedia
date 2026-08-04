@@ -88,11 +88,11 @@ const PARTNER_LOGOS = [
 
 function LinkColumn({ heading, items }) {
   return (
-    <div>
+    <div className="text-center sm:text-left">
       <h3 className="text-sm sm:text-base font-extrabold text-white uppercase tracking-wide pb-1.5 border-b-2 border-primary inline-block">
         {heading}
       </h3>
-      <ul className="mt-3 space-y-2 sm:space-y-2.5 text-[11px] sm:text-sm leading-snug text-primary">
+      <ul className="mt-3 space-y-2 sm:space-y-2.5 text-[11px] sm:text-sm leading-snug text-[#898989]">
         {items.map((item) => (
           <li key={item.label}>
             {item.href ? (
