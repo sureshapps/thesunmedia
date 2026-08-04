@@ -120,7 +120,7 @@ function SunbotMascot() {
   const typedHighlight = typed.slice(SUNBOT_MESSAGE_MAIN.length)
 
   return (
-    <div className="flex justify-center lg:justify-start">
+    <div className="flex justify-center lg:justify-end">
       {/* Keyframes for the gentle float + typewriter cursor blink. */}
       <style>{`
         @keyframes sunbot-float {
