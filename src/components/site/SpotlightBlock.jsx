@@ -16,7 +16,7 @@ function SpotlightFeature({ post, rank }) {
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group relative block aspect-[4/3] sm:aspect-[3/4] rounded-md overflow-hidden bg-muted"
+      className="group relative block aspect-[3/4] rounded-md overflow-hidden bg-muted"
     >
       <img
         src={img}
@@ -38,7 +38,7 @@ function SpotlightFeature({ post, rank }) {
 }
 
 function SpotlightFeatureSkeleton() {
-  return <div className="aspect-[4/3] sm:aspect-[3/4] rounded-md skeleton-shimmer" />
+  return <div className="aspect-[3/4] rounded-md skeleton-shimmer" />
 }
 
 /* ---------- Small image card, same style as feature, numbered + title overlaid at bottom ---------- */
@@ -48,7 +48,7 @@ function SpotlightItem({ post, rank }) {
   return (
     <Link
       to={`/article/${post.slug}`}
-      className="group relative block aspect-[4/3] sm:aspect-[3/4] rounded-md overflow-hidden bg-muted"
+      className="group relative block aspect-[3/4] rounded-md overflow-hidden bg-muted"
     >
       <img
         src={img}
@@ -70,7 +70,7 @@ function SpotlightItem({ post, rank }) {
 }
 
 function SpotlightItemSkeleton() {
-  return <div className="aspect-[4/3] sm:aspect-[3/4] rounded-md skeleton-shimmer" />
+  return <div className="aspect-[3/4] rounded-md skeleton-shimmer" />
 }
 
 export default function SpotlightBlock() {
