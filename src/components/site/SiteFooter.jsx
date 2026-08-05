@@ -40,6 +40,7 @@ const LINK_COLUMNS = [
       { label: 'Going Viral', slug: 'going-viral' },
       { label: 'Business', slug: 'business' },
       { label: 'Opinion', slug: 'opinion' },
+       { label: 'Berita', slug: 'berita' },
     ],
   },
   {
@@ -51,6 +52,7 @@ const LINK_COLUMNS = [
       { label: 'Education', slug: 'education' },
       { label: 'Property', slug: 'property' },
       { label: 'Motoring', slug: 'motoring' },
+         { label: 'Videos', slug: 'videos' },
     ],
   },
   {
@@ -61,6 +63,7 @@ const LINK_COLUMNS = [
       { label: 'Branding', to: '/branding' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
       { label: 'Terms of Use', to: '/terms' },
+            { label: 'RSS Feed', to: 'https://thesun.my/feed/' },
     ],
   },
   {
