@@ -54,9 +54,9 @@ const LINK_COLUMNS = [
     ],
   },
   {
-    heading: 'Company',
+    heading: 'About us',
     items: [
-      { label: 'About Us', to: '/about' },
+      { label: 'Company', to: '/about' },
       { label: 'Contact', to: '/contact' },
       { label: 'Branding', to: '/branding' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
