@@ -50,11 +50,12 @@ export const MAIN_MENU = [
       { label: 'Other Sports', slug: 'other-sports' },
     ],
   },
-  { label: 'Education', slug: 'education' },
+  { label: 'Berita', slug: 'berita' },
   { label: 'Videos', slug: 'videos' },
   {
     label: 'More',
     children: [
+       { label: 'Education', slug: 'education' },
       { label: 'Property', slug: 'property' },
       { label: 'Motoring', slug: 'motoring' },
       { label: 'People & Issues', slug: 'people-issues' },
