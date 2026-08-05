@@ -54,9 +54,9 @@ const LINK_COLUMNS = [
     ],
   },
   {
-    heading: 'Company',
+    heading: 'About us',
     items: [
-      { label: 'About Us', to: '/about' },
+      { label: 'Company', to: '/about' },
       { label: 'Contact', to: '/contact' },
       { label: 'Branding', to: '/branding' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
@@ -69,6 +69,11 @@ const LINK_COLUMNS = [
       { label: 'Newspaper', href: 'https://www.thesunit.my/ipaper' },
       { label: 'iPaper', href: 'https://www.thesunit.my/ipaper' },
       { label: 'Newsletter', to: '/' }, // TODO: point at the real newsletter signup
+    ],
+  },
+  {
+    heading: 'Advertise',
+    items: [
       { label: 'Print & Digital', to: '/advertise' },
       { label: 'Classifieds', href: 'https://www.sunmedia.my' }, // TODO: confirm real classifieds URL
     ],
@@ -293,7 +298,7 @@ export default function SiteFooter() {
 
           {/* Link columns — 4 across, each with its own heading + red underline. */}
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-6">
               {LINK_COLUMNS.map((col) => (
                 <LinkColumn key={col.heading} heading={col.heading} items={col.items} />
               ))}
