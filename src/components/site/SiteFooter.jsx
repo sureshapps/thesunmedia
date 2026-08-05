@@ -15,8 +15,8 @@ const APP_LINK = 'https://onelink.to/k5mbcg'
 // to guarantee a perfectly seamless join into the footer body regardless of
 // which asset is showing.
 const FOOTER_BG = '#030307'
-const FOOTER_BG_SEAM_DESKTOP = '#030307'
-const FOOTER_BG_SEAM_MOBILE = '#0c0c11'
+const FOOTER_BG_SEAM_DESKTOP = '#000000'
+const FOOTER_BG_SEAM_MOBILE = '#000000'
 
 // Three store badges rendered as individual bordered buttons (was one
 // combined store-badges.png image before). Icons are generic lucide glyphs
