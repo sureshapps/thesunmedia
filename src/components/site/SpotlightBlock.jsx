@@ -123,20 +123,20 @@ export default function SpotlightBlock() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {loading ? (
           <>
-            <div className="col-span-2 lg:col-span-1"><SpotlightFeatureSkeleton /></div>
+            <div className="lg:col-span-1"><SpotlightFeatureSkeleton /></div>
             {[...Array(4)].map((_, i) => (
-              <div key={i} className={i === 3 ? 'lg:hidden' : undefined}>
+              <div key={i} className={i === 3 ? 'hidden' : undefined}>
                 <SpotlightItemSkeleton />
               </div>
             ))}
           </>
         ) : (
           <>
-            <div className="col-span-2 lg:col-span-1">
+            <div className="lg:col-span-1">
               <SpotlightFeature post={postsArr[0]} rank={(page - 1) * PER_PAGE + 1} />
             </div>
             {postsArr.slice(1, 5).map((p, i) => (
-              <div key={p.id} className={i === 3 ? 'lg:hidden' : undefined}>
+              <div key={p.id} className={i === 3 ? 'hidden' : undefined}>
                 <SpotlightItem post={p} rank={(page - 1) * PER_PAGE + i + 2} />
               </div>
             ))}
