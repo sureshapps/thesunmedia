@@ -16,8 +16,8 @@ export const MAIN_MENU = [
     label: 'Business',
     slug: 'business',
     children: [
-      { label: 'Local', slug: 'local-business' },
-      { label: 'Global', slug: 'global-business' },
+      { label: 'Local Business', slug: 'local-business' },
+      { label: 'Global Business', slug: 'global-business' },
       { label: 'Corporate News', slug: 'corporate-news' },
     ],
   },
