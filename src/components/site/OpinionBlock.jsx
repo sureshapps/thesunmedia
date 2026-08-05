@@ -9,7 +9,7 @@ import {
 const REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000 // refresh once a day
 const OPINION_CATEGORY_SLUG = 'opinion'
 const ITEM_COUNT = 20
-const SCROLL_DURATION_S = 45 // increase = slower, decrease = faster
+const SCROLL_DURATION_S = 80 // increase = slower, decrease = faster
 
 function OpinionItem({ post }) {
   if (!post) return null
