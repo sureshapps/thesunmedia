@@ -238,7 +238,7 @@ export default function SiteFooter() {
               centered on mobile, left-aligned on desktop. */}
           <div className="lg:col-span-5 flex flex-col items-center text-center lg:items-start lg:text-left">
             <Link to="/" aria-label="theSun - Home" className="inline-block">
-              <img src="/footer/logo-color.png" alt="theSun" className="h-14 sm:h-16 w-auto" />
+              <img src="/logo.svg" alt="theSun" className="h-14 sm:h-16 w-auto" />
             </Link>
 
             <p className="mt-3 text-sm sm:text-base text-white/80 font-semibold">
