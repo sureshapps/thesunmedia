@@ -33,7 +33,7 @@ export const MAIN_MENU = [
       { label: 'Home & Living', slug: 'home-living' },
       { label: 'Travel & Leisure', slug: 'travel-leisure' },
       { label: 'Food & Beverage', slug: 'food-beverage' },
-      { label: 'Culture & Entertainment', slug: 'entertainment' },
+      { label: 'Culture & Entertainment', slug: 'culture-entertainment' },
     ],
   },
   { label: 'Spotlight', slug: 'spotlight' },
