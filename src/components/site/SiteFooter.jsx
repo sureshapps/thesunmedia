@@ -256,9 +256,9 @@ export default function SiteFooter() {
           needed asset is downloaded. */}
       <div className="relative leading-[0]">
         <picture>
-          <source media="(min-width: 768px)" srcSet="/footer/skyline-desktop.png" />
+          <source media="(min-width: 768px)" srcSet="/footer/skyline-desktop.svg" />
           <img
-            src="/footer/skyline-mobile.png"
+            src="/footer/skyline-mobile.svg"
             alt=""
             aria-hidden="true"
             className="w-full h-auto block select-none pointer-events-none"
