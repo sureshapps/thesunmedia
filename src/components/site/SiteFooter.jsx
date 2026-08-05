@@ -54,9 +54,9 @@ const LINK_COLUMNS = [
     ],
   },
   {
-    heading: 'About us',
+    heading: 'Company',
     items: [
-      { label: 'Company', to: '/about' },
+      { label: 'About Us', to: '/about' },
       { label: 'Contact', to: '/contact' },
       { label: 'Branding', to: '/branding' },
       { label: 'Privacy Policy', to: '/privacy-policy' },
@@ -70,13 +70,16 @@ const LINK_COLUMNS = [
       { label: 'iPaper', href: 'https://www.thesunit.my/ipaper' },
       { label: 'Newsletter', to: '/' }, // TODO: point at the real newsletter signup
     ],
-  },
-  {
-    heading: 'Advertise',
-    items: [
-      { label: 'Print & Digital', to: '/advertise' },
-      { label: 'Classifieds', href: 'https://www.sunmedia.my' }, // TODO: confirm real classifieds URL
-    ],
+    // Sub-section rendered inside this SAME column, under its own smaller
+    // heading — not a separate grid column, so it always stays stacked
+    // under "Subscriptions" no matter how the columns wrap on smaller screens.
+    subsection: {
+      heading: 'Advertise',
+      items: [
+        { label: 'Print & Digital', to: '/advertise' },
+        { label: 'Classifieds', href: 'https://www.sunmedia.my' }, // TODO: confirm real classifieds URL
+      ],
+    },
   },
 ]
 
@@ -174,7 +177,7 @@ function SunbotMascot() {
   )
 }
 
-function LinkColumn({ heading, items }) {
+function LinkColumn({ heading, items, subsection }) {
   return (
     <div className="text-center sm:text-left">
       <h3 className="text-sm sm:text-base font-extrabold text-white uppercase tracking-wide pb-1.5 border-b-2 border-primary inline-block">
@@ -204,6 +207,38 @@ function LinkColumn({ heading, items }) {
           </li>
         ))}
       </ul>
+
+      {subsection && (
+        <>
+          <h3 className="mt-5 text-sm sm:text-base font-extrabold text-white uppercase tracking-wide pb-1.5 border-b-2 border-primary inline-block">
+            {subsection.heading}
+          </h3>
+          <ul className="mt-3 space-y-2 sm:space-y-2.5 text-[11px] sm:text-sm leading-snug text-[#898989]">
+            {subsection.items.map((item) => (
+              <li key={item.label}>
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                ) : item.slug ? (
+                  <Link to={`/category/${item.slug}`} className="hover:text-white transition-colors">
+                    {item.label}
+                  </Link>
+                ) : (
+                  <Link to={item.to} className="hover:text-white transition-colors">
+                    {item.label}
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   )
 }
@@ -298,9 +333,9 @@ export default function SiteFooter() {
 
           {/* Link columns — 4 across, each with its own heading + red underline. */}
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8 sm:gap-x-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-8 sm:gap-x-6">
               {LINK_COLUMNS.map((col) => (
-                <LinkColumn key={col.heading} heading={col.heading} items={col.items} />
+                <LinkColumn key={col.heading} heading={col.heading} items={col.items} subsection={col.subsection} />
               ))}
             </div>
 
