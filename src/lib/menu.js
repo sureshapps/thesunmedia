@@ -28,7 +28,7 @@ export const MAIN_MENU = [
     children: [
       { label: 'Boo! and Beyond', slug: 'boo-and-beyond' },
       { label: 'Technology & Social Media', slug: 'technology-social-media' },
-      { label: 'Family & Health', slug: 'family-parenting' },
+      { label: 'Family & Health', slug: 'family-health' },
       { label: 'Fashion & Beauty', slug: 'fashion-beauty' },
       { label: 'Home & Living', slug: 'home-living' },
       { label: 'Travel & Leisure', slug: 'travel-leisure' },
