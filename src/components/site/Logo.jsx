@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
 
-// New logo asset — place `logo.png` in your project's `public/` folder
-// so it's served at this path (e.g. public/logo.png).
-const LOGO_URL = '/logo.png'
+// theSun logo — SVG asset. Place `logo.svg` in your project's `public/`
+// folder so it's served at this path (e.g. public/logo.svg). This single
+// Logo component is shared by the header (desktop + mobile row), the
+// desktop nav bar (scrolled state), and the mobile full-page menu sidebar,
+// so updating this one file updates the logo everywhere it appears.
+const LOGO_URL = '/logo.svg'
 
 export default function Logo({ className = '', size = 'md', to = '/' }) {
   const sizes = {
