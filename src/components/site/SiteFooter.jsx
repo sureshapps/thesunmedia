@@ -66,10 +66,10 @@ const LINK_COLUMNS = [
   {
     heading: 'Subscriptions',
     items: [
+      { label: 'Newspaper', href: 'https://www.thesunit.my/ipaper' },
       { label: 'iPaper', href: 'https://www.thesunit.my/ipaper' },
       { label: 'Newsletter', to: '/' }, // TODO: point at the real newsletter signup
-      { label: 'Print Media', to: '/advertise' },
-      { label: 'Digital Media', to: '/advertise' },
+      { label: 'Print & Digital', to: '/advertise' },
       { label: 'Classifieds', href: 'https://www.sunmedia.my' }, // TODO: confirm real classifieds URL
     ],
   },
