@@ -10,6 +10,7 @@ import SearchPage from '@/pages/SearchPage'
 import LatestPage from '@/pages/LatestPage'
 import VideoPage from '@/pages/VideoPage'
 import NotFoundPage from '@/pages/NotFoundPage'
+import PrintDigitalPage from '@/pages/PrintDigitalPage'
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage'
 import ContactPage from '@/pages/ContactPage'
 import AboutPage from '@/pages/AboutPage'
@@ -47,6 +48,7 @@ export default function App() {
           <Route path="/disclaimer" element={<DisclaimerPage />} />
           <Route path="/advertise" element={<AdvertisePage />} />
           <Route path="/terms" element={<TermsPage />} />
+          <Route path="/get-newspaper" element={<PrintDigitalPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
