@@ -370,7 +370,7 @@ export default function PrintDigitalPage() {
             </div>
             <div>
               <p className="uppercase text-foreground">Account name</p>
-              <p className="font-bold text-base">SUN MEDIA CORPORATION SDN BHD)</p>
+              <p className="font-bold text-base">SUN MEDIA CORPORATION SDN BHD</p>
             </div>
             <p>
               Send the payment receipt to email address:{' '}
