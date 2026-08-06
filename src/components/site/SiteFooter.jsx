@@ -69,7 +69,7 @@ const LINK_COLUMNS = [
   {
     heading: 'Subscriptions',
     items: [
-      { label: 'Newspaper', href: 'https://www.thesunit.my/ipaper' },
+      { label: 'Newspaper', href: '/get-newspaper' },
       { label: 'iPaper', href: 'https://www.thesunit.my/ipaper' },
       { label: 'Newsletter', to: '/' }, // TODO: point at the real newsletter signup
     ],
