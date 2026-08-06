@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { ChevronRight, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import useSeo from '@/lib/useSeo'
+import subsBanner from '@/assets/subs-banner.webp'
+import bestValueBadge from '@/assets/best-value-badge.webp'
 
 // ────────────────────────────────────────────────────────────────────────
 // WHERE SUBMISSIONS GO
@@ -222,25 +224,39 @@ export default function PrintDigitalPage() {
         <p className="mt-3 text-muted-foreground">Subscribe now for a copy of theSun newspaper.</p>
       </header>
 
+      {/* Promo banner */}
+      <img
+        src={subsBanner}
+        alt="Subscribe now to theSun — stay informed 7 days a week, starting from 1st April 2025, only RM1 per copy"
+        className="w-full h-auto rounded-lg mb-10"
+      />
+
       <form onSubmit={handleSubmit} noValidate className="space-y-10">
         {/* Plan selection */}
         <section>
           <FieldLabel required>Subscribe now for a copy of theSun newspaper</FieldLabel>
-          <div className="space-y-4 mt-3">
-            {PLAN_OPTIONS.map((opt) => (
-              <RadioRow
-                key={opt.value}
-                name="plan"
-                value={opt.value}
-                checked={form.plan === opt.value}
-                onChange={update}
-                label={
-                  <>
-                    {opt.label} <span className="italic">{opt.note}</span>
-                  </>
-                }
-              />
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-start mt-3">
+            <div className="space-y-4">
+              {PLAN_OPTIONS.map((opt) => (
+                <RadioRow
+                  key={opt.value}
+                  name="plan"
+                  value={opt.value}
+                  checked={form.plan === opt.value}
+                  onChange={update}
+                  label={
+                    <>
+                      {opt.label} <span className="italic">{opt.note}</span>
+                    </>
+                  }
+                />
+              ))}
+            </div>
+            <img
+              src={bestValueBadge}
+              alt="Best value — not inclusive of vendor service charge"
+              className="w-40 md:w-48 h-auto mx-auto md:mx-0"
+            />
           </div>
         </section>
 
