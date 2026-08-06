@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import useSeo from '@/lib/useSeo'
 import subsBanner from '@/assets/subs-banner.webp'
 import bestValueBadge from '@/assets/best-value-badge.webp'
+import maybankLogo from '@/assets/maybank-logo.webp'
 
 // ────────────────────────────────────────────────────────────────────────
 // WHERE SUBMISSIONS GO
@@ -207,7 +208,7 @@ export default function PrintDigitalPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
+    <div className="container mx-auto px-4 py-8 max-w-5xl">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
         <Link to="/" className="hover:text-primary">Home</Link>
@@ -352,14 +353,30 @@ export default function PrintDigitalPage() {
 
         {/* Payment method */}
         <section>
-          <SectionHeading>Payment Method</SectionHeading>
-          <p className="font-bold mb-2">Bank Transfer</p>
-          <p className="font-bold italic mb-4">
-            Pay to Maybank (Current account number 508177700420) Account Name (SUN MEDIA CORPORATION SDN BHD)
-          </p>
-          <p className="text-sm">
-            Send the payment receipt to email address: <span className="font-bold">subscribe@thesundaily.com</span>
-          </p>
+          <div className="inline-block border-2 border-primary p-1.5 mb-6">
+            <div className="border-2 border-primary px-4 py-1.5">
+              <h2 className="text-lg font-black uppercase tracking-wide text-foreground">
+                Payment Method
+              </h2>
+            </div>
+          </div>
+
+          <img src={maybankLogo} alt="Maybank" className="h-10 w-auto mb-4" />
+
+          <div className="space-y-4 text-sm">
+            <div>
+              <p className="uppercase text-foreground">Current account no</p>
+              <p className="font-bold text-base">508177700420</p>
+            </div>
+            <div>
+              <p className="uppercase text-foreground">Account name</p>
+              <p className="font-bold text-base">SUN MEDIA CORPORATION SDN BHD)</p>
+            </div>
+            <p>
+              Send the payment receipt to email address:{' '}
+              <span className="font-bold bg-yellow-300 px-1">subscribe@thesundaily.com</span>
+            </p>
+          </div>
         </section>
 
         {/* Error message */}
