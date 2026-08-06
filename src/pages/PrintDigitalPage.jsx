@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { ChevronRight, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import useSeo from '@/lib/useSeo'
-import subsBanner from '@/assets/subs-banner.webp'
-import bestValueBadge from '@/assets/best-value-badge.webp'
+import subsBanner from '@/assets/subs-banner.png'
+import bestValueBadge from '@/assets/best-value-badge.png'
 
 // ────────────────────────────────────────────────────────────────────────
 // WHERE SUBMISSIONS GO
@@ -113,7 +113,7 @@ function SectionHeading({ children }) {
 }
 export default function PrintDigitalPage() {
   useSeo({
-    title: 'Print & Digital Subscription - theSun',
+    title: 'Newspaper Subscription - theSun',
     description: 'Subscribe to theSun newspaper — choose a 1-year or 6-month print subscription and get delivery straight to your door.',
     url: window.location.origin + '/get-newspaper',
   })
@@ -212,14 +212,14 @@ export default function PrintDigitalPage() {
       <nav className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
         <Link to="/" className="hover:text-primary">Home</Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="text-foreground">Print &amp; Digital Subscription</span>
+        <span className="text-foreground">Newspaper Subscription</span>
       </nav>
 
       {/* Header */}
       <header className="border-b-2 border-primary pb-4 mb-8">
         <div className="flex items-baseline gap-3">
           <span className="w-1.5 h-9 bg-primary inline-block" />
-          <h1 className="font-serif-headline text-3xl md:text-4xl font-bold">Print &amp; Digital Subscription</h1>
+          <h1 className="font-serif-headline text-3xl md:text-4xl font-bold">Newspaper Subscription</h1>
         </div>
         <p className="mt-3 text-muted-foreground">Subscribe now for a copy of theSun newspaper.</p>
       </header>
