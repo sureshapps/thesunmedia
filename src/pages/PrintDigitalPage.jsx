@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { ChevronRight, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import useSeo from '@/lib/useSeo'
-import subsBanner from '@/assets/subs-banner.webp'
-import bestValueBadge from '@/assets/best-value-badge.webp'
+import subsBanner from '@/assets/mainbanner.webp'
+import bestValueBadge from '@/assets/best-value.webp'
 import maybankLogo from '@/assets/maybank-logo.webp'
 
 // ────────────────────────────────────────────────────────────────────────
