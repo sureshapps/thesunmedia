@@ -109,7 +109,30 @@ function SectionHeading({ children }) {
     </h2>
   )
 }
-
+// Recreates the "BEST VALUE" starburst badge from the reference design without
+// needing an image asset — pure CSS so it stays crisp at any size.
+function BestValueBadge() {
+  return (
+    <div className="flex flex-col items-center my-8">
+      <div className="relative flex items-center justify-center" style={{ width: 220, height: 220 }}>
+        {[0, 22.5, 45, 67.5].map((deg) => (
+          <span
+            key={deg}
+            className="absolute inset-0 bg-primary rounded-md shadow-md"
+            style={{ transform: `rotate(${deg}deg)` }}
+          />
+        ))}
+        <div className="relative z-10 text-center -rotate-6">
+          <p className="font-serif-headline font-black text-yellow-300 text-2xl leading-none tracking-wide">BEST</p>
+          <p className="font-serif-headline font-black text-yellow-300 text-3xl leading-none tracking-wide mt-1">VALUE</p>
+        </div>
+      </div>
+      <p className="text-center font-bold italic text-sm mt-3 max-w-xs">
+        *Not inclusive of vendor service charge
+      </p>
+    </div>
+  )
+}
 
 
 export default function PrintDigitalPage() {
